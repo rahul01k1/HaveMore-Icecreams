@@ -6,11 +6,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-dev-key-change-me")
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "topsacademyvipul.pythonanywhere.com",
     "topsvipul.pythonanywhere.com",
+    "127.0.0.1",
     ]
 
 

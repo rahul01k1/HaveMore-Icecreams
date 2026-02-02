@@ -110,6 +110,7 @@ function toggleWishlist(btn, productId) {
         Swal.fire("Error", "Something went wrong", "error");
     });
 }    
+
      
 function addToCart(productId) {
     fetch(`/add_to_cart/${productId}/`, {

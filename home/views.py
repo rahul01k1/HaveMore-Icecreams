@@ -261,20 +261,41 @@ def empty_cart(request):
     return JsonResponse({"status": "success"})
 
 
+
+import json
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.contrib import messages
+from .models import Buyer, Product, Cart, Order, OrderItem
+
+
 def checkout(request):
+    # ===============================
+    # AUTH CHECK
+    # ===============================
     user_id = request.session.get("user_id")
     if not user_id:
         return redirect("login")
 
     user = Buyer.objects.get(id=user_id)
 
-    buy_now_id = request.GET.get("buy_now")  # ✅ SINGLE SOURCE
-    is_buy_now = False
+    # ===============================
+    # BUY NOW STATE (SESSION)
+    # ===============================
+    if request.method == "GET":
+        buy_now_param = request.GET.get("buy_now")
+        if buy_now_param:
+            request.session["buy_now_id"] = buy_now_param
+        else:
+            request.session.pop("buy_now_id", None)
+
+    buy_now_id = request.session.get("buy_now_id")
+    is_buy_now = bool(buy_now_id)
 
     # ===============================
-    # GET → SHOW CHECKOUT
+    # PREPARE ITEMS
     # ===============================
-    if buy_now_id:
+    if is_buy_now:
         try:
             product = Product.objects.get(id=buy_now_id)
         except Product.DoesNotExist:
@@ -291,69 +312,76 @@ def checkout(request):
                 return self.price * self.qty
 
         cart_items = [TempItem(product)]
-        total_amount = product.product_price
-        is_buy_now = True
 
     else:
         cart_items = Cart.objects.filter(user=user)
-
         if not cart_items.exists():
             messages.error(request, "Your cart is empty!")
             return redirect("cart")
 
-        total_amount = sum(item.subtotal() for item in cart_items)
+    # ===============================
+    # ✅ TOTAL AMOUNT (NOT STORED)
+    # ===============================
+    total_amount = sum(item.subtotal() for item in cart_items)
 
     # ===============================
     # POST → PLACE ORDER (AJAX)
     # ===============================
     if request.method == "POST" and request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
 
-        order = Order.objects.create(
-            user=user,
-            name=data["name"],
-            email=data["email"],
-            number=data["number"],
-            address=data["address"],
-            address_type=data["address_type"],
-            status="Processing",
-            payment_status="Pending" if data["method"] == "cod" else "Paid",
-            total_amount=total_amount
-        )
-
-        if is_buy_now:
-            product = Product.objects.get(id=buy_now_id)
-
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                seller=product.seller,
-                price=product.product_price,
-                qty=1
+            order = Order.objects.create(
+                user=user,
+                name=data["name"],
+                email=data["email"],
+                number=data["number"],
+                address=data["address"],
+                address_type=data["address_type"],
+                status="Processing",
+                payment_status="Pending" if data["method"] == "cod" else "Paid"
             )
 
-            product.product_stock = max(0, product.product_stock - 1)
-            product.save()
+            if is_buy_now:
+                product = Product.objects.get(id=buy_now_id)
 
-        else:
-            for item in cart_items:
                 OrderItem.objects.create(
                     order=order,
-                    product=item.product,
-                    seller=item.product.seller,
-                    price=item.price,
-                    qty=item.qty
+                    product=product,
+                    seller=product.seller,
+                    price=product.product_price,
+                    qty=1
                 )
 
-                item.product.product_stock = max(0, item.product.product_stock - item.qty)
-                item.product.save()
+                product.product_stock = max(0, product.product_stock - 1)
+                product.save()
 
-            Cart.objects.filter(user=user).delete()
+                request.session.pop("buy_now_id", None)
 
-        return JsonResponse({
-            "success": True,
-            "redirect_url": f"/order_success/{order.id}/"
-        })
+            else:
+                for item in cart_items:
+                    OrderItem.objects.create(
+                        order=order,
+                        product=item.product,
+                        seller=item.product.seller,
+                        price=item.price,
+                        qty=item.qty
+                    )
+
+                    item.product.product_stock = max(0, item.product.product_stock - item.qty)
+                    item.product.save()
+
+                Cart.objects.filter(user=user).delete()
+
+            return JsonResponse({
+                "success": True,
+                "redirect_url": f"/order_success/{order.id}/"
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                "error": str(e)
+            }, status=400)
 
     # ===============================
     # RENDER PAGE
@@ -361,7 +389,7 @@ def checkout(request):
     return render(request, "home/shop/checkout.html", {
         "user": user,
         "cart_items": cart_items,
-        "total_amount": total_amount,
+        "total_amount": total_amount,   # ✅ ADDED
         "is_buy_now": is_buy_now
     })
 

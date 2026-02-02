@@ -150,6 +150,39 @@ input[type='submit']:hover {
     font-weight: 600;
 }
 
+
+/* checkout Qnt: */
+.qty-controller {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.qty-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    font-size: 18px;
+    font-weight: 700;
+    background: #ff7fa8;
+    color: #fff;
+    cursor: pointer;
+}
+
+.qty-btn:hover {
+    opacity: 0.9;
+}
+
+.qty-input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
 /* ============================================================================
    CUSTOM SCROLLBAR (OPTIMIZED)
    ============================================================================ */
@@ -316,6 +349,8 @@ input[type='submit']:hover {
   font-size: 2rem;
   color: var(--main-color);
 }
+
+
 
 /* ============================================================================
    TESTIMONIALS
