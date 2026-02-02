@@ -1,0 +1,166 @@
+
+/* ================= SERVICES ================= */
+
+.services-section {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.service-grid {
+    max-width: 1200px;
+    margin: 40px auto 0;
+    display: grid;
+    gap: 35px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.service-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    transition: transform .3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-6px);
+}
+
+.service-card img {
+    width: 80px;
+    margin-bottom: 18px;
+}
+
+.service-card h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+/* ================= ADDRESS ================= */
+
+.address-section {
+    padding: 90px 20px 110px;
+    text-align: center;
+}
+
+.address-grid {
+    max-width: 1200px;
+    margin: 50px auto;
+    display: grid;
+    gap: 35px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.address-card {
+    background: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+.address-card i {
+    font-size: 45px;
+    color: #ff6eae;
+    margin-bottom: 12px;
+}
+
+.address-card h4 {
+    font-size: 21px;
+    margin-bottom: 8px;
+}
+
+/* ======================================================
+   TABLETS (≤ 992px)
+====================================================== */
+
+@media (max-width: 992px) {
+
+    .contact-hero h1 {
+        font-size: 40px;
+    }
+
+    .contact-form {
+        padding: 45px 40px;
+    }
+
+    .input-row {
+        gap: 25px;
+    }
+}
+
+/* ======================================================
+   MOBILE & SMALL TABLETS (≤ 768px)
+====================================================== */
+
+@media (max-width: 768px) {
+
+    .contact-hero {
+        padding: 70px 16px;
+    }
+
+    .contact-hero h1 {
+        font-size: 34px;
+    }
+
+    .contact-hero p {
+        font-size: 16px;
+    }
+
+    .services-section {
+        padding: 60px 16px;
+    }
+
+    .contact-form-section {
+        padding: 70px 16px;
+    }
+
+    .contact-form {
+        padding: 40px 24px;
+    }
+
+    .input-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .box {
+        font-size: 15px;
+        padding: 13px 14px;
+    }
+
+    .address-section {
+        padding: 70px 16px 90px;
+    }
+}
+
+/* ======================================================
+   SMALL PHONES (≤ 480px)
+====================================================== */
+
+@media (max-width: 480px) {
+
+    .contact-hero h1 {
+        font-size: 30px;
+    }
+
+    .breadcrumb {
+        font-size: 14px;
+    }
+
+    .service-card h3,
+    .address-card h4 {
+        font-size: 18px;
+    }
+
+    .address-card i {
+        font-size: 38px;
+    }
+
+    .contact-form {
+        padding: 32px 18px;
+    }
+
+    .input-field label {
+        font-size: 14px;
+    }
+}

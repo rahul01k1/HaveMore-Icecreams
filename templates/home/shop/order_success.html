@@ -1,0 +1,81 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block title %}Order Success{% endblock %}
+
+{% block content %}
+
+<div class="invoice-wrapper">
+
+    <!-- HEADER -->
+    <div class="invoice-header">
+        <div class="success-icon">✔</div>
+        <h2>Order Confirmed</h2>
+        <p>Thank you for shopping with <strong>Blue Sky Summer</strong></p>
+    </div>
+
+    <!-- INVOICE CARD -->
+    <div class="invoice-card">
+
+        <!-- ORDER META -->
+        <div class="invoice-meta">
+            <div>
+                <p><span>Order ID</span>#{{ order.id }}</p>
+                <p><span>Order Status</span>{{ order.status }}</p>
+                <p><span>Payment</span>{{ order.payment_status }}</p>
+            </div>
+            <div>
+                <p><span>Name</span>{{ order.name }}</p>
+                <p><span>Email</span>{{ order.email }}</p>
+                <p><span>Phone</span>{{ order.number }}</p>
+            </div>
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="invoice-address">
+            <p><strong>Delivery Address ({{ order.address_type }})</strong></p>
+            <p>{{ order.address }}</p>
+        </div>
+
+        <!-- ITEMS TABLE -->
+        <div class="invoice-items">
+            <div class="items-head">
+                <span>Product</span>
+                <span>Price</span>
+                <span>Qty</span>
+                <span>Total</span>
+            </div>
+
+            {% for item in order_items %}
+            <div class="items-row">
+                <div class="product">
+                    <img src="{{ item.product.product_image.url }}" alt="">
+                    <span>{{ item.product.product_name }}</span>
+                </div>
+                <span>₹{{ item.price }}</span>
+                <span>{{ item.qty }}</span>
+                <span><strong>₹{{ item.total_price }}</strong></span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- TOTAL -->
+        <div class="invoice-total">
+            <span>Total Paid</span>
+            <strong>₹{{ total_amount }}</strong>
+        </div>
+
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="invoice-actions">
+        <a href="{% url 'home' %}" class="btn-primary">Continue Shopping</a>
+        <a href="{% url 'download_invoice' order.id %}" class="btn-secondary">
+            Download Invoice (PDF)
+        </a>
+    </div>
+
+</div>
+
+
+{% endblock %}

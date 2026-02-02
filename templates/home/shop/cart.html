@@ -1,0 +1,69 @@
+{% extends "home/base.html" %}
+{% load static %}
+{% block title %}Blue Sky Summer - Cart{% endblock %}
+
+{% block content %}
+
+<div class="cart-container">
+
+    <h1>Your Cart</h1>
+
+    <!-- CART ITEMS -->
+    <div id="cart-items">
+        {% for item in cart_items %}
+        <div class="cart-card" id="cart-item-{{ item.id }}">
+
+            <img src="{{ item.product.product_image.url }}" class="cart-img" loading="lazy">
+
+            <div class="cart-info">
+                <h3>{{ item.product.product_name }}</h3>
+                <p class="price">₹{{ item.price }}</p>
+
+                <label>Quantity:</label>
+                <input type="number"
+                       class="qty-box"
+                       value="{{ item.qty }}"
+                       min="1"
+                       onchange="updateQty({{ item.id }}, this.value)">
+            </div>
+
+            <div style="margin-left:auto; text-align:right;">
+                <p><strong>Subtotal:</strong> ₹<span id="subtotal-{{ item.id }}">{{ item.subtotal }}</span></p>
+
+                <button class="remove-btn" onclick="removeItem({{ item.id }})">
+                    Remove
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- TOTAL BOX -->
+    <div class="cart-total-box">
+        Total Amount: ₹<span id="total">{{ total_amount }}</span>
+    </div>
+
+    <br>
+
+    <a class="empty-btn" onclick="emptyCart()">Empty Cart</a>
+    <a href="{% url 'checkout' %}" class="checkout-btn">Proceed to Checkout</a>
+</div>
+
+
+<!-- SWEETALERT + AJAX CART JS -->
+<script>
+// SweetAlert2 Toast
+function showAlert(type, message) {
+    Swal.fire({
+        icon: type,
+        title: message,
+        toast: true,
+        position: "top-end",
+        timer: 1500,
+        showConfirmButton: false
+    });
+}
+
+</script>
+
+{% endblock %}

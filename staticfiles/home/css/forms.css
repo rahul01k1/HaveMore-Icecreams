@@ -1,0 +1,159 @@
+
+.form-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6% 4%;
+  background: url('../image/bg1.webp') center / cover no-repeat;
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 680px;
+  background: #ffffff;
+  padding: 55px 60px;
+  border-radius: 22px;
+  box-shadow: 0 15px 45px rgba(0,0,0,0.12);
+}
+
+/* Register wider */
+.form-wrapper.register {
+  max-width: 900px;
+}
+
+
+.form-wrapper h2 {
+  font-size: 40px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.form-wrapper .subtitle {
+  text-align: center;
+  font-size: 17px;
+  color: #666;
+  margin-bottom: 35px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 26px;
+}
+
+/* Register only */
+.form-wrapper.register .form-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.input-field label {
+  font-weight: 600;
+  font-size: 16px;
+  color: #444;
+}
+
+.input-field span {
+  color: red;
+}
+
+.input-field .box {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field .box:focus {
+  border-color: var(--pink-color);
+  box-shadow: 0 0 0 2px rgba(255,126,167,0.25);
+}
+
+.btn-login,
+.btn-register {
+  width: 100%;
+  padding: 14px 0;
+  border: none;
+  border-radius: 12px;
+  background: #ff7ea7;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 25px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-login:hover,
+.btn-register:hover {
+  background: #ff628f;
+}
+
+.profile-upload {
+  margin-top: 35px;
+  text-align: center;
+}
+
+.profile-upload img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50px;
+  padding: 10px;
+  background: var(--main-color);
+}
+.messages {
+  margin-bottom: 20px;
+}
+
+.alert {
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.alert.error {
+  background: #ffdddd;
+  color: #c0392b;
+}
+
+.alert.success {
+  background: #e2ffeb;
+  color: #27ae60;
+}
+.login-link {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.login-link a {
+  color: #007bff;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .form-wrapper {
+    padding: 40px 30px;
+  }
+
+  .form-wrapper h2 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-wrapper {
+    padding: 35px 20px;
+  }
+
+  .form-wrapper h2 {
+    font-size: 28px;
+  }
+}

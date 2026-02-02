@@ -1,0 +1,153 @@
+{% extends "home/base.html" %}
+{% load static %}
+{% block title %}Search Product - Blue Sky Summer{% endblock %}
+
+{% block content %}
+
+<div class="search-wrapper">
+
+    <h1 class="search-title">Search Results</h1>
+    <img src="{% static 'home/image/separator-img.png' %}"
+         class="search-separator"
+         width="180">
+
+    <!-- ================= PRODUCT GRID ================= -->
+    <div class="product-grid">
+
+        {% if products %}
+            {% for product in products %}
+
+            <form action="{% url 'add_to_cart' product.id %}"
+                  method="post"
+                  class="product-card">
+                {% csrf_token %}
+
+                <!-- STOCK BADGE -->
+                {% if product.product_stock > 9 %}
+                    <span class="stock-badge stock-green">In Stock</span>
+                {% elif product.product_stock == 0 %}
+                    <span class="stock-badge stock-red">Out of Stock</span>
+                {% else %}
+                    <span class="stock-badge stock-red">
+                        Only {{ product.product_stock }} left!
+                    </span>
+                {% endif %}
+
+                <!-- PRODUCT IMAGE -->
+                <img src="{{ product.product_image.url }}"
+                     class="main-img"
+                     alt="{{ product.product_name }}"
+                     loading="lazy">
+
+                <!-- CARD BODY -->
+                <div class="card-body">
+
+                    <div class="product-name">
+                        {{ product.product_name }}
+                    </div>
+
+                    <div class="product-price">
+                        ₹{{ product.product_price }}
+                    </div>
+
+                    <!-- ACTION ICONS -->
+                    <div class="wishlist-actions">
+
+                        <!-- ADD TO CART -->
+                        <button type="submit"
+                                class="icon--btn"
+                                title="Add to Cart">
+                            <img src="{% static 'home/image/shopping.png' %}">
+                        </button>
+
+                        <!-- WISHLIST -->
+                        <button type="submit"
+                                class="icon--btn"
+                                formaction="{% url 'add_to_wishlist' product.id %}"
+                                title="Add to Wishlist">
+                            <img src="{% static 'home/image/heart.png' %}">
+                        </button>
+
+                        <!-- VIEW -->
+                        <a href="{% url 'view_product' product.id %}"
+                           class="icon--btn"
+                           title="View Product">
+                            <img src="{% static 'home/image/eye.png' %}">
+                        </a>
+                    </div>
+
+                    <input type="hidden"
+                           name="product_id"
+                           value="{{ product.id }}">
+
+                    <!-- BUY NOW + QTY -->
+                  <div class="buy-section">
+
+                        <a href="{% url 'checkout' %}?buy_now={{ product.id }}"
+                           class="btn">
+                            Buy Now
+                        </a>
+
+                        <input type="number"
+                               name="qty"
+                               min="1"
+                               max="99"
+                               value="1"
+                               class="qty-input">
+                    </div>
+
+                </div>
+            </form>
+
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- ================= EMPTY STATE ================= -->
+    {% if not products %}
+    <div class="empty-wrapper">
+        <div class="empty-center">
+            <img src="{% static 'home/image/icon/empty.png' %}"
+                 alt="No Products"
+                 class="empty-center-img">
+            <h2>No Products Found</h2>
+            <p>Try adjusting your search terms and search again.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ================= PAGINATION ================= -->
+    {% if products.has_other_pages %}
+    <div class="pagination-wrapper">
+
+        {% if products.has_previous %}
+            <a href="?q={{ search_query }}&page={{ products.previous_page_number }}"
+               class="page-btn prev">
+                ‹ Prev
+            </a>
+        {% endif %}
+
+        {% for num in products.paginator.page_range %}
+            {% if products.number == num %}
+                <span class="page-btn active">{{ num }}</span>
+            {% elif num > products.number|add:"-2" and num < products.number|add:"2" %}
+                <a href="?q={{ search_query }}&page={{ num }}"
+                   class="page-btn">
+                    {{ num }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {% if products.has_next %}
+            <a href="?q={{ search_query }}&page={{ products.next_page_number }}"
+               class="page-btn next">
+                Next ›
+            </a>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,228 @@
+{% extends "adminsite/base.html" %}
+{% block title %}Sellers{% endblock %}
+
+{% block content %}
+<section class="dashboard" style="margin-left: 19vw;">
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <h1>Sellers Management</h1>
+    <button class="btn-primary" onclick="toggleAddSeller()">+ Add Seller</button>
+</div>
+
+{% csrf_token %}
+
+<!-- ADD SELLER CARD -->
+<div class="card" id="addSellerCard" style="display:none;">
+    <h3>Add New Seller</h3>
+
+    <div class="form-grid">
+        <input type="text" id="name" placeholder="Seller Name">
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="password" placeholder="Password">
+
+        <select id="status">
+            <option value="active" selected>Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn-primary" onclick="addSeller()">Save</button>
+        <button class="btn-secondary" onclick="toggleAddSeller()">Cancel</button>
+    </div>
+</div>
+
+<!-- EDIT SELLER CARD -->
+<div class="card" id="editSellerCard" style="display:none;">
+    <h3>Edit Seller</h3>
+
+    <input type="hidden" id="edit_id">
+
+    <div class="form-grid">
+        <input type="text" id="edit_name" placeholder="Seller Name">
+        <input type="email" id="edit_email" placeholder="Email Address">
+
+        <select id="edit_status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn-primary" onclick="updateSeller()">Update</button>
+        <button class="btn-secondary" onclick="closeEditSeller()">Cancel</button>
+    </div>
+</div>
+
+<!-- SELLERS TABLE -->
+<div class="card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Seller</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th class="center">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="sellersBody"></tbody>
+    </table>
+</div>
+
+</section>
+
+<script>
+const csrfToken = "{{ csrf_token }}";
+
+/* ---------------- TOGGLE ADD SELLER ---------------- */
+
+function toggleAddSeller() {
+    const card = document.getElementById("addSellerCard");
+    card.style.display = card.style.display === "none" ? "block" : "none";
+}
+
+/* ---------------- LOAD SELLERS ---------------- */
+
+function loadSellers() {
+    fetch("/adminsite/api/sellers/")
+        .then(res => res.json())
+        .then(data => {
+            const sellers = data.results || data;
+            const body = document.getElementById("sellersBody");
+
+            body.innerHTML = "";
+
+            if (!sellers || sellers.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="center">No sellers found</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            sellers.forEach(s => {
+                body.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img
+                                    src="${s.seller_image || '/static/home/image/user.jpg'}"
+                                    class="product-img"
+                                    alt="Seller">
+                                <div class="product-info">
+                                    <h4>${s.seller_name}</h4>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${s.seller_email}</td>
+                        <td>
+                            <span class="badge ${s.seller_status === 'active' ? 'badge-success' : 'badge-danger'}">
+                                ${s.seller_status}
+                            </span>
+                        </td>
+                        <td class="center">
+                            <button class="btn-secondary"
+                                onclick="openEditSeller(
+                                    ${s.id},
+                                    '${s.seller_name}',
+                                    '${s.seller_email}',
+                                    '${s.seller_status}'
+                                )">
+                                Edit
+                            </button>
+                            <button class="btn-danger"
+                                onclick="deleteSeller(${s.id})">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(err => console.error("Load sellers error:", err));
+}
+
+/* ---------------- CREATE SELLER ---------------- */
+
+function addSeller() {
+    fetch("/adminsite/api/sellers/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken
+        },
+        body: JSON.stringify({
+            seller_name: document.getElementById("name").value,
+            seller_email: document.getElementById("email").value,
+            seller_password: document.getElementById("password").value,
+            seller_status: document.getElementById("status").value || "active"
+        })
+    }).then(() => {
+        toggleAddSeller();
+        loadSellers();
+        document.getElementById("name").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("password").value = "";
+    });
+}
+
+/* ---------------- EDIT SELLER ---------------- */
+
+function openEditSeller(id, name, email, status) {
+    document.getElementById("edit_id").value = id;
+    document.getElementById("edit_name").value = name;
+    document.getElementById("edit_email").value = email;
+    document.getElementById("edit_status").value = status;
+
+    document.getElementById("addSellerCard").style.display = "none";
+    document.getElementById("editSellerCard").style.display = "block";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function closeEditSeller() {
+    document.getElementById("editSellerCard").style.display = "none";
+}
+
+/* ---------------- UPDATE SELLER ---------------- */
+
+function updateSeller() {
+    const id = document.getElementById("edit_id").value;
+
+    fetch(`/adminsite/api/sellers/${id}/`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken
+        },
+        body: JSON.stringify({
+            seller_name: document.getElementById("edit_name").value,
+            seller_email: document.getElementById("edit_email").value,
+            seller_status: document.getElementById("edit_status").value
+        })
+    }).then(() => {
+        closeEditSeller();
+        loadSellers();
+    });
+}
+
+/* ---------------- DELETE SELLER ---------------- */
+
+function deleteSeller(id) {
+    if (!confirm("Are you sure you want to delete this seller?")) return;
+
+    fetch(`/adminsite/api/sellers/${id}/`, {
+        method: "DELETE",
+        headers: {
+            "X-CSRFToken": csrfToken
+        }
+    }).then(loadSellers);
+}
+
+/* INITIAL LOAD */
+loadSellers();
+</script>
+
+{% endblock %}

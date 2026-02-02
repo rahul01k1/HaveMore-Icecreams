@@ -1,0 +1,777 @@
+/* ============================================================================
+   GLOBAL SAFE RULES (IMPORTANT FOR MOBILE)
+   ============================================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* ============================================================================
+   SERVICE SECTION
+   ============================================================================ */
+
+.service {
+  padding: 4% 6%;
+}
+
+.service .box-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  justify-items: center;
+}
+
+.service .box-container .box {
+  width: 100%;
+  max-width: 360px;
+  background-color: var(--pink-opacity);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.6rem 1.8rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.service .box-container .box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+
+/* ICON HOVER IMAGE SWAP */
+.service .icon {
+  width: 70px;
+  min-width: 70px;
+  overflow: hidden;
+}
+
+.service .icon-box {
+  display: flex;
+  width: 200%;
+  transition: transform .3s ease;
+}
+
+.service .icon-box img {
+  width: 50%;
+}
+
+.service .box:hover .icon-box {
+  transform: translateX(-50%);
+}
+
+.service .detail {
+  border-left: 1px solid #333;
+  padding-left: 1.2rem;
+}
+
+.service .detail h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.service .detail span {
+  font-size: .95rem;
+  color: #555;
+}
+
+/* ============================================================================
+   CATEGORIES (FIXED: 4 DESKTOP / 2 MOBILE)
+   ============================================================================ */
+
+.categories {
+  padding: 4%;
+}
+
+.categories .box-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* DESKTOP */
+  gap: 1.2rem;
+}
+
+.categories .box {
+  position: relative;
+  overflow: hidden;
+}
+
+.categories img {
+  width: 100%;
+  transition: transform .4s ease;
+}
+
+.categories .box:hover img {
+  transform: scale(1.1);
+}
+
+.categories a {
+  position: absolute;
+  bottom: 1rem;
+  left: 5%;
+  width: 90%;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #000;
+}
+
+/* ============================================================================
+   TASTE SECTION
+   ============================================================================ */
+
+.taste {
+  background: url('../image/bn3.webp') center / cover no-repeat;
+  padding: 4% 6%;
+}
+
+.taste .box {
+  position: relative;
+}
+
+.taste .detail {
+  position: absolute;
+  top: 10%;
+  width: 100%;
+  text-align: center;
+}
+
+.taste img {
+  width: 100%;
+  border-radius: .5rem;
+}
+
+/* ============================================================================
+   FLAVOR
+   ============================================================================ */
+
+.flavor .box-container {
+  background-color: var(--pink-opacity);
+}
+
+.flavor .detail {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.flavor h1 {
+  font-size: 3rem;
+}
+
+/* ============================================================================
+   USAGE (HOW IT WORKS) – RESPONSIVE & OPTIMIZED
+   ============================================================================ */
+
+.usage {
+  background: url("../image/bn.png") center / cover no-repeat;
+  padding: 4% 6%;
+}
+
+/* Heading spacing */
+.usage .heading {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+/* Main layout */
+.usage .row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+}
+
+/* Divider image */
+.usage .divider {
+  width: 40%;
+  max-width: 420px;
+  height: auto;
+}
+
+/* Box containers */
+.usage .box-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Single box */
+.usage .box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+/* Icon */
+.usage .box img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* Text */
+.usage .box .detail h3 {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.usage .box .detail p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* ===============================
+   TABLET (≤ 1024px)
+   =============================== */
+@media (max-width: 1024px) {
+  .usage .row {
+    flex-direction: column;
+  }
+
+  .usage .divider {
+    width: 60%;
+  }
+}
+
+/* ===============================
+   MOBILE (≤ 600px)
+   =============================== */
+@media (max-width: 600px) {
+  .usage {
+    padding: 8% 5%;
+  }
+
+  .usage .divider {
+    display: none; /* cleaner mobile UX */
+  }
+
+  .usage .box {
+    flex-direction: row;
+    padding: 1rem;
+  }
+
+  .usage .box img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .usage .box .detail h3 {
+    font-size: 1rem;
+  }
+
+  .usage .box .detail p {
+    font-size: 0.9rem;
+  }
+}
+/* ============================================================================
+   PRIDE SECTION
+   ============================================================================ */
+
+.pride {
+  background-image: url('../image/ice-creem-banner-bg.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 80px 0;
+  padding: 220px 0 273px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: center;
+}
+
+.pride .detail {
+  padding-right: 10%;
+}
+
+.pride .detail p {
+  color: #666;
+  font-size: 20px;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+/* ============================================================================
+   PRIDE – RESPONSIVE FIX
+   ============================================================================ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .pride {
+    padding: 140px 0 160px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .pride .detail {
+    padding-right: 0;
+    max-width: 80%;
+    margin: 0 auto;
+  }
+
+  .pride .detail p {
+    font-size: 18px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .pride {
+    padding: 100px 1.5rem;
+    margin: 50px 0;
+    justify-content: center;
+  }
+
+  .pride .detail {
+    max-width: 100%;
+  }
+
+  .pride .detail p {
+    font-size: 16px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .pride {
+    padding: 80px 1rem;
+  }
+
+  .pride .detail p {
+    font-size: 15px;
+  }
+}
+
+/* ============================================================================
+   NEWSLETTER SECTION
+   ============================================================================ */
+
+.newsletter {
+  background-image: url('../image/bn3.webp');
+  padding-top: 70px;
+  padding-bottom: 100px;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.5;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.newsletter span {
+  font-size: 1rem;
+  background-color: var(--pink-opacity);
+  color: var(--main-color);
+  text-transform: uppercase;
+  border-radius: 1.5px;
+  padding: 0.5rem 1rem;
+}
+
+.newsletter h1 {
+  text-transform: capitalize;
+  font-size: 2.5rem;
+  margin: 0.5rem;
+}
+
+.newsletter .input-field {
+  margin: 1.5rem 0;
+}
+
+.newsletter input {
+  padding: 1rem;
+  border-radius: 10px;
+  width: 30vw;
+  background-color: var(--pink-opacity);
+  transition: var(--transition);
+}
+
+.newsletter input:focus {
+  outline: 2px solid var(--main-color);
+}
+
+.newsletter .box-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.newsletter .box-container .box {
+  background-color: var(--pink-opacity);
+  box-shadow: var(--box-shadow);
+  margin: 1rem;
+  padding: 2rem 4rem;
+  border-radius: 10px;
+}
+
+.newsletter .box-container .box-counter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.newsletter .box-container .box-counter .counter,
+.newsletter .box-container .box-counter i {
+  color: #000;
+  font-size: 3rem;
+}
+
+.newsletter .box-container h3 {
+  font-size: 1.5rem;
+  color: var(--main-color);
+}
+
+.newsletter p {
+  font-size: 1.1rem;
+  color: gray;
+}
+/* ============================================================================
+   NEWSLETTER – RESPONSIVE FIX
+   ============================================================================ */
+
+/* Disable fixed background on mobile (performance fix) */
+@media (max-width: 1024px) {
+  .newsletter {
+    background-attachment: scroll;
+    min-height: auto;
+    padding: 80px 1.5rem;
+  }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .newsletter h1 {
+    font-size: 2rem;
+  }
+
+  .newsletter input {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .newsletter .box-container {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .newsletter .box-container .box {
+    padding: 1.5rem 2rem;
+  }
+
+  .newsletter .box-container .box-counter .counter,
+  .newsletter .box-container .box-counter i {
+    font-size: 2.4rem;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .newsletter {
+    padding: 60px 1rem;
+  }
+
+  .newsletter span {
+    font-size: 0.85rem;
+  }
+
+  .newsletter h1 {
+    font-size: 1.7rem;
+  }
+
+  .newsletter p {
+    font-size: 0.95rem;
+  }
+
+  .newsletter .box-container {
+    flex-direction: column;
+  }
+
+  .newsletter .box-container .box {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+
+/* ============================================================================
+   HERO BANNER
+   ============================================================================ */
+
+.banner {
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  background: url("../image/banner.jpg") center / cover no-repeat;
+}
+
+.banner .detail {
+  padding-left: 4%;
+  max-width: 600px;
+  color: gray;
+}
+
+.banner h1 {
+  color: #000;
+}
+
+/* ============================================================================
+   HERO SLIDER – PROFESSIONAL & RESPONSIVE
+   ============================================================================ */
+
+/* SLIDER WRAPPER */
+.slider-container {
+  position: relative;
+  width: 100%;
+  height: 85vh;                /* ideal e-commerce hero height */
+  max-height: 900px;
+  min-height: 520px;
+  overflow: hidden;
+}
+
+/* SLIDE */
+.slider-container .slideBox {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.slider-container .slideBox.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+/* IMAGE */
+.slider-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* DARK OVERLAY (improves text contrast) */
+.slider-container .slideBox::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.55),
+    rgba(0, 0, 0, 0.15),
+    transparent
+  );
+}
+
+/* TEXT CONTENT */
+.slider-container .textBox {
+  position: absolute;
+  top: 50%;
+  left: 6%;
+  transform: translateY(-50%);
+  max-width: 520px;
+  color: #fff;
+  z-index: 2;
+}
+
+.slider-container .textBox h1 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.2rem;
+}
+
+.slider-container .textBox p {
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+}
+
+.slider-container .textBox .btn {
+  padding: 0.8rem 2.4rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  background: var(--main-color);
+  color: #fff;
+  display: inline-block;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.slider-container .textBox .btn:hover {
+  background: var(--pink-color);
+  transform: translateY(-2px);
+}
+
+/* CONTROLS (RIGHT SIDE DOTS / ICONS) */
+.slider-container .controls {
+  position: absolute;
+  top: 50%;
+  right: 1.2rem;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  z-index: 3;
+}
+
+.slider-container .controls li {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.slider-container .controls li.active {
+  background: var(--main-color);
+  transform: scale(1.25);
+}
+
+/* ============================================================================
+   RESPONSIVE BREAKPOINTS
+   ============================================================================ */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .slider-container {
+    height: 70vh;
+    min-height: 460px;
+  }
+
+  .slider-container .textBox {
+    left: 5%;
+    max-width: 460px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .slider-container {
+    height: 60vh;
+    min-height: 420px;
+  }
+
+  .slider-container .textBox {
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-width: 90%;
+  }
+
+  .slider-container .controls {
+    display: none; /* cleaner mobile UX */
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .slider-container {
+    height: 55vh;
+    min-height: 360px;
+  }
+
+  .slider-container .textBox h1 {
+    font-size: 1.6rem;
+  }
+
+  .slider-container .textBox p {
+    font-size: 0.9rem;
+  }
+}
+
+
+/* ============================================================================
+   RESPONSIVE BREAKPOINTS
+   ============================================================================ */
+
+/* Tablets */
+@media (max-width: 992px) {
+
+  .service .box-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .categories .box-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .banner {
+    height: 70vh;
+  }
+
+  .textBox h1 {
+    font-size: 2.4rem;
+  }
+}
+
+/* Mobile (ALL PHONES) */
+@media (max-width: 768px) {
+
+  .service .box-container {
+    grid-template-columns: 1fr;
+  }
+
+  .categories .box-container {
+    grid-template-columns: repeat(2, 1fr); /* ✅ REQUIRED */
+  }
+
+  .newsletter input {
+    width: 90%;
+  }
+
+  .banner {
+    height: 60vh;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .banner .detail {
+    padding: 0 1.5rem;
+  }
+
+  .textBox {
+    position: static;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .controls {
+    display: none;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+
+  .categories .box-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .textBox h1 {
+    font-size: 1.7rem;
+  }
+
+  .flavor h1 {
+    font-size: 2rem;
+  }
+}

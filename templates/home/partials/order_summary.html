@@ -1,0 +1,44 @@
+<!-- ===================== ORDER SUMMARY ===================== -->
+<div class="order-summary">
+
+    <h3>Order Summary</h3>
+
+    <div class="summary-row">
+        <span>Order ID</span>
+        <span>#{{ order.id }}</span>
+    </div>
+
+    <div class="summary-row">
+        <span>Status</span>
+        <span class="status
+            {% if order.status == 'delivered' %}delivered
+            {% elif order.status == 'canceled' %}canceled
+            {% else %}progress{% endif %}">
+            {{ order.status|capfirst }}
+        </span>
+    </div>
+
+    <div class="summary-row">
+        <span>Payment</span>
+        <span class="{% if order.payment_status == 'Paid' %}paid{% else %}pending{% endif %}">
+            {{ order.payment_status|capfirst }}
+        </span>
+    </div>
+
+    <hr>
+
+    <div class="summary-row total">
+        <span>Grand Total</span>
+        <span>₹{{ total_amount }}</span>
+    </div>
+
+    {% if order.status != "canceled" %}
+        <button class="cancel-btn" onclick="confirmCancel({{ order.id }})">
+            Cancel Order
+        </button>
+    {% endif %}
+
+    <a href="{% url 'order' %}" class="back-link">← Back to Orders</a>
+
+</div>
+

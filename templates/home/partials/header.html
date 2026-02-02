@@ -1,0 +1,111 @@
+{% load static %}
+
+<header class="header">
+    <section class="flex">
+
+        <!-- LOGO -->
+        <a href="{% url 'home' %}" class="logo">
+            <img src="{% static 'home/image/logo.jpg' %}" alt="HaveMore IceCreams Logo">
+            <span class="brand-text">HaveMore IceCreams</span>
+        </a>
+
+        <!-- NAVIGATION -->
+        <nav class="navbar">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'menu' %}">Shop</a>
+            <a href="{% url 'order' %}">Orders</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact' %}">Contact</a>
+        </nav>
+
+        <!-- SEARCH BAR -->
+        <form action="{% url 'search_product' %}" method="GET" class="search-form">
+            <input
+                type="text"
+                name="q"
+                placeholder="Search products..."
+                value="{{ search_query }}"
+                required
+                maxlength="100"
+            >
+            <button type="submit">
+                <img src="{% static 'home/image/icon/search.png' %}" alt="Search">
+            </button>
+        </form>
+
+        <!-- ICONS -->
+        <div class="icons">
+
+            <!-- Mobile Menu -->
+            <div id="menu-btn">
+                <img src="{% static 'home/image/icon/list.png' %}" alt="menu">
+            </div>
+
+            <!-- Mobile Search -->
+            <div id="search-btn">
+                <img src="{% static 'home/image/icon/search.png' %}" alt="search">
+            </div>
+
+            <!-- Wishlist -->
+            <a href="{% url 'wishlist' %}" class="icon-btn">
+                <i class="bx bxs-heart"></i>
+                <span id="wishlist-count">{{ wishlist_count }}</span>
+            </a>
+
+            <!-- Cart -->
+            <a href="{% url 'cart' %}" class="icon-btn">
+                <i class="bx bxs-shopping-bag"></i>
+                <span id="cart-count">{{ cart_count }}</span>
+            </a>
+
+            <!-- USER AVATAR (✅ FIXED ONLY HERE) -->
+             <!-- USER AVATAR -->
+            <div class="user-icon">
+                {% if request.session.user_id %}
+                    <img src="/media/{{ request.session.user_image }}"
+                         id="user-btn"
+                         class="user-avatar">
+                {% else %}
+                    <img src="{% static 'home/image/icon/profile.png' %}"
+                         id="user-btn"
+                         class="user-avatar">
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- PROFILE DROPDOWN -->
+        <div class="profile-detail">
+
+            {% if request.session.user_id %}
+
+                <img src="/media/{{ request.session.user_image }}"
+                     alt="Profile"
+                     class="profile-photo">
+
+                <h3 class="username">{{ request.session.user_name }}</h3>
+
+                <div class="flex-btn">
+                    <a href="{% url 'profile' %}" class="btn">View Profile</a>
+                    <a href="{% url 'logout' %}" 
+                       onclick="return confirm('Logout from this website?');" 
+                       class="btn">
+                       Logout
+                    </a>
+                </div>
+
+            {% else %}
+
+                <h3 class="username">Please login or register</h3>
+
+                <div class="flex-btn">
+                    <a href="{% url 'login' %}" class="btn">Login</a>
+                    <a href="{% url 'register' %}" class="btn">Register</a>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+</header>

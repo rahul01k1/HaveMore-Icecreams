@@ -1,0 +1,270 @@
+{% extends "home/base.html" %}
+{% load static %}
+{% block title %} Blue Sky Summer - About {% endblock title %}
+
+{% block content %}
+
+
+<!--------------------------------------banner section------------------------------------------------------------------------>
+ {% comment %} <div class="banner">
+    <div class="detail">
+        <h1>about us</h1>
+        <p>Step into a world of creamy indulgence where each bite is a moment of pure bliss. 
+            From classic flavors to bold new creations, there's something delicious for everyone!</p>
+
+        <span>
+            <a href="{% url 'home' %}">home</a>
+            <i class="bx bx-right-arrow-alt"></i> About Us
+        </span>
+    </div>
+</div>  {% endcomment %}
+
+<!--------------------------------------ceaf section------------------------------------------------------------------------>
+<div class="chef">
+    <div class="box-container">
+        <div class="box">
+            <div class="heading">
+                <span>Alex Doe</span>
+                <h1>Masterchef</h1>
+                <img src="{% static 'home/image/separator-img.png' %}" alt="">
+            </div>
+
+            <p>Alex’s culinary philosophy centers around seasonality and sustainability.<br>
+                They believe that the best dishes start with the freshest ingredients,<br>
+                sourced locally whenever possible. This commitment to farm-to-table dining not only supports<br>
+                local farmers but also ensures that every plate tells a story of the land from which it came.</p>
+
+            <div class="flex-btn">
+                <a href="{% url 'menu' %}" class="btn">explore our menu</a>
+                <a href="{% url 'home' %}" class="btn">visit our shop</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="{% static 'home/image/ceaf.png' %}" class="img" alt="">
+        </div>
+    </div>
+</div>
+
+<!------------------------------------description-------------------------------------------------------------------------->
+<div class="story">
+    <div class="heading">
+        <h1> our story</h1>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+    </div>
+
+    <p>Alex’s culinary philosophy centers around seasonality and sustainability.<br>
+        hey believe that the best dishes start with the freshest ingredients, sourced locally whenever possible.<br>
+        This commitment to farm-to-table dining not only supports local farmers but also ensures that<br>
+        every plate tells a story of the land from which it came.</p>
+
+    <a href="{% url 'menu' %}" class="btn">our service</a>
+</div>
+
+<!--------------------------------------------promotion------------------------------------------------------------------>
+<div class="container">
+    <div class="box-container">
+        <div class="img-box">
+            <img src="{% static 'home/image/about.png' %}">
+        </div>
+
+        <div class="box">
+            <div class="heading">
+                <h1>Taking Ice Cream To New Heights</h1>
+                <img src="{% static 'home/image/separator-img.png' %}">
+            </div>
+
+            <p>Step into a world of creamy indulgence where each bite is a moment of pure bliss.
+                From classic flavors to bold new creations, there's something delicious for everyone!</p>
+            <a href="#" class="btn">learn more</a>
+        </div>
+    </div>
+</div>
+
+<!---------------------------------------ceaf department------------------------------------------------------------------------>
+<div class="team">
+    <div class="heading">
+        <span>Our Team</span>
+        <h1>Quality & Passion with Our Services</h1>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+    </div>
+
+    <div class="box-container">
+
+        <div class="box">
+            <img src="{% static 'home/image/team-1.jpg' %}" class="img">
+            <div class="content">
+                <img src="{% static 'home/image/shape-19.png' %}" class="shap">
+                <h2>Ralph Johnson</h2>
+                <p>Coffee Chef</p>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="{% static 'home/image/team-2.jpg' %}" class="img">
+            <div class="content">
+                <img src="{% static 'home/image/shape-19.png' %}" class="shap">
+                <h2>fiona Johnson</h2>
+                <p>pastry Chef</p>
+            </div>
+        </div>
+
+        <div class="box">
+            <img src="{% static 'home/image/team-3.jpg' %}" class="img">
+            <div class="content">
+                <img src="{% static 'home/image/shape-19.png' %}" class="shap">
+                <h2>tom knelltonns</h2>
+                <p>Bun chef</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-----------------------------------------------info---------------------------------------------------------------->
+<div class="standers">
+    <div class="detail">
+        <div class="heading">
+            <h1>Our Standards</h1>
+            <img src="{% static 'home/image/separator-img.png' %}" alt="">
+        </div>
+
+        <p>Step into a world of creamy indulgence where each bite is a moment of pure bliss.</p> <img src="{% static 'home/image/icon/wl.png' %}">
+        <p>"Scoops of happiness served daily!"</p> <img src="{% static 'home/image/icon/wl.png' %}">
+        <p>"Chill vibes, colder treats!"</p> <img src="{% static 'home/image/icon/wl.png' %}">
+        <p>"Your sweet escape from the heat."</p> <img src="{% static 'home/image/icon/wl.png' %}">
+        <p>"Where every flavor tells a story."</p> <img src="{% static 'home/image/icon/wl.png' %}">
+    </div>
+</div>
+
+<!----------------------------------------------testimonial---------------------------------------------------------------->
+<div class="testimonial">
+    <div class="heading">
+        <h1>Testimonial</h1>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+    </div>
+
+    <div class="testimonial-container">
+        <div class="slide-row" id="slide">
+
+            <div class="slide-col">
+                <div class="user-text">
+                    <p>Zen Doan is a business analyst, entrepreneur, media proprietor, and investor. he is also known as a best-selling book author.</p>
+                    <h2>Zen</h2>
+                    <p>Author</p>
+                </div>
+                <div class="user-img">
+                    <img src="{% static 'home/image/testimonial1.jpg' %}" alt="">
+                </div>
+            </div>
+
+            <div class="slide-col">
+                <div class="user-text">
+                    <p>max is a business analyst, entrepreneur, media proprietor, and investor. he is also known as a best-selling book author.</p>
+                    <h2>Max</h2>
+                    <p>Author</p>
+                </div>
+                <div class="user-img">
+                    <img src="{% static 'home/image/testimonial2.jpg' %}" alt="">
+                </div>
+            </div>
+
+            <div class="slide-col">
+                <div class="user-text">
+                    <p>Lara is a business analyst, entrepreneur, media proprietor, and investor. She is also known as a best-selling book author.</p>
+                    <h2>Lara</h2>
+                    <p>Author</p>
+                </div>
+                <div class="user-img">
+                    <img src="{% static 'home/image/testimonial3.jpg' %}" alt="">
+                </div>
+            </div>
+
+            <div class="slide-col">
+                <div class="user-text">
+                    <p>Selena is a business analyst, entrepreneur, media proprietor, and investor. She is also known as a best-selling book author.</p>
+                    <h2>Selena</h2>
+                    <p>Author</p>
+                </div>
+                <div class="user-img">
+                    <img src="{% static 'home/image/testimonial4.jpg' %}" alt="">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="indicator">
+        <span class="btn1 active"></span>
+        <span class="btn1"></span>
+        <span class="btn1"></span>
+        <span class="btn1"></span>
+    </div>
+</div>
+
+<!------------------------------------------------------mission-------------------------------------------------------->
+<div class="mission">
+    <div class="box-container">
+
+        <div class="box">
+            <div class="heading">
+                <h1>our mission</h1>
+                <img src="{% static 'home/image/separator-img.png' %}" alt="">
+            </div>
+
+            <div class="detail">
+                <div class="img-box">
+                    <img src="{% static 'home/image/mission.webp' %}">
+                </div>
+                <div>
+                    <h2> chocolate with sauce</h2>
+                    <p>"Chocolate ice cream is a rich and velvety treat,
+                        bursting with deep cocoa flavor that satisfies every sweet craving."</p>
+                </div>
+            </div>
+
+            <div class="detail">
+                <div class="img-box">
+                    <img src="{% static 'home/image/mission1.webp' %}">
+                </div>
+                <div>
+                    <h2>vanila with honey </h2>
+                    <p>"Vanilla with honey is a smooth, creamy indulgence,
+                        perfectly balanced by the golden sweetness of pure honey."</p>
+                </div>
+            </div>
+
+            <div class="detail">
+                <div class="img-box">
+                    <img src="{% static 'home/image/mission2.webp' %}">
+                </div>
+                <div>
+                    <h2>pappermint chip</h2>
+                    <p>"Peppermint ice cream delivers a cool, minty freshness with each creamy bite."</p>
+                </div>
+            </div>
+
+            <div class="detail">
+                <div class="img-box">
+                    <img src="{% static 'home/image/sub-banner-img.png' %}">
+                </div>
+                <div>
+                    <h2>raspberry icecream</h2>
+                    <p>"Raspberry ice cream offers a vibrant burst of tangy sweetness in every scoop."</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="box">
+            <img src="{% static 'home/image/form.png' %}" class="img">
+        </div>
+
+    </div>
+</div>
+
+
+
+
+{% endblock content %}
+

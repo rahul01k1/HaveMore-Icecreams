@@ -1,0 +1,338 @@
+{% extends "adminsite/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% load static %}
+
+{% block content %}
+
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main-content" id="mainContent" style="margin-left: 18vw;">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Overview of Latest Months</p>
+                </div>
+                <div class="header-controls">
+                    <button class="tab-btn active">DAY</button>
+                    <button class="tab-btn">WEEKLY</button>
+                    <button class="tab-btn">MONTHLY</button>
+                    <button class="tab-btn">YEARLY</button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div>
+                        <h3>Current Month Sales</h3>
+                        <div class="value">$3468.96</div>
+                    </div>
+                    <div class="icon"><i class="fas fa-dollar-sign"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div>
+                        <h3>Current Month Users</h3>
+                        <div class="value">82</div>
+                    </div>
+                    <div class="icon"><i class="fas fa-users"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div>
+                        <h3>Additional Earnings</h3>
+                        <div class="value">$1689.53</div>
+                    </div>
+                    <div class="icon"><i class="fas fa-chart-line"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div>
+                        <h3>Earning Goals</h3>
+                        <div class="value">$52,567.53</div>
+                    </div>
+                    <div class="icon"><i class="fas fa-target"></i></div>
+                </div>
+            </div>
+
+
+            <!-- Colored Cards -->
+            <div class="colored-cards">
+                <div class="colored-card pink">
+                    <div class="card-content">
+                        <h3>Previous Status</h3>
+                        <div class="amount">$432</div>
+                        <p style="font-size: 12px; margin-top: 8px;">Jan 20 - Jan 31</p>
+                    </div>
+                    <div class="card-icon"><i class="fas fa-chart-bar"></i></div>
+                </div>
+
+                <div class="colored-card purple">
+                    <div class="card-content">
+                        <h3>Page View</h3>
+                        <div class="amount">$432</div>
+                    </div>
+                    <div class="card-icon"><i class="fas fa-eye"></i></div>
+                </div>
+
+                <div class="colored-card blue">
+                    <div class="card-content">
+                        <h3>Revenue Rate</h3>
+                        <div class="amount">$432</div>
+                        <p style="font-size: 12px; margin-top: 8px;">Weekly vs 24h</p>
+                    </div>
+                    <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                </div>
+
+                <div class="colored-card orange">
+                    <div class="card-content">
+                        <h3>Earning Status</h3>
+                        <div class="amount">$432</div>
+                    </div>
+                    <div class="card-icon"><i class="fas fa-coins"></i></div>
+                </div>
+            </div>
+
+            <!-- Bottom Section -->
+            <div class="bottom-section">
+                <!-- Recent Activities -->
+                <div class="activities-card">
+                    <h2>Recent Activities</h2>
+                    <div class="activity-item">
+                        <div class="activity-avatar avatar-red"><i class="fas fa-check"></i></div>
+                        <div class="activity-content">
+                            <h4>Task Updated</h4>
+                            <p>Milestone comment's a task</p>
+                        </div>
+                        <div class="activity-time">1 day ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-avatar avatar-purple"><i class="fas fa-handshake"></i></div>
+                        <div class="activity-content">
+                            <h4>Deal Added</h4>
+                            <p>Prosper updated a task</p>
+                        </div>
+                        <div class="activity-time">1 day ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-avatar avatar-blue"><i class="fas fa-newspaper"></i></div>
+                        <div class="activity-content">
+                            <h4>Published Article</h4>
+                            <p>Road published a article</p>
+                        </div>
+                        <div class="activity-time">2 day ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-avatar avatar-orange"><i class="fas fa-file"></i></div>
+                        <div class="activity-content">
+                            <h4>Dock Updated</h4>
+                            <p>Random updated a task</p>
+                        </div>
+                        <div class="activity-time">5 day ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-avatar avatar-green"><i class="fas fa-reply"></i></div>
+                        <div class="activity-content">
+                            <h4>Replayed Comment</h4>
+                            <p>Jonathan added a comment</p>
+                        </div>
+                        <div class="activity-time">5 day ago</div>
+                    </div>
+                </div>
+
+                <!-- Order Status Table -->
+                <div class="order-table">
+                    <h2>Order Status</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Customers</th>
+                                <th>From</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1238k</td>
+                                <td>Charly Drako</td>
+                                <td>Brazil</td>
+                                <td>$399</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>1238k</td>
+                                <td>Marks</td>
+                                <td>Italy</td>
+                                <td>$543</td>
+                                <td><span class="status-badge status-paid">Paid</span></td>
+                            </tr>
+                            <tr>
+                                <td>1238k</td>
+                                <td>Denyal Draki</td>
+                                <td>Russia</td>
+                                <td>$965</td>
+                                <td><span class="status-badge status-shipped">Shipped</span></td>
+                            </tr>
+                            <tr>
+                                <td>1238k</td>
+                                <td>Parjon Karunne</td>
+                                <td>Korea</td>
+                                <td>$989</td>
+                                <td><span class="status-badge status-delivered">Delivered</span></td>
+                            </tr>
+                            <tr>
+                                <td>1238k</td>
+                                <td>Safik Gowda</td>
+                                <td>Japan</td>
+                                <td>$1,240</td>
+                                <td><span class="status-badge status-delivered">Delivered</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle Sidebar
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('closed');
+                mainContent.classList.toggle('expanded');
+            });
+        }
+
+        // Profile Dropdown Toggle
+        const profileToggle = document.getElementById('profileToggle');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        if (profileToggle) {
+            profileToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('show');
+                profileToggle.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.classList.remove('show');
+                    profileToggle.classList.remove('active');
+                }
+            });
+        }
+
+        // Close sidebar on mobile after clicking link
+        const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.add('closed');
+                    mainContent.classList.add('expanded');
+                }
+            });
+        });
+
+        // Tab Button Active State
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // Line Chart
+        const lineCtx = document.getElementById('lineChart');
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [3000, 3500, 3200, 4000, 3800, 3400],
+                    borderColor: '#da6285',
+                    backgroundColor: 'rgba(218, 98, 133, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#da6285',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return ' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Doughnut Chart
+        const doughnutCtx = document.getElementById('doughnutChart');
+        new Chart(doughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Telegram', 'Website', 'Search'],
+                datasets: [{
+                    data: [33, 55, 12],
+                    backgroundColor: [
+                        '#da6285',
+                        '#a855f7',
+                        '#00bcd4'
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Logout Function
+        function logoutUser() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '{% url "logout" %}';
+            }
+        }
+
+        // Notification Bell Ring Animation
+        const notificationBtn = document.querySelector('.icon-btn');
+        if (notificationBtn) {
+            notificationBtn.addEventListener('click', function() {
+                this.style.animation = 'ring 0.6s ease';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 600);
+            });
+        }
+    </script>
+
+
+{% endblock %}

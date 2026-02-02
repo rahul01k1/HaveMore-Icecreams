@@ -1,0 +1,194 @@
+{% extends "home/base.html" %}
+{% load static %}
+{% block title %}Checkout - Blue Sky Summer{% endblock %}
+
+{% block content %}
+<style>
+.input.error {
+    border-color: #ef4444 !important;
+    background: #fff5f5;
+}
+.input.error:focus {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+}
+</style>
+
+<div class="checkout-wrapper">
+
+    <!-- ================= BILLING SECTION ================= -->
+    <div class="billing-card">
+        <h2 class="billing-title">Billing Details</h2>
+
+        <p id="checkout-error" style="color:red; display:none;"></p>
+        <p id="checkout-success" style="color:green; display:none;"></p>
+
+        <form id="checkoutForm">
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <p>Your Name <span>*</span></p>
+                    <input type="text" name="name" class="input" required value="{{ user.user_name }}">
+                </div>
+
+                <div class="form-group">
+                    <p>Address Type <span>*</span></p>
+                    <select name="address_type" class="input" required>
+                        <option value="Home">Home</option>
+                        <option value="Office">Office</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <p>Your Email <span>*</span></p>
+                    <input type="email" name="email" class="input" required value="{{ user.user_email }}">
+                </div>
+
+                <div class="form-group">
+                    <p>Full Address <span>*</span></p>
+                    <input type="text" name="address" class="input" placeholder="House No., Street, Area" required>
+                </div>
+
+                <div class="form-group">
+                    <p>Your Number <span>*</span></p>
+                    <input type="tel" name="number" class="input" placeholder="Enter your number" required>
+                </div>
+
+                <div class="form-group">
+                    <p>Payment Method <span>*</span></p>
+                    <select name="method" class="input" required>
+                        <option value="cod">Cash On Delivery (COD)</option>
+                        <option value="credit_debit_card">Credit/Debit Card</option>
+                        <option value="upi">UPI / RuPay</option>
+                        <option value="bank_transfer">Net Banking</option>
+                        <option value="gpay">GPay</option>
+                        <option value="phonepe">PhonePe</option>
+                        <option value="paytm">Paytm</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button type="button" class="btn-place-order" onclick="placeOrder()">
+                Place Order
+            </button>
+
+        </form>
+    </div>
+
+    <!-- ================= ORDER SUMMARY ================= -->
+    <div class="summary-card">
+        <h2 class="summary-title">Your Bag</h2>
+
+        {% for item in cart_items %}
+        <div class="item">
+            <img src="{{ item.product.product_image.url }}" alt="{{ item.product.product_name }}">
+            <div>
+                <h4>{{ item.product.product_name }}</h4>
+                <p class="price">₹ {{ item.price }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p style="opacity:.7;">No items found.</p>
+        {% endfor %}
+
+        <div class="total-box">
+            Total Amount Payable: ₹ {{ total_amount }}
+        </div>
+    </div>
+
+</div>
+
+<script>
+function placeOrder() {
+    const form = document.getElementById("checkoutForm");
+    const btn = document.querySelector(".btn-place-order");
+
+    document.querySelectorAll(".input").forEach(i => i.classList.remove("error"));
+
+    const name = form.name;
+    const email = form.email;
+    const number = form.number;
+    const address = form.address;
+    const method = form.method;
+
+    if (name.value.trim().length < 2 || !/^[a-zA-Z\s]+$/.test(name.value)) {
+        return fieldError(name, "Please enter a valid name.");
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        return fieldError(email, "Please enter a valid email address.");
+    }
+
+    if (!/^\d{10}$/.test(number.value)) {
+        return fieldError(number, "Please enter a valid 10-digit number.");
+    }
+
+    if (address.value.trim().length < 10) {
+        return fieldError(address, "Please enter a complete address.");
+    }
+
+    if (!method.value) {
+        return fieldError(method, "Please select a payment method.");
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Placing Order...";
+
+    fetch("", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: JSON.stringify({
+            name: name.value.trim(),
+            email: email.value.trim(),
+            number: number.value.trim(),
+            address: address.value.trim(),
+            address_type: form.address_type.value,
+            method: method.value
+        })
+    })
+    .then(res => res.json())
+    .then(response => {
+        btn.disabled = false;
+        btn.innerText = "Place Order";
+
+        if (response.error) {
+            Swal.fire("Order Failed", response.error, "error");
+            return;
+        }
+
+        Swal.fire({
+            icon: "success",
+            title: "Order Placed",
+            text: "Your order has been placed successfully!",
+            timer: 1200,
+            showConfirmButton: false
+        });
+
+        setTimeout(() => {
+            window.location.href = response.redirect_url;
+        }, 1200);
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.innerText = "Place Order";
+        Swal.fire("Error", "Something went wrong. Please try again.", "error");
+    });
+}
+
+function fieldError(field, message) {
+    field.classList.add("error");
+    field.focus();
+    Swal.fire("Invalid Input", message, "warning");
+    field.addEventListener("input", () => {
+        field.classList.remove("error");
+    }, { once: true });
+}
+</script>
+
+{% endblock %}

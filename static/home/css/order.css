@@ -1,0 +1,299 @@
+/* ============================================================================
+   ORDERS PAGE – COMPACT & SMOOTH UI
+   ============================================================================ */
+
+.orders-compact {
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 12px 16px;
+}
+
+/* ===================== HEADING ===================== */
+
+.orders-heading {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.orders-heading h1 {
+  font-size: 30px;
+  font-weight: 800;
+  color: #333;
+}
+
+/* ===================== GRID ===================== */
+
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* ===================== CARD ===================== */
+
+.order-card {
+  position: relative;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+  transition: transform .25s ease, box-shadow .25s ease;
+  will-change: transform;
+}
+
+.order-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.14);
+}
+
+/* ===================== IMAGE ===================== */
+
+.order-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ===================== STATUS BADGE ===================== */
+
+.status-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  background: rgba(227,149,33,.88);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #111;
+  white-space: nowrap;
+}
+
+/* Status variations */
+.status-delivered {
+  background: green;
+  color: #fff;
+  border: 1px solid #16a34a;
+}
+
+.status-processing {
+  background: rgba(227,149,33,.9);
+  color: #fff;
+}
+
+.status-cancelled {
+  background:red ;
+  color: #fff;
+  border: 1px solid #dc2626;
+}
+
+/* ===================== CONTENT ===================== */
+
+.order-content {
+  padding: 14px;
+}
+
+.order-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #222;
+  line-height: 1.3;
+}
+
+.order-total {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.order-date {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+/* ===================== BUTTON ===================== */
+
+.order-btn {
+  display: inline-block;
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: #ff7ea7;
+  color: #fff;
+  text-decoration: none;
+  transition: background .25s ease, transform .2s ease;
+}
+
+.order-btn:hover {
+  background: #ff5b8d;
+  transform: translateY(-1px);
+}
+
+/* ===================== EMPTY STATE ===================== */
+
+.empty-message {
+  text-align: center;
+  font-size: 18px;
+  color: #777;
+  margin-top: 50px;
+}
+
+/* ============================================================================
+   ORDERS SKELETON LOADER
+   ============================================================================ */
+
+.orders-skeleton {
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 12px 16px;
+}
+
+/* Grid matches orders layout */
+.orders-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* Skeleton Card */
+.skeleton-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* Image Placeholder */
+.skeleton-img {
+  width: 100%;
+  height: 200px;
+  background: #e5e7eb;
+}
+
+/* Content */
+.skeleton-content {
+  padding: 14px;
+}
+
+/* Lines */
+.skeleton-line {
+  height: 12px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.skeleton-line.title {
+  width: 70%;
+  height: 14px;
+}
+
+.skeleton-line.price {
+  width: 50%;
+}
+
+.skeleton-line.date {
+  width: 40%;
+}
+
+/* Button */
+.skeleton-btn {
+  width: 90px;
+  height: 28px;
+  background: #e5e7eb;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* ===================== SHIMMER EFFECT ===================== */
+
+@keyframes shimmer {
+  0% { background-position: -450px 0; }
+  100% { background-position: 450px 0; }
+}
+
+.skeleton-img,
+.skeleton-line,
+.skeleton-btn {
+  background: linear-gradient(
+    90deg,
+    #e5e7eb 25%,
+    #f3f4f6 37%,
+    #e5e7eb 63%
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+/* ===================== RESPONSIVE ===================== */
+
+@media (max-width: 1200px) {
+  .orders-skeleton-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .orders-skeleton-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .skeleton-img {
+    height: 180px;
+  }
+}
+
+@media (max-width: 520px) {
+  .orders-skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skeleton-img {
+    height: 170px;
+  }
+}
+
+
+/* ===================== RESPONSIVE ===================== */
+
+/* Laptops */
+@media (max-width: 1200px) {
+  .orders-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tablets */
+@media (max-width: 900px) {
+  .orders-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .order-img {
+    height: 180px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .orders-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .orders-heading h1 {
+    font-size: 24px;
+  }
+
+  .order-img {
+    height: 170px;
+  }
+}

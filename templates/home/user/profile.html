@@ -1,0 +1,103 @@
+{% extends "home/base.html" %}
+{% load static %}
+{% block title %}My Profile - Blue Sky Summer{% endblock %}
+
+{% block content %}
+
+<div class="profile-wrapper">
+
+    <h1 class="title">My Profile</h1><br>
+    <p class="subtitle">Manage your personal information and account settings</p>
+    <img src="{% static 'home/image/separator-img.png' %}" class="separator">
+
+    <div class="outer-container">
+
+        <!-- LEFT SIDE PANEL -->
+        <div class="profile-sidebar">
+            <img src="{{ user.user_image.url }}" class="avatar">
+
+            <h2 class="username">{{ user.user_name }}</h2>
+            <p class="email">{{ user.user_email }}</p>
+
+            <a href="{% url 'update_profile' %}" class="btn-edit">Edit Profile</a>
+
+            <div class="side-links">
+                <a href="{% url 'order' %}">My Orders</a>
+                <a href="{% url 'wishlist' %}">My Wishlist</a>
+                <a href="{% url 'user_messages' %}">Messages</a>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE CONTENT AREA -->
+        <div class="profile-content">
+
+            <!-- SECTION 1: ACCOUNT INFORMATION -->
+            <div class="section-card">
+                <h3 class="section-title">Account Information</h3>
+
+                <div class="info-grid">
+                    <div>
+                        <p class="label">Full Name</p>
+                        <p class="value">{{ user.user_name }}</p>
+                    </div>
+
+                    <div>
+                        <p class="label">Email</p>
+                        <p class="value">{{ user.user_email }}</p>
+                    </div>
+
+                    <div>
+                        <p class="label">Joined On</p>
+                        <p class="value">{{ user.created_at|date:"M d, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: ACCOUNT ACTIVITY -->
+            <div class="section-card">
+                <h3 class="section-title">Quick Actions</h3>
+
+                <div class="action-grid">
+                    <a href="{% url 'order' %}" class="action-box">
+                        <img src="{% static 'home/image/icon/order.png' %}">
+                        <p>View Orders</p>
+                    </a>
+
+                    <a href="{% url 'wishlist' %}" class="action-box">
+                        <img src="{% static 'home/image/icon/wishlist.png' %}">
+                        <p>My Wishlist</p>
+                    </a>
+
+                    <a href="{% url 'user_messages' %}" class="action-box">
+                        <img src="{% static 'home/image/icon/message.png' %}">
+                        <p>Messages</p>
+                    </a>
+                </div>
+                <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+function confirmLogout() {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You will be logged out.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ff4d6d",
+        cancelButtonColor: "#777",
+        confirmButtonText: "Logout",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "{% url 'logout' %}";
+        }
+    });
+}
+</script>
+
+{% endblock %}

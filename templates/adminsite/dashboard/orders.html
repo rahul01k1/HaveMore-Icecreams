@@ -1,0 +1,239 @@
+{% extends "adminsite/base.html" %}
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+<section class="dashboard" style="margin-left: 19vw;">
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <h1>Order Management</h1>
+</div>
+
+{% csrf_token %}
+
+<!-- ================= VIEW ORDER ITEMS ================= -->
+<div class="card" id="itemsCard" style="display:none;">
+    <h3>Order Items</h3>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+    </table>
+
+    <div class="form-actions">
+        <button class="btn-secondary" onclick="closeItems()">Close</button>
+    </div>
+</div>
+
+<!-- ================= EDIT ORDER ================= -->
+<div class="card" id="editOrderCard" style="display:none;">
+    <h3>Update Order</h3>
+
+    <input type="hidden" id="edit_id">
+
+    <div class="form-grid">
+        <select id="edit_status">
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+        </select>
+
+        <select id="edit_payment_status">
+            <option value="pending">Pending</option>
+            <option value="paid">Paid</option>
+            <option value="failed">Failed</option>
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn-primary" onclick="updateOrder()">Update</button>
+        <button class="btn-secondary" onclick="closeEditOrder()">Cancel</button>
+    </div>
+</div>
+
+<!-- ================= ORDERS TABLE ================= -->
+<div class="card">
+    <h3>Orders List</h3>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#ID</th>
+                <th>User</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Date</th>
+                <th class="center">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="ordersBody"></tbody>
+    </table>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+        <button id="prevBtn" onclick="loadPrev()" disabled>Prev</button>
+        <span id="pageInfo"></span>
+        <button id="nextBtn" onclick="loadNext()" disabled>Next</button>
+    </div>
+</div>
+
+</section>
+
+<script>
+const csrfToken = "{{ csrf_token }}";
+
+let nextPageUrl = null;
+let prevPageUrl = null;
+let currentPage = 1;
+
+/* ================= LOAD ORDERS ================= */
+function loadOrders(url = "/adminsite/api/orders/") {
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            const orders = data.results || [];
+            const body = document.getElementById("ordersBody");
+
+            nextPageUrl = data.next;
+            prevPageUrl = data.previous;
+
+            body.innerHTML = "";
+
+            if (!orders.length) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="center">No orders found</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            orders.forEach(o => {
+                body.innerHTML += `
+                    <tr>
+                        <td>#${o.id}</td>
+                        <td>${o.user_name}</td>
+                        <td>
+                            ${o.name}<br>
+                            ${o.email}<br>
+                            ${o.number}
+                        </td>
+                        <td>
+                            ${o.address}<br>
+                            <small>(${o.address_type})</small>
+                        </td>
+                        <td><span class="badge">${o.status}</span></td>
+                        <td>
+                            <span class="badge ${o.payment_status === 'paid' ? 'badge-success' : 'badge-danger'}">
+                                ${o.payment_status}
+                            </span>
+                        </td>
+                        <td>${o.date}</td>
+                        <td class="center">
+                            <button class="btn-secondary"
+                                onclick='viewItems(${o.id}, ${JSON.stringify(o.items)})'>
+                                Items
+                            </button>
+                            <button class="btn-primary"
+                                onclick="openEditOrder(${o.id}, '${o.status}', '${o.payment_status}')">
+                                Update
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("prevBtn").disabled = !prevPageUrl;
+            document.getElementById("nextBtn").disabled = !nextPageUrl;
+            document.getElementById("pageInfo").innerText = `Page ${currentPage}`;
+        });
+}
+
+/* ================= VIEW ITEMS ================= */
+function viewItems(orderId, items) {
+    const body = document.getElementById("itemsBody");
+    body.innerHTML = "";
+
+    items.forEach(i => {
+        body.innerHTML += `
+            <tr>
+                <td>${i.product_name}</td>
+                <td>₹${i.price}</td>
+                <td>${i.qty}</td>
+                <td>₹${i.price * i.qty}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("itemsCard").style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function closeItems() {
+    document.getElementById("itemsCard").style.display = "none";
+}
+
+/* ================= EDIT ORDER ================= */
+function openEditOrder(id, status, paymentStatus) {
+    document.getElementById("edit_id").value = id;
+    document.getElementById("edit_status").value = status;
+    document.getElementById("edit_payment_status").value = paymentStatus;
+
+    document.getElementById("editOrderCard").style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function closeEditOrder() {
+    document.getElementById("editOrderCard").style.display = "none";
+}
+
+/* ================= UPDATE ORDER ================= */
+function updateOrder() {
+    const id = document.getElementById("edit_id").value;
+
+    fetch(`/adminsite/api/orders/${id}/`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken
+        },
+        body: JSON.stringify({
+            status: document.getElementById("edit_status").value,
+            payment_status: document.getElementById("edit_payment_status").value
+        })
+    }).then(() => {
+        closeEditOrder();
+        loadOrders(nextPageUrl || prevPageUrl || "/adminsite/api/orders/");
+    });
+}
+
+/* ================= PAGINATION ================= */
+function loadNext() {
+    if (nextPageUrl) {
+        currentPage++;
+        loadOrders(nextPageUrl);
+    }
+}
+function loadPrev() {
+    if (prevPageUrl) {
+        currentPage--;
+        loadOrders(prevPageUrl);
+    }
+}
+
+/* INITIAL LOAD */
+loadOrders();
+</script>
+
+{% endblock %}

@@ -1,0 +1,249 @@
+{% extends "adminsite/base.html" %}
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<section class="dashboard" style="margin-left: 19vw;">
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <h1>Products Management</h1>
+    <button class="btn-primary" onclick="toggleAddProduct()">+ Add Product</button>
+</div>
+
+{% csrf_token %}
+
+<!-- ADD PRODUCT -->
+<div class="card" id="addProductCard" style="display:none;">
+    <h3>Add New Product</h3>
+
+    <form id="addProductForm" enctype="multipart/form-data">
+        <div class="form-grid">
+            <input type="text" name="product_name" placeholder="Product Name" required>
+            <input type="number" name="product_price" placeholder="Price" required>
+            <input type="number" name="product_stock" placeholder="Stock" required>
+
+            <select name="product_status" required>
+                <option value="active" selected>Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+
+            <select name="seller" required>
+                <option value="">Select Seller</option>
+                {% for seller in sellers %}
+                    <option value="{{ seller.id }}">{{ seller.seller_name }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="file" name="product_image" accept="image/*">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Save</button>
+            <button type="button" class="btn-secondary" onclick="toggleAddProduct()">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<!-- EDIT PRODUCT -->
+<div class="card" id="editProductCard" style="display:none;">
+    <h3>Edit Product</h3>
+
+   <form id="editProductForm" enctype="multipart/form-data">
+    <input type="hidden" name="id" id="edit_id">
+
+    <div class="form-grid">
+        <input type="text" name="product_name" id="edit_name" required>
+        <input type="number" name="product_price" id="edit_price" required>
+        <input type="number" name="product_stock" id="edit_stock" required>
+
+        <select name="product_status" id="edit_status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+
+        <input type="file" name="product_image" accept="image/*">
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-primary">Update</button>
+        <button type="button" class="btn-secondary" onclick="closeEditProduct()">Cancel</button>
+    </div>
+</form>
+
+</div>
+
+<!-- PRODUCTS TABLE -->
+<div class="card">
+    <h3>Products List</h3>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Seller</th>
+                <th class="center">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="productsBody"></tbody>
+    </table>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+        <button id="prevBtn" onclick="loadPrev()" disabled>Prev</button>
+        <span id="pageInfo"></span>
+        <button id="nextBtn" onclick="loadNext()" disabled>Next</button>
+    </div>
+</div>
+
+</section>
+
+<script>
+const csrfToken = "{{ csrf_token }}";
+
+let nextPageUrl = null;
+let prevPageUrl = null;
+let currentPage = 1;
+let pageSize = 10;
+
+/* TOGGLE ADD */
+function toggleAddProduct() {
+    const card = document.getElementById("addProductCard");
+    card.style.display = card.style.display === "none" ? "block" : "none";
+}
+
+/* LOAD PRODUCTS WITH PAGINATION */
+function loadProducts(url = "/adminsite/api/products/") {
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            const body = document.getElementById("productsBody");
+            body.innerHTML = "";
+
+            data.results.forEach(p => {
+                body.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img src="${p.product_image}" class="product-img">
+                                <div class="product-info">
+                                    <h4>${p.product_name}</h4>
+                                </div>
+                            </div>
+                        </td>
+                        <td>₹${p.product_price}</td>
+                        <td>${p.product_stock}</td>
+                        <td>
+                            <span class="status-badge status-${p.product_status.toLowerCase()}">
+                                ${p.product_status}
+                            </span>
+                        </td>
+                        <td>${p.seller_name || "-"}</td>
+                        <td class="center">
+                            <button class="btn-secondary"
+                                onclick="openEditProduct(${p.id}, '${p.product_name}', ${p.product_price}, ${p.product_stock}, '${p.product_status}')">
+                                Edit
+                            </button>
+                            <button class="btn-danger" onclick="deleteProduct(${p.id})">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            nextPageUrl = data.next;
+            prevPageUrl = data.previous;
+
+            const totalPages = Math.ceil(data.count / pageSize);
+
+            document.getElementById("prevBtn").disabled = !prevPageUrl;
+            document.getElementById("nextBtn").disabled = !nextPageUrl;
+            document.getElementById("pageInfo").innerText =
+                `Page ${currentPage} of ${totalPages}`;
+        });
+}
+
+/* PAGINATION */
+function loadNext() {
+    if (nextPageUrl) {
+        currentPage++;
+        loadProducts(nextPageUrl);
+    }
+}
+
+function loadPrev() {
+    if (prevPageUrl) {
+        currentPage--;
+        loadProducts(prevPageUrl);
+    }
+}
+
+/* CREATE */
+document.getElementById("addProductForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    fetch("/adminsite/api/products/", {
+        method: "POST",
+        headers: { "X-CSRFToken": csrfToken },
+        body: formData
+    }).then(() => {
+        toggleAddProduct();
+        currentPage = 1;
+        loadProducts();
+        this.reset();
+    });
+});
+
+/* EDIT */
+function openEditProduct(id, name, price, stock, status) {
+    document.getElementById("edit_id").value = id;
+    document.getElementById("edit_name").value = name;
+    document.getElementById("edit_price").value = price;
+    document.getElementById("edit_stock").value = stock;
+    document.getElementById("edit_status").value = status;
+    document.getElementById("editProductCard").style.display = "block";
+}
+
+function closeEditProduct() {
+    document.getElementById("editProductCard").style.display = "none";
+}
+
+/* UPDATE */
+document.getElementById("editProductForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const id = document.getElementById("edit_id").value;
+    const formData = new FormData(this);
+
+    fetch(`/adminsite/api/products/${id}/`, {
+        method: "PATCH",
+        headers: { "X-CSRFToken": csrfToken },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(() => {
+        closeEditProduct();
+        currentPage = 1;
+        loadProducts();
+    });
+});
+
+/* DELETE */
+function deleteProduct(id) {
+    if (!confirm("Delete this product?")) return;
+
+    fetch(`/adminsite/api/products/${id}/`, {
+        method: "DELETE",
+        headers: { "X-CSRFToken": csrfToken }
+    }).then(() => loadProducts());
+}
+
+/* INITIAL LOAD */
+loadProducts();
+</script>
+
+{% endblock %}

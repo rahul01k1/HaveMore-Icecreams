@@ -1,0 +1,84 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block title %}Login - The Blue Summer{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+  <div class="form-wrapper login">
+
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <p class="alert {{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <h2>Welcome Back</h2>
+    <p class="subtitle">
+      Login to continue enjoying The Blue Summer experience.
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-grid">
+
+        <!-- Email -->
+        <div class="input-field">
+          <label>Your Email <span>*</span></label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter Your Email"
+            required
+            class="box"
+          >
+        </div>
+
+        <!-- Password -->
+        <div class="input-field">
+          <label>Your Password <span>*</span></label>
+
+          <div class="password-wrapper">
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter Your Password"
+              required
+              class="box password-input"
+            >
+          </div>
+        </div>
+
+      </div>
+
+      <button type="submit" class="btn-login">
+        Login Now
+      </button>
+
+      <p class="login-link">
+        Do not have an account?
+        <a href="{% url 'register' %}">Register Now</a>
+      </p>
+
+    </form>
+  </div>
+</div>
+
+<script>
+{% if messages %}
+  {% for message in messages %}
+    Swal.fire({
+      icon: "{{ message.tags|default:'info' }}",
+      title: "{{ message }}",
+      timer: 1800,
+      showConfirmButton: false
+    });
+  {% endfor %}
+{% endif %}
+</script>
+
+{% endblock %}

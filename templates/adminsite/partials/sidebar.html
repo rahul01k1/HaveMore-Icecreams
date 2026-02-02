@@ -1,0 +1,64 @@
+{% load static %}
+<!-- ================= MAIN CONTAINER ================= -->
+<div class="main-container" style="margin-top: 65px;">
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+
+        <div class="profile">
+    <img
+        src="{% if request.session.seller_image %}{{ request.session.seller_image }}{% else %}{% static 'adminsite/images/profile.png' %}{% endif %}"
+        class="logo-img"
+        alt="profile"
+    >
+
+    <p class="profile-username">
+        {{ request.session.role|capfirst }}
+    </p>
+
+    <span class="role-badge {{ request.session.seller_role }}">
+        {{ request.session.seller_role|upper }}
+    </span>
+</div>
+
+
+        <h5>menu</h5>
+        <ul>
+            <li data-title="Dashboard">
+                <i class="fas fa-home"></i>
+                <a href="{% url 'admin_dashboard' %}">dashboard</a>
+            </li>
+
+            <li data-title="Dashboard">
+                <i class="fas fa-users"></i>
+                <a href="{% url 'admin_users' %}">users</a>
+            </li>
+
+            <li data-title="Dashboard">
+                <i class="fas fa-store"></i>
+                <a href="{% url 'admin_sellers' %}">sellers</a>
+            </li>
+
+            <li data-title="Dashboard">
+                <i class="fas fa-box"></i>
+                <a href="{% url 'admin_products' %}">products</a>
+            </li>
+            <li data-title="Dashboard">
+                <i class="fas fa-shopping-cart"></i>
+                <a href="{% url 'admin_orders' %}">orders</a>
+            </li>
+
+
+            <li data-title="Dashboard">
+                <i class="fas fa-envelope"></i>
+                <a href="{% url 'admin_messages' %}">messages</a>
+            </li>
+             <li class="logout-item" data-title="Dashboard">
+                <i class="fas fa-sign-out-alt"></i>
+                <a href="javascript:void(0)" onclick="logoutUser()">logout</a>
+            </li>
+
+        </ul>
+           
+    </aside>
+

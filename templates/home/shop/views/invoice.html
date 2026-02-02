@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice #{{ order.id }}</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #ffffff;
+            margin: 0;
+            padding: 30px;
+            color: #111;
+        }
+
+        .invoice {
+            width: 100%;
+            border-radius: 16px;
+            padding: 30px 35px;
+            box-sizing: border-box;
+        }
+
+        /* ================= HEADER INFO ================= */
+        .top-grid {
+            display: table;
+            width: 100%;
+        }
+
+        .top-col {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .label {
+            color: #777;
+            width: 140px;
+            display: inline-block;
+        }
+
+        .value {
+            font-weight: 600;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e6e6e6;
+            margin: 25px 0;
+        }
+
+        /* ================= ADDRESS ================= */
+        .address-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .address-text {
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* ================= TABLE ================= */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            font-size: 15px;
+        }
+
+        thead th {
+            text-align: left;
+            color: #444;
+            font-weight: 700;
+            border-bottom: 2px solid #ddd;
+            padding: 12px 8px;
+        }
+
+        tbody td {
+            padding: 18px 8px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .product-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .product-cell img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .price,
+        .qty {
+            text-align: center;
+        }
+
+        .total {
+            text-align: right;
+            font-weight: 700;
+        }
+
+        /* ================= GRAND TOTAL ================= */
+        .grand-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="invoice">
+
+    <!-- TOP INFO -->
+    <div class="top-grid">
+        <div class="top-col">
+            <div><span class="label">Order ID</span> <span class="value">#{{ order.id }}</span></div>
+            <div><span class="label">Order Status</span> <span class="value">{{ order.status }}</span></div>
+            <div><span class="label">Payment</span> <span class="value">{{ order.payment_status }}</span></div>
+        </div>
+
+        <div class="top-col">
+            <div><span class="label">Name</span> <span class="value">{{ order.name }}</span></div>
+            <div><span class="label">Email</span> <span class="value">{{ order.email }}</span></div>
+            <div><span class="label">Phone</span> <span class="value">{{ order.number }}</span></div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ADDRESS -->
+    <div>
+        <div class="address-title">Delivery Address ({{ order.address_type }})</div>
+        <div class="address-text">{{ order.address }}</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ITEMS -->
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th class="price">Price</th>
+                <th class="qty">Qty</th>
+                <th class="total">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in order_items %}
+            <tr>
+                <td>
+                    <div class="product-cell">
+                        <img src="{{ item.product.product_image.path }}">
+                        <strong>{{ item.product.product_name }}</strong>
+                    </div>
+                </td>
+                <td class="price">₹{{ item.price }}</td>
+                <td class="qty">{{ item.qty }}</td>
+                <td class="total">₹{{ item.total_price }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- GRAND TOTAL -->
+    <div class="grand-total">
+        <span>Total Paid</span>
+        <span>₹{{ total_amount }}</span>
+    </div>
+
+</div>
+
+</body>
+</html>

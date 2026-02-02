@@ -1,0 +1,396 @@
+
+.heading {
+  text-align: center;
+  line-height: 1.5;
+}
+
+.heading h1 {
+  font-size: 2rem;
+  text-transform: capitalize;
+}
+
+.heading span {
+  color: var(--main-color);
+  font-size: 16px;
+}
+
+.heading img {
+  margin-top: 0.5rem;
+  width: 150px !important;
+}
+
+.flex-btn {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.flex-btn .btn {
+  margin: 0.5rem;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #fff;
+  backdrop-filter: var(--backdrop-filter);
+  border-bottom: 2px solid var(--white-alpha-40);
+  box-shadow: 0 3px 6px #aaa;
+  padding: 0.2rem 1.25%;
+  min-height: 64px;
+  overflow: visible;
+}
+
+.header .flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3rem;
+  padding: 0 var(--space);
+  gap: 0.75rem;
+  flex-wrap: nowrap;
+  padding-left: 0;
+}
+
+.header .logo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  margin-left: -6px;
+}
+
+.header .logo img {
+  height: 46px; /* slightly reduced */
+  width: auto;
+  object-fit: contain;
+}
+
+.header .logo .brand-text {
+  font-family: "Proxemic", "Segoe UI", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #f4a3c0;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+
+.user-avatar {
+  width: 40px; /* reduced */
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid var(--pink-color);
+}
+
+
+.header .navbar {
+  display: flex;
+}
+
+.header .navbar a {
+  color: var(--main-color);
+  font-size: 0.85rem;
+  margin: 0 1rem;
+  line-height: 1.4;
+  padding: 0.6rem 0;
+  transition: color 0.3s ease;
+}
+
+.header .navbar a:hover {
+  color: var(--pink-color);
+}
+
+.header .search-form {
+  position: relative;
+
+  /* 🔥 increased */
+  max-width: 32rem;
+
+  width: 100%;
+  border: 1px solid var(--pink-color);
+  border-radius: 2rem;
+  display: flex;
+  align-items: center;
+  padding: 0.45rem 1rem;
+}
+
+.header .search-form input {
+  width: 100%;
+  background: none;
+  font-size: 1rem;
+  padding: 0.4rem;
+}
+
+.header .search-form button {
+  position: absolute;
+  right: 0;
+  width: 3rem;
+  height: 100%;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header .icons {
+  display: flex;
+  align-items: center;
+
+  /* 🔥 reduced gap */
+  gap: 0.4rem;
+
+  position: relative;
+  z-index: 1100;
+}
+
+#menu-btn,
+#search-btn {
+  display: none;
+  cursor: pointer;
+}
+
+.icon-btn {
+  position: relative;
+  z-index: 1200;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;  /* reduced */
+  height: 40px;
+
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--white-alpha-40);
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.icon-btn i {
+  font-size: 21px;
+  color: var(--main-color);
+}
+
+.icon-btn span {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--main-color);
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.header .profile-detail {
+  position: absolute;
+  top: 100%;
+  right: 0.75rem; /* 🔥 closer to edge */
+  width: 22rem;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(8px);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: none;
+  z-index: 1000;
+}
+
+.header .profile-detail.active {
+  display: block;
+}
+
+.header .profile-detail .profile-photo {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 0.75rem;
+  border: 2px solid var(--pink-color);
+}
+
+.header .profile-detail .username {
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 991px) {
+
+  #menu-btn,
+  #search-btn {
+    display: inline-block;
+  }
+
+  .header .navbar {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    background: #fff;
+    padding: 1rem;
+    display: none;
+    z-index: 1000;
+    pointer-events: none;
+  }
+
+  .header .navbar.active {
+    display: flex;
+    pointer-events: auto;
+  }
+
+  .header .navbar a {
+    margin: 0.4rem 0;
+    background: var(--main-color);
+    color: #fff;
+    border-radius: 0.5rem;
+    text-align: center;
+    padding: 0.6rem;
+  }
+
+  .header .search-form {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    display: none;
+    background: #fff;
+    z-index: 1000;
+    pointer-events: none;
+  }
+
+  .header .search-form.active {
+    display: flex;
+    pointer-events: auto;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .header .logo .brand-text {
+    display: none;
+  }
+
+  .header .profile-detail {
+    width: 90%;
+    right: 5%;
+  }
+
+  .header .profile-detail .profile-photo {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+
+@media (min-width: 992px) {
+
+  .header .navbar {
+    position: static;
+    display: flex !important;
+    pointer-events: auto;
+  }
+
+  .header .search-form {
+    display: flex;
+
+    /* 🔥 larger on desktop */
+    max-width: 360px;
+
+    pointer-events: auto;
+  }
+
+  #menu-btn,
+  #search-btn {
+    display: none;
+  }
+}
+
+
+@media (min-width: 1280px) {
+  .header .flex {
+    max-width: 1280px;
+    margin: auto;
+  }
+}
+
+
+@media (max-height: 500px) {
+  .header .search-form {
+    display: none;
+  }
+}
+
+
+
+.header {
+  padding-top: 2px;     
+  padding-bottom: 2px;
+}
+
+.header .flex {
+  min-height: 60px;     
+}
+
+
+.header .logo img {
+  height: 44px;         
+}
+
+.header .logo .brand-text {
+  line-height: 1.05;    
+  margin-top: -1px;    
+}
+
+
+.header .navbar a {
+  line-height: 1.2;    
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+
+.header .search-form {
+  height: 40px;        
+  padding: 0 16px;    
+}
+
+.header .search-form input {
+  padding: 0;
+  line-height: 1.2;
+}
+
+
+.header {
+  padding-right: 1%;    /
+}
+
+/* Icons closer & tighter */
+.header .icons {
+  gap: 6px;             /* was ~8px */
+}
+
+/* Icon buttons slightly smaller */
+.icon-btn {
+  width: 38px;
+  height: 38px;
+}
+
+/* Avatar match icons */
+.user-avatar {
+  width: 38px;
+  height: 38px;
+}
+

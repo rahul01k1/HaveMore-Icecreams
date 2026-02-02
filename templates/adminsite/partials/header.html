@@ -1,0 +1,76 @@
+{% load static %}
+
+<header class="admin-header">
+
+    <!-- Left -->
+    <div class="header-left">
+        <a href="{% url 'admin_dashboard' %}" class="brand">
+            <img src="{% static 'adminsite/image/logo.jpg' %}" alt="Logo">
+            <span>HaveMore IceCreams</span>
+        </a>
+    </div>
+
+    <!-- Right -->
+    <div class="header-right">
+
+        <!-- Notifications -->
+        <button class="icon-btn" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
+        </button>
+
+        <!-- Profile -->
+        <div class="profile-wrapper">
+            <button class="profile-btn" id="profileToggle">
+                <img
+                    src="{% if request.session.seller_image %}{{ request.session.seller_image }}{% else %}{% static 'adminsite/image/profile.png' %}{% endif %}"
+                    class="profile-avatar"
+                    alt="Profile"
+                >
+                <span class="profile-name">
+                    {{ request.session.seller_name|default:"Admin" }}
+                </span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+
+            <!-- Dropdown -->
+            <div class="profile-dropdown">
+                <div class="profile-info">
+                    <img
+                        src="{% if request.session.seller_image %}{{ request.session.seller_image }}{% else %}{% static 'adminsite/image/profile.png' %}{% endif %}"
+                        class="dropdown-avatar"
+                    >
+                    <div>
+                        <strong>{{ request.session.seller_name|default:"Admin" }}</strong>
+                        <small>{{ request.session.seller_role|capfirst }} Account</small>
+                    </div>
+                </div>
+
+                <ul class="dropdown-links">
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <!-- IMPORTANT: API logout via JS -->
+                        <a href="javascript:void(0)" onclick="logoutUser()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <button class="icon-btn mobile-toggle" aria-label="Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+    </div>
+</header>

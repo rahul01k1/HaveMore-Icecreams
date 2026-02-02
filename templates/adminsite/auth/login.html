@@ -1,0 +1,79 @@
+{% extends "adminsite/base_login.html" %}
+{% load static %}
+
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+    <form id="loginForm" class="login">
+        {% csrf_token %}
+
+        <h3>Admin Login </h3>
+
+        <div class="input-field">
+            <p>Your Email <span>*</span></p>
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                maxlength="50"
+                required
+                class="box"
+            >
+        </div>
+
+        <div class="input-field">
+            <p>Your Password <span>*</span></p>
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                maxlength="50"
+                required
+                class="box"
+            >
+        </div>
+
+        <br>
+
+        <div class="input-field">
+            <input type="submit" value="Login Now" class="btn">
+            <p id="error-msg" style="color:red; margin-top:10px;"></p>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    fetch("/adminsite/api/login/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+            role: "seller"
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "/adminsite/dashboard/";
+        } else {
+            document.getElementById("error-msg").innerText =
+                data.error || "Invalid email or password";
+        }
+    })
+    .catch(() => {
+        document.getElementById("error-msg").innerText =
+            "Server error. Please try again.";
+    });
+});
+</script>
+
+{% endblock %}

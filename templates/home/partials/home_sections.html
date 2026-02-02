@@ -1,0 +1,311 @@
+{% load static %}
+
+
+
+<!---------------------- Categories -------------------------->
+<div class="categories">
+    <div class="heading">
+        <h1>category features</h1>
+        <img src="{% static 'home/image/separator-img.png' %}">
+    </div>
+
+    <div class="box-container">
+        <div class="box">
+            <img src="{% static 'home/image/categories.jpg' %}">
+            <a href="{% url 'menu' %}" class="btn">coconuts</a>
+        </div>
+        <div class="box">
+            <img src="{% static 'home/image/categories0.jpg' %}">
+            <a href="{% url 'menu' %}" class="btn">chocolate</a>
+        </div>
+        <div class="box">
+            <img src="{% static 'home/image/categories2.jpg' %}">
+            <a href="{% url 'menu' %}" class="btn">strawberry</a>
+        </div>
+        <div class="box">
+            <img src="{% static 'home/image/categories1.jpg' %}">
+            <a href="{% url 'menu' %}" class="btn">cone</a>
+        </div>
+    </div>
+</div>
+
+
+<!---------------------- Menu Promo Banner -------------------------->
+<img src="{% static 'home/image/menu-banner.jpg' %}" class="banner">
+
+<div class="taste">
+    <div class="heading">
+        <span>Taste</span>
+        <h1>buy any icecream @ get one free</h1>
+        <img src="{% static 'home/image/separator-img.png' %}">
+    </div>
+
+    <div class="box-container">
+        <div class="box">
+            <img src="{% static 'home/image/taste.webp' %}">
+            <div class="detail"><h2>natural sweetness</h2><h1>vanila</h1></div>
+        </div>
+
+        <div class="box">
+            <img src="{% static 'home/image/taste0.webp' %}">
+            <div class="detail"><h2>natural sweetness</h2><h1>matcha</h1></div>
+        </div>
+
+        <div class="box">
+            <img src="{% static 'home/image/taste1.webp' %}">
+            <div class="detail"><h2>natural sweetness</h2><h1>blueberry</h1></div>
+        </div>
+    </div>
+</div>
+<!---------------------- Services -------------------------->
+<div class="service">
+     <div class="heading">
+            <h1>Our Services</h1>
+            <img src="{% static 'home/image/separator-img.png' %}">
+        </div>
+    <div class="box-container">
+        <div class="box">
+            <div class="icon">
+                <div class="icon-box">
+                    <img src="{% static 'home/image/services.png' %}" class="img1">
+                    <img src="{% static 'home/image/services_1.png' %}" class="img2">
+                </div>
+            </div>
+            <div class="detail">
+                <h4>delivery</h4>
+                <span>100% secure</span>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="icon">
+                <div class="icon-box">
+                    <img src="{% static 'home/image/services_2.png' %}" class="img1">
+                    <img src="{% static 'home/image/services_3.png' %}" class="img2">
+                </div>
+            </div>
+            <div class="detail">
+                <h4>support</h4>
+                <span>24*7 available</span>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="icon">
+                <div class="icon-box">
+                    <img src="{% static 'home/image/services_5.png' %}" class="img1">
+                    <img src="{% static 'home/image/services_6.png' %}" class="img2">
+                </div>
+            </div>
+            <div class="detail">
+                <h4>payment</h4>
+                <span>100% secure</span>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="icon">
+                <div class="icon-box">
+                    <img src="{% static 'home/image/services_7.png' %}" class="img1">
+                    <img src="{% static 'home/image/services_8.png' %}" class="img2">
+                </div>
+            </div>
+            <div class="detail">
+                <h4>gift & rewards</h4>
+                <span>Feel free to earn</span>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="icon">
+                <div class="icon-box">
+                    <img src="{% static 'home/image/service.png' %}" class="img1">
+                    <img src="{% static 'home/image/service_1.png' %}" class="img2">
+                </div>
+            </div>
+            <div class="detail">
+                <h4>returns</h4>
+                <span>24*7 free returns</span>
+            </div>
+        </div>
+        <div class="box">
+            <div class="icon">
+                <div class="icon-box">
+                    <img src="{% static 'home/image/service.png' %}" class="img1">
+                    <img src="{% static 'home/image/service_1.png' %}" class="img2">
+                </div>
+            </div>
+            <div class="detail">
+                <h4>refunds</h4>
+                <span>in 3-day refund</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!---------------------- Hot Sale Banner -------------------------->
+<div class="flavor">
+    <div class="box-container">
+        <img src="{% static 'home/image/left-banner2.webp' %}">
+        <div class="detail">
+            <h1>Hot Deal ! Sale Up To <span>20% off</span> expired</h1>
+            <br>
+            <a href="{% url 'menu' %}" class="btn">shop now</a>
+        </div>
+    </div>
+</div>
+
+<!---------------------- How It Works -------------------------->
+<div class="usage">
+    <div class="heading">
+        <h1>How It Works</h1>
+        <img src="{% static 'home/image/separator-img.png' %}">
+    </div>
+
+    <div class="row">
+        <div class="box-container">
+            <div class="box">
+                <img src="{% static 'home/image/icon.avif' %}">
+                <div class="detail">
+                    <h3>Scoop Ice-Cream</h3>
+                    <p>"One scoop is never enough—treat yourself to creamy goodness!"</p>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="{% static 'home/image/icon0.avif' %}">
+                <div class="detail">
+                    <h3>Cone Ice-Cream</h3>
+                    <p>"Scoop up some joy with our creamy dream ice cream!"</p>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="{% static 'home/image/icon1.avif' %}">
+                <div class="detail">
+                    <h3>Slice Ice-Cream</h3>
+                    <p>"Dive into deliciousness, one scoop at a time."</p>
+                </div>
+            </div>
+        </div>
+
+        <img src="{% static 'home/image/sub-banner.png' %}" class="divider">
+
+        <div class="box-container">
+            <div class="box">
+                <img src="{% static 'home/image/icon2.avif' %}">
+                <div class="detail">
+                    <h3>Cup Ice-Cream</h3>
+                    <p>"Pure bliss with handcrafted scoops full of flavor."</p>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="{% static 'home/image/icon3.avif' %}">
+                <div class="detail">
+                    <h3>Bar Ice-Cream</h3>
+                    <p>"Rich and flavorful scoops on a sweet adventure!"</p>
+                </div>
+            </div>
+
+            <div class="box">
+                <img src="{% static 'home/image/icon4.avif' %}">
+                <div class="detail">
+                    <h3>Mix-Scoop Ice-Cream</h3>
+                    <p>"Savor the handcrafted scoops bursting with joy."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!---------------------- pride -------------------------->
+<div class="pride">
+    <div class="detail">
+        <h1>We Pride Ourself On<br>Exceptional Flavor.</h1>
+        <p>We craft exceptional flavors that tantalize your taste buds...</p>
+        <a href="{% url 'menu' %}" class="btn">shop now</a>
+    </div>
+</div>
+
+
+<!---------------------- newsletter -------------------------->
+
+<div class="newsletter">
+    <div class="content">
+        <span>get latest blue sky summer updates</span>
+        <h1>subscribe our newsletter</h1>
+
+        <p>
+            Join our newsletter and be the first to scoop up exclusive offers,<br>
+            delicious updates, and the latest on our newest flavors! Stay connected and never<br>
+            miss out on the sweetest news from our ice cream shop.
+        </p>
+
+        <div class="input-field">
+           <form id="newsletterForm">
+                {% csrf_token %}
+                <input type="email" name="email" placeholder="Enter your E-Mail" required>
+                <button type="submit" class="btn">Subscribe</button>
+            </form>
+        </div>
+
+        <p>No ads, No trails, No commitment</p>
+
+        <div class="box-container">
+
+            <div class="box">
+                <div class="box-counter">
+                    <p class="counter">5000</p>
+                    <i class="bx bx-plus"></i>
+                </div>
+                <h3>Successfully Trained</h3>
+                <p>Learners & counting</p>
+            </div>
+
+            <div class="box">
+                <div class="box-counter">
+                    <p class="counter">10000</p>
+                    <i class="bx bx-plus"></i>
+                </div>
+                <h3>Certification seller</h3>
+                <p>online sellers</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById("newsletterForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    fetch("{% url 'add_newsletter' %}", {
+        method: "POST",
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+
+        if (data.error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: data.error
+            });
+        }
+
+        if (data.success) {
+            Swal.fire({
+                icon: "success",
+                title: "Subscribed!",
+                text: data.success
+            });
+
+            document.getElementById("newsletterForm").reset();
+        }
+    });
+});
+</script>

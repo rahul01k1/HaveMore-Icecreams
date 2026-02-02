@@ -1,0 +1,344 @@
+/* =====================================================
+   HEADINGS
+   ===================================================== */
+.heading {
+  text-align: center;
+  line-height: 1.5;
+}
+
+.heading h1 {
+  font-size: 2rem;
+  text-transform: capitalize;
+}
+
+.heading span {
+  color: var(--main-color);
+  font-size: 16px;
+}
+
+.heading img {
+  margin-top: 0.5rem;
+  width: 150px !important;
+}
+
+/* =====================================================
+   FLEX BUTTONS
+   ===================================================== */
+.flex-btn {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.flex-btn .btn {
+  margin: 0.5rem;
+}
+
+/* =====================================================
+   HEADER WRAPPER
+   ===================================================== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #fff;
+  backdrop-filter: var(--backdrop-filter);
+  border-bottom: 2px solid var(--white-alpha-40);
+  box-shadow: 0 3px 6px #aaa;
+  padding: 0.25rem 2%;
+    min-height: 72px;
+  overflow: visible; /* ✅ IMPORTANT: allow dropdowns */
+}
+
+.header .flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space);
+  min-height: 3.5rem;
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
+
+/* =====================================================
+   LOGO
+   ===================================================== */
+.header .logo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+}
+
+.header .logo img {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+.header .logo .brand-text {
+  font-family: "Proxemic", "Segoe UI", Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #f4a3c0;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   USER AVATAR
+   ===================================================== */
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid var(--pink-color);
+}
+
+/* =====================================================
+   NAVBAR (BASE)
+   ===================================================== */
+.header .navbar {
+  display: flex;
+}
+
+.header .navbar a {
+  color: var(--main-color);
+  font-size: 1rem;
+  margin: 0 1rem;
+  line-height: 1.4;
+  padding: 0.6rem 0;
+  transition: color 0.3s ease;
+}
+
+.header .navbar a:hover {
+  color: var(--pink-color);
+}
+
+/* =====================================================
+   SEARCH
+   ===================================================== */
+.header .search-form {
+  position: relative;
+  max-width: 23rem;
+  width: 100%;
+  border: 1px solid var(--pink-color);
+  border-radius: 2rem;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+
+.header .search-form input {
+  width: 100%;
+  background: none;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.header .search-form button {
+  position: absolute;
+  right: 0;
+  width: 3rem;
+  height: 100%;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =====================================================
+   ICONS
+   ===================================================== */
+.header .icons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#menu-btn,
+#search-btn {
+  display: none;
+  cursor: pointer;
+}
+
+/* =====================================================
+   PROFILE DROPDOWN
+   ===================================================== */
+.header .profile-detail {
+  position: absolute;
+  top: 100%;
+  right: 1rem;
+  width: 22rem;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(8px);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: none;
+}
+
+.header .profile-detail.active {
+  display: block;
+}
+
+.header .profile-detail .profile-photo {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 0.75rem;
+  border: 2px solid var(--pink-color);
+}
+
+.header .profile-detail .username {
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+/* =====================================================
+   ICON BUTTONS
+   ===================================================== */
+.icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--white-alpha-40);
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+}
+
+.icon-btn i {
+  font-size: 22px;
+  color: var(--main-color);
+}
+
+.icon-btn span {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--main-color);
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =====================================================
+   MOBILE FIRST (≤ 991px)
+   ===================================================== */
+@media (max-width: 991px) {
+
+  #menu-btn,
+  #search-btn {
+    display: inline-block;
+  }
+
+  .header .navbar {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    background: #fff;
+    padding: 1rem;
+    display: none;
+  }
+
+  .header .navbar.active {
+    display: flex;
+  }
+
+  .header .navbar a {
+    margin: 0.4rem 0;
+    background: var(--main-color);
+    color: #fff;
+    border-radius: 0.5rem;
+    text-align: center;
+    padding: 0.6rem;
+  }
+
+  .header .search-form {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    display: none;
+    background: #fff;
+  }
+
+  .header .search-form.active {
+    display: flex;
+  }
+}
+
+/* =====================================================
+   SMALL MOBILE
+   ===================================================== */
+@media (max-width: 480px) {
+  .header .logo .brand-text {
+    display: none;
+  }
+
+  .header .profile-detail {
+    width: 90%;
+    right: 5%;
+  }
+
+  .header .profile-detail .profile-photo {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* =====================================================
+   DESKTOP (≥ 992px) — NO OVERLAP
+   ===================================================== */
+@media (min-width: 992px) {
+
+  .header .navbar {
+    position: static;
+    display: flex !important;
+  }
+
+  .header .search-form {
+    display: flex;
+    max-width: 300px;
+  }
+
+  #menu-btn,
+  #search-btn {
+    display: none;
+  }
+}
+
+/* =====================================================
+   LARGE SCREENS
+   ===================================================== */
+@media (min-width: 1280px) {
+  .header .flex {
+    max-width: 1280px;
+    margin: auto;
+  }
+}
+
+/* =====================================================
+   DESKTOP MODE ON MOBILE (SHORT HEIGHT)
+   ===================================================== */
+@media (max-height: 500px) {
+  .header .search-form {
+    display: none;
+  }
+}

@@ -1,0 +1,172 @@
+
+.invoice-wrapper {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 0 15px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.invoice-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.success-icon {
+    width: 64px;
+    height: 64px;
+    background: #22c55e;
+    color: #fff;
+    font-size: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 10px;
+}
+
+.invoice-header h2 {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+
+.invoice-header p {
+    color: #666;
+}
+
+/* CARD */
+.invoice-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    padding: 30px;
+}
+
+/* META */
+.invoice-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+
+.invoice-meta p {
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.invoice-meta span {
+    display: inline-block;
+    width: 110px;
+    color: #777;
+}
+
+/* ADDRESS */
+.invoice-address {
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+}
+
+/* ITEMS */
+.invoice-items {
+    margin-top: 20px;
+}
+
+.items-head,
+.items-row {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 0.7fr 1fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.items-head {
+    font-weight: 700;
+    font-size: 14px;
+    color: #444;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+}
+
+.items-row {
+    padding: 14px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+}
+
+.product {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.product img {
+    width: 46px;
+    height: 46px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* TOTAL */
+.invoice-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: 700;
+    padding-top: 20px;
+}
+
+/* ACTIONS */
+.invoice-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+    justify-content: center;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 12px 22px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #ff7fa8;
+    color: #fff;
+}
+
+.btn-secondary {
+    background: #4a8ef5;
+    color: #fff;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+
+    .invoice-meta {
+        flex-direction: column;
+    }
+
+    .items-head {
+        display: none;
+    }
+
+    .items-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .items-row span {
+        font-size: 14px;
+    }
+
+    .invoice-total {
+        font-size: 18px;
+    }
+
+    .invoice-actions {
+        flex-direction: column;
+    }
+}

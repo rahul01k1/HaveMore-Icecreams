@@ -1,0 +1,40 @@
+{% load static %}
+<footer>
+    <div class="content">
+
+        <div class="box1">
+            <img src="{% static 'home/image/logo.png' %}" alt="">
+            <p>We're always in search for talented and motivated people. Don't be shy introduce yourself!</p>
+            <a href="{% url 'contact' %}" class="btn">Contact now</a>
+        </div>
+
+        <div class="box1">
+            <h3>my account</h3>
+            <a href="{% url 'profile' %}"><i class="bx bx-chevron-right"></i> My account</a>
+            <a href="{% url 'order' %}"><i class="bx bx-chevron-right"></i> Order history</a>
+            <a href="{% url 'wishlist' %}"><i class="bx bx-chevron-right"></i> Wishlist</a>
+            <a href="{% url 'contact' %}"><i class="bx bx-chevron-right"></i> Contact-Us</a>
+        </div>
+
+        <div class="box1">
+            <h3>Information</h3>
+            <a href="{% url 'about' %}"><i class="bx bx-chevron-right"></i> about us</a>
+            <a href="{% url 'about' %}"><i class="bx bx-chevron-right"></i> deliver information</a>
+            <a href="{% url 'about' %}"><i class="bx bx-chevron-right"></i> privacy policy</a>
+            <a href="{% url 'about' %}"><i class="bx bx-chevron-right"></i> term & condition</a>
+        </div>
+
+        <div class="box1">
+            <h3>contact us</h3>
+            <p><i class="bx bxs-phone-call"></i> +917041998803</p>
+            <p><i class="bx bx-envelope"></i> ytray@gmail.com</p>
+            <p><i class="bx bxs-map"></i> Jamnagar, Gujarat, India</p>
+        </div>
+
+    </div>
+
+    <div class="bottom">
+        <p>Copyright &copy; 2024 thanking you RayYT * All Right Reserved</p>
+        <a href="#">Become a seller</a>
+    </div>
+</footer>

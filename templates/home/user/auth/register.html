@@ -1,0 +1,99 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block title %}Register - The Blue Summer{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+  <div class="form-wrapper register">
+
+    <h2>Create Your Account</h2>
+    <p class="subtitle">
+      Join The Blue Summer and enjoy a smooth shopping experience.
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-grid">
+
+        <!-- Name -->
+        <div class="input-field">
+          <label>Your Name <span>*</span></label>
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter Your Name"
+            maxlength="50"
+            required
+            class="box"
+          >
+        </div>
+
+        <!-- Email -->
+        <div class="input-field">
+          <label>Your Email <span>*</span></label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter Your Email"
+            maxlength="50"
+            required
+            class="box"
+          >
+        </div>
+
+        <!-- Password -->
+        <div class="input-field">
+          <label>Password <span>*</span></label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter Your Password"
+            maxlength="50"
+            required
+            class="box"
+          >
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="input-field">
+          <label>Confirm Password <span>*</span></label>
+          <input
+            type="password"
+            name="cpassword"
+            placeholder="Confirm Password"
+            maxlength="50"
+            required
+            class="box"
+          >
+        </div>
+
+      </div>
+
+      <!-- Profile Image -->
+      <div class="input-field profile-upload">
+        <label>Your Profile Image</label>
+        <input
+          type="file"
+          name="profile_image"
+          accept="image/*"
+          class="box"
+        >
+      </div>
+
+      <button type="submit" class="btn-register">
+        Register Now
+      </button>
+
+      <p class="login-link">
+        Already have an account?
+        <a href="{% url 'login' %}">Login Now</a>
+      </p>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

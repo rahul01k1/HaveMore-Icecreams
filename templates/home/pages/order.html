@@ -1,0 +1,119 @@
+{% extends "home/base.html" %}
+{% load static %}
+{% block title %}Blue Sky Summer - My Orders{% endblock %}
+
+{% block content %}
+
+<!-- ===================== SKELETON LOADER ===================== -->
+<div class="orders-skeleton">
+  <div class="orders-skeleton-grid">
+
+    {% for _ in "1234" %}
+    <div class="skeleton-card">
+      <div class="skeleton-img"></div>
+
+      <div class="skeleton-content">
+        <div class="skeleton-line title"></div>
+        <div class="skeleton-line price"></div>
+        <div class="skeleton-line date"></div>
+        <div class="skeleton-btn"></div>
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+
+<!-- ===================== REAL ORDERS ===================== -->
+<div class="orders-page orders-compact" style="display:none;">
+
+    <!-- Heading -->
+    <div class="orders-heading">
+        <h1>Your Orders</h1>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+    </div>
+
+    {% if orders %}
+    <div class="orders-grid">
+
+        {% for order in orders %}
+        <div class="order-card">
+
+            <!-- PRODUCT IMAGE -->
+            {% for item in order.items.all|slice:":1" %}
+                <img src="{{ item.product.product_image.url }}"
+                     class="order-img"
+                     alt="{{ item.product.product_name }}">
+            {% endfor %}
+
+            <!-- STATUS -->
+            {% if order.status == "delivered" %}
+                <span class="status-badge status-delivered">Delivered</span>
+            {% elif order.status == "cancelled" %}
+                <span class="status-badge status-cancelled">Cancelled</span>
+            {% else %}
+                <span class="status-badge status-processing">Processing</span>
+            {% endif %}
+
+            <!-- CONTENT -->
+            <div class="order-content">
+
+                <h3 class="order-title">
+                    {% for item in order.items.all|slice:":1" %}
+                        {{ item.product.product_name }}
+                    {% endfor %}
+                    {% if order.items.count > 1 %}
+                        + {{ order.items.count|add:"-1" }} more
+                    {% endif %}
+                </h3>
+
+                <p class="order-total">Total: ₹{{ order.order_total }}</p>
+
+                <p class="order-date">
+                    <i class="bx bxs-calendar-alt"></i>
+                    {{ order.date|date:"M d, Y" }}
+                </p>
+
+                <a href="{% url 'view_order' order.id %}" class="order-btn">
+                    View Details
+                </a>
+
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+        <p class="empty-message">You have not placed any orders yet!</p>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const skeleton = document.querySelector(".orders-skeleton");
+    const orders = document.querySelector(".orders-compact");
+
+    // Safety check
+    if (!skeleton || !orders) return;
+
+    setTimeout(() => {
+        skeleton.style.display = "none";
+        orders.style.display = "block";
+    }, 300); // 300ms is enough
+});
+
+// Failsafe: never allow infinite skeleton
+setTimeout(() => {
+    const skeleton = document.querySelector(".orders-skeleton");
+    const orders = document.querySelector(".orders-compact");
+
+    if (skeleton && skeleton.style.display !== "none") {
+        skeleton.style.display = "none";
+        orders.style.display = "block";
+    }
+}, 2000);
+</script>
+
+
+{% endblock %}

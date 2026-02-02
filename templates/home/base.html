@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>{% block title %}{% endblock title %}</title>
+
+    <link rel="icon" type="image/x-icon" href="{% static 'home/image/favicon.ico' %}">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'home/css/user_style.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/menu.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/order.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/contact.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/wishlist.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/view_product.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/update_pro.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/search.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/sections.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/invoice.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/checkout.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/footer.css' %}">
+   
+
+    <!-- Boxicons -->
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+
+    {% include "home/partials/header.html" %}
+
+    {% block content %}{% endblock content %}
+
+    {% include "home/partials/footer.html" %}
+    {% block footer %}{% endblock footer %}
+
+    <!-- Main JS -->
+    <script src="{% static 'home/js/user_script.js' %}"></script>
+
+    <!-- Global Count Updaters -->
+ 
+    <script>
+function toggleWishlist(btn, productId) {
+    fetch("/toggle_wishlist/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: JSON.stringify({ product_id: productId })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        /* 🔒 Not logged in */
+        if (data.error) {
+            Swal.fire({
+                icon: "info",
+                title: "Login Required",
+                text: "Please login to use wishlist",
+                confirmButtonColor: "#da6285"
+            });
+            return;
+        }
+
+        const icon = btn.querySelector("i");
+        if (!icon) return;
+
+        /* ❤️ ADDED */
+        if (data.added) {
+            icon.classList.replace("bx-heart", "bxs-heart");
+
+            Swal.fire({
+                toast: true,
+                icon: "success",
+                title: "Added to wishlist",
+                position: "top-end",
+                timer: 1200,
+                showConfirmButton: false
+            });
+        }
+
+        /* 💔 REMOVED */
+        if (data.removed) {
+            icon.classList.replace("bxs-heart", "bx-heart");
+
+            Swal.fire({
+                toast: true,
+                icon: "info",
+                title: "Removed from wishlist",
+                position: "top-end",
+                timer: 1200,
+                showConfirmButton: false
+            });
+        }
+
+        updateWishlistCount();
+    })
+    .catch(() => {
+        Swal.fire("Error", "Something went wrong", "error");
+    });
+}    
+     
+function addToCart(productId) {
+    fetch(`/add_to_cart/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (!data.success) {
+            Swal.fire({
+                icon: "info",
+                title: "Login Required",
+                text: "Please login to add items to cart",
+                confirmButtonColor: "#da6285"
+            });
+            return;
+        }
+
+        Swal.fire({
+            toast: true,
+            icon: "success",
+            title: "Added to cart",
+            position: "top-end",
+            timer: 1200,
+            showConfirmButton: false
+        });
+
+        updateCartCount();
+    })
+    .catch(() => {
+        Swal.fire("Error", "Unable to add item", "error");
+    });
+}
+
+/* =========================
+   UPDATE QUANTITY
+========================= */
+function updateQty(cartId, qty) {
+    fetch(`/update_cart/${cartId}/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: JSON.stringify({ qty })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById(`subtotal-${cartId}`).innerText = data.subtotal;
+        document.getElementById("total").innerText = data.total_amount;
+
+        updateCartCount();
+    });
+}
+
+/* =========================
+   REMOVE ITEM
+========================= */
+function removeItem(cartId) {
+    Swal.fire({
+        title: "Remove item?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#da6285"
+    }).then(result => {
+        if (!result.isConfirmed) return;
+
+        fetch(`/remove_cart/${cartId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById(`cart-item-${cartId}`).remove();
+            document.getElementById("total").innerText = data.total_amount;
+
+            updateCartCount();
+
+            Swal.fire({
+                toast: true,
+                icon: "info",
+                title: "Item removed",
+                position: "top-end",
+                timer: 1200,
+                showConfirmButton: false
+            });
+        });
+    });
+}
+
+/* =========================
+   EMPTY CART
+========================= */
+function emptyCart() {
+    Swal.fire({
+        title: "Empty cart?",
+        text: "This action cannot be undone",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#da6285"
+    }).then(result => {
+        if (!result.isConfirmed) return;
+
+        fetch("/empty_cart/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(() => {
+            document.getElementById("cart-items").innerHTML = "";
+            document.getElementById("total").innerText = "0";
+
+            updateCartCount();
+
+            Swal.fire({
+                icon: "success",
+                title: "Cart emptied",
+                timer: 1200,
+                showConfirmButton: false
+            });
+        });
+    });
+}
+
+          function confirmCancel(orderId) {
+            Swal.fire({
+                title: "Cancel Order?",
+                text: "This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#ff7fa8",
+                cancelButtonColor: "#999",
+                confirmButtonText: "Yes, Cancel Order"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/cancel_order/${orderId}/`;
+                }
+            });
+        }
+
+        function updateCartCount() {
+            fetch("/cart-count/", {
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                const el = document.getElementById("cart-count");
+                if (!el) return;
+
+                el.innerText = data.count;
+                el.style.display = data.count > 0 ? "flex" : "none";
+            });
+        }
+
+        function updateWishlistCount() {
+            fetch("/wishlist-count/", {
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                const el = document.getElementById("wishlist-count");
+                if (!el) return;
+
+                el.innerText = data.count;
+                el.style.display = data.count > 0 ? "flex" : "none";
+            });
+        }
+
+        function buyNowWithQty(productId, btn) {
+
+            // Find nearest qty input inside the same card
+            const qtyInput = btn
+                .closest(".wishlist-card")
+                ?.querySelector(".qty-input");
+
+            const qty = qtyInput ? qtyInput.value : 1;
+
+            window.location.href =
+                `/checkout/?buy_now=${productId}&qty=${qty}`;
+        }
+
+        /* Auto-sync on every page load */
+        document.addEventListener("DOMContentLoaded", () => {
+            updateCartCount();
+            updateWishlistCount();
+        });
+
+</script>
+
+
+   
+</body>
+</html>

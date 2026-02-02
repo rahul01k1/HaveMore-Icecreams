@@ -1,0 +1,280 @@
+{% extends "home/base.html" %}
+{% load static %}
+{% block title %}Contact Us - Blue Sky Summer{% endblock %}
+
+{% block content %}
+
+<!-- ======================= HERO ======================= -->
+<section class="contact-hero">
+    <div class="hero-content">
+        <h1>Contact Us</h1>
+        <p>We are here to help you. Reach out to us anytime and we will respond as soon as possible.</p>
+
+        <span class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a>
+            <i class="bx bx-chevron-right"></i> Contact Us
+        </span>
+    </div>
+</section>
+
+<!-- ======================= SERVICES ======================= -->
+<section class="services-section">
+    <div class="heading">
+        <h1>Our Services</h1>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+    </div>
+
+    <div class="service-grid">
+        <div class="service-card">
+            <img src="{% static 'home/image/0.png' %}">
+            <h3>Free & Fast Shipping</h3>
+            <p>Your favorite products delivered quickly and safely.</p>
+        </div>
+
+        <div class="service-card">
+            <img src="{% static 'home/image/1.png' %}">
+            <h3>Money Back Guarantee</h3>
+            <p>Customer satisfaction is always our priority.</p>
+        </div>
+
+        <div class="service-card">
+            <img src="{% static 'home/image/2.png' %}">
+            <h3>24/7 Customer Support</h3>
+            <p>We are available anytime you need help.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ======================= CONTACT FORM ======================= -->
+<section class="contact-form-section">
+    <div class="heading">
+        <h1>Drop Us a Message</h1>
+        <p>We’d love to hear from you</p>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+    </div>
+
+    <form id="contactForm" class="contact-form" method="POST">
+        {% csrf_token %}
+
+        <!-- NAME + EMAIL (2 COL) -->
+        <div class="input-row">
+            <div class="input-field">
+                <label>Name <sup>*</sup></label>
+                <input type="text" name="name" class="box"
+                       value="{{ request.session.user_name|default:'' }}"
+                       readonly required>
+            </div>
+
+            <div class="input-field">
+                <label>Email <sup>*</sup></label>
+                <input type="email" name="email" class="box"
+                       value="{{ request.session.user_email|default:'' }}"
+                       readonly required>
+            </div>
+        </div>
+
+        <!-- SUBJECT -->
+        <div class="input-field">
+            <label>Subject <sup>*</sup></label>
+            <input type="text" name="subject" class="box" required>
+        </div>
+
+        <!-- MESSAGE -->
+        <div class="input-field">
+            <label>Message <sup>*</sup></label>
+            <textarea name="message" class="box" rows="7" required></textarea>
+        </div>
+
+        <button type="submit" class="btn">Send Message</button>
+    </form>
+</section>
+
+<!-- ======================= ADDRESS ======================= -->
+<section class="address-section">
+    <div class="heading">
+        <h1>Get in Touch</h1>
+        <p>We’re always ready to assist you</p>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+    </div>
+
+    <div class="address-grid">
+        <div class="address-card">
+            <i class="bx bxs-map"></i>
+            <h4>Address</h4>
+            <p>Ahmedabad, Gujarat 380015</p>
+        </div>
+
+        <div class="address-card">
+            <i class="bx bxs-phone"></i>
+            <h4>Phone</h4>
+            <p>+91 70419 98854</p>
+        </div>
+
+        <div class="address-card">
+            <i class="bx bxs-envelope"></i>
+            <h4>Email</h4>
+            <p>lilaparavipul123@gmail.com</p>
+        </div>
+    </div>
+</section>
+
+<!-- ======================= AJAX + SWEETALERT ======================= -->
+<script>
+document.getElementById("contactForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const form = this;
+    const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+    const subject = form.subject.value.trim();
+    const message = form.message.value.trim();
+
+    if (subject.length < 5) {
+        Swal.fire("Error", "Subject must be at least 5 characters.", "error");
+        return;
+    }
+
+    if (message.length < 10) {
+        Swal.fire("Error", "Message must be at least 10 characters.", "error");
+        return;
+    }
+
+    fetch("{% url 'contact' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": csrfToken,
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: new FormData(form)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            Swal.fire("Error", data.error, "error");
+            return;
+        }
+
+        Swal.fire({
+            icon: "success",
+            title: "Message Sent!",
+            text: "We will get back to you soon.",
+            confirmButtonColor: "#ff7fa8"
+        });
+
+        form.reset();
+    })
+    .catch(() => {
+        Swal.fire("Error", "Something went wrong.", "error");
+    });
+});
+</script>
+
+<!-- ======================= CSS ======================= -->
+<style>
+
+/* HERO */
+.contact-hero {
+    background: linear-gradient(to right, #d8ecff, #fef5ff);
+    padding: 90px 0;
+    text-align: center;
+}
+
+.contact-hero h1 {
+    font-size: 46px;
+    font-weight: 800;
+    color: #333;
+}
+
+.contact-hero p {
+    max-width: 720px;
+    margin: 15px auto 0;
+    color: #555;
+    font-size: 18px;
+}
+
+/* SERVICES */
+.services-section {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.service-grid {
+    width: 88%;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 35px;
+}
+
+.service-card {
+    background: #fff;
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+/* FORM */
+.contact-form {
+    max-width: 900px;
+    margin: 50px auto;
+    background: #fff;
+    padding: 55px 60px;
+    border-radius: 22px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+.input-field {
+    margin-bottom: 22px;
+    text-align: left;
+}
+
+.box {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.box:focus {
+    border-color: #ff7fa8;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255,127,168,0.25);
+}
+
+.contact-form .btn {
+    background: linear-gradient(135deg, #ff7fa8, #ff4d6d);
+    color: #fff;
+    padding: 14px 22px;
+    border-radius: 14px;
+    font-weight: 600;
+}
+
+/* ADDRESS */
+.address-grid {
+    width: 88%;
+    margin: 50px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 35px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .input-row {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-form {
+        padding: 40px 24px;
+    }
+}
+
+</style>
+
+{% endblock %}

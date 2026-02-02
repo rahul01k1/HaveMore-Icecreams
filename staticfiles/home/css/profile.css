@@ -1,0 +1,252 @@
+
+
+.profile-wrapper {
+  text-align: center;
+  padding: 60px 16px;
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: #333;
+}
+
+.subtitle {
+  color: #666;
+  margin-top: 6px;
+  font-size: clamp(15px, 2vw, 18px);
+}
+
+.separator {
+  width: 180px;
+  margin-top: 10px;
+}
+
+/* ===============================
+   MAIN LAYOUT
+================================ */
+
+.outer-container {
+  display: flex;
+  gap: 40px;
+  margin-top: 50px;
+  max-width: 1200px;
+  margin-inline: auto;
+  align-items: flex-start;
+}
+
+/* ===============================
+   SIDEBAR
+================================ */
+
+.profile-sidebar {
+  flex: 0 0 320px;
+  background: #fff;
+  padding: 35px 25px;
+  border-radius: 18px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 5px solid #ffb6c1;
+  margin-bottom: 15px;
+  object-fit: cover;
+}
+
+.username {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.email {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.btn-edit {
+  display: inline-block;
+  padding: 10px 22px;
+  background: #ff7fa8;
+  color: #fff;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.side-links a {
+  display: block;
+  padding: 12px 0;
+  font-size: 16px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  transition: color 0.3s ease;
+}
+
+.side-links a:hover {
+  color: #ff7fa8;
+}
+
+/* ===============================
+   CONTENT AREA
+================================ */
+
+.profile-content {
+  flex: 1;
+}
+
+.section-card {
+  background: #fff;
+  padding: 32px;
+  border-radius: 18px;
+  margin-bottom: 35px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.07);
+}
+
+.section-title {
+  font-size: clamp(20px, 2.5vw, 26px);
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* INFO GRID */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.label {
+  color: #777;
+  font-size: 13px;
+}
+
+.value {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ===============================
+   ACTIONS
+================================ */
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+}
+
+.action-box {
+  background: #fafafa;
+  padding: 22px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.action-box img {
+  width: 48px;
+  margin-bottom: 10px;
+}
+
+.action-box p {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.action-box:hover {
+  transform: translateY(-4px);
+  background: #ffe4ed;
+}
+
+/* LOGOUT */
+.btn-logout {
+  display: block;
+  padding: 12px;
+  background: #ff7fa8;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-top: 25px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.btn-logout:hover {
+  background: #d93e59;
+}
+
+/* ===============================
+   TABLET (iPad)
+================================ */
+
+@media (max-width: 1024px) {
+  .outer-container {
+    gap: 30px;
+  }
+
+  .profile-sidebar {
+    flex: 0 0 280px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===============================
+   MOBILE
+================================ */
+
+@media (max-width: 768px) {
+  .outer-container {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .profile-sidebar,
+  .profile-content {
+    width: 100%;
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+  }
+
+  .btn-edit,
+  .btn-logout {
+    width: 100%;
+  }
+
+  .section-card {
+    padding: 24px;
+  }
+}
+
+/* ===============================
+   SMALL PHONES
+================================ */
+
+@media (max-width: 480px) {
+  .profile-wrapper {
+    padding: 40px 12px;
+  }
+
+  .separator {
+    width: 140px;
+  }
+
+  .action-box p {
+    font-size: 14px;
+  }
+}
+

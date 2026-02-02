@@ -1,0 +1,64 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block title %}{{ product.product_name }} - Product Detail{% endblock %}
+
+{% block content %}
+
+<!-- PRODUCT DETAIL WRAPPER -->
+<div class="product-detail-wrapper">
+
+    <!-- LEFT: PRODUCT IMAGE -->
+    <div class="product-image-box">
+        <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}">
+    </div>
+
+    <!-- RIGHT: PRODUCT DETAILS -->
+    <div class="product-info">
+
+        <h1 class="product-name">{{ product.product_name }}</h1>
+
+        <div class="product-price">₹{{ product.product_price }}</div>
+
+        <!-- STOCK BADGES -->
+        {% if product.product_stock > 9 %}
+            <span class="stock-status stock-in">In Stock</span>
+        {% elif product.product_stock == 0 %}
+            <span class="stock-status stock-out">Out of Stock</span>
+        {% else %}
+            <span class="stock-status stock-low">Hurry! Only {{ product.product_stock }} left</span>
+        {% endif %}
+
+        <p class="product-desc">
+            {{ product.product_detail }}
+        </p>
+
+        <!-- ADD TO CART + WISHLIST -->
+        <form action="{% url 'add_to_cart' product.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="qty" value="1">
+
+            <div class="action-buttons">
+
+                <button type="submit"
+                        formaction="{% url 'add_to_wishlist' product.id %}"
+                        class="btn">
+                    Add to Wishlist
+                </button>
+
+                <button type="submit" class="btn">
+                    Add to Cart
+                </button>
+
+            </div>
+        </form>
+
+        <!-- BUY NOW -->
+        <a href="{% url 'checkout' %}?buy_now={{ product.id }}" class="buy-now-btn">
+            Buy Now
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}

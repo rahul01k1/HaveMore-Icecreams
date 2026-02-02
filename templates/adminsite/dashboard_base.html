@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+   
+
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'adminsite/css/dashboard.css' %}">
+</head>
+<body>
+
+        {% block content %}{% endblock %}
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* ================= SIDEBAR TOGGLE ================= */
+    const menuBtn = document.querySelector(".mobile-toggle");
+    const sidebar = document.querySelector(".sidebar");
+
+    if (menuBtn && sidebar) {
+        menuBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle("active");
+        });
+    }
+
+    /* ================= PROFILE DROPDOWN ================= */
+    const profileBtn = document.getElementById("profileToggle");
+    const profileDropdown = document.querySelector(".profile-dropdown");
+
+    if (profileBtn && profileDropdown) {
+        profileBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            profileBtn.classList.toggle("active");
+            profileDropdown.classList.toggle("show");
+        });
+
+        document.addEventListener("click", () => {
+            profileBtn.classList.remove("active");
+            profileDropdown.classList.remove("show");
+        });
+    }
+
+    /* ================= NOTIFICATION BADGE ================= */
+    const notifyBtn = document.querySelector(".icon-btn[aria-label='Notifications']");
+
+    if (notifyBtn) {
+        // Create badge
+        const badge = document.createElement("span");
+        badge.className = "notify-badge";
+        badge.innerText = "3"; // static demo count
+        notifyBtn.appendChild(badge);
+
+        notifyBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            badge.style.display = "none"; // clear badge on click
+        });
+    }
+
+});
+
+function getCSRFToken() {
+    return document
+        .querySelector("meta[name='csrf-token']")
+        ?.getAttribute("content");
+}
+
+function logoutUser() {
+    fetch("{% url 'admin_logout_api' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCSRFToken(),
+        },
+        credentials: "same-origin"   // 🔴 REQUIRED for session auth
+    })
+    .then(res => {
+        if (res.status === 200) {
+            window.location.href = "{% url 'admin_login' %}";
+        } else {
+            console.error("Logout failed:", res.status);
+            window.location.href = "{% url 'admin_login' %}";
+        }
+    })
+    .catch(() => {
+        window.location.href = "{% url 'admin_login' %}";
+    });
+}
+
+
+</script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+
+
+</body>
+</html>

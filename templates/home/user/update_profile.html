@@ -1,0 +1,92 @@
+{% extends "home/base.html" %}
+{% load static %}
+{% block title %}Update Profile - Blue Sky Summer{% endblock %}
+
+{% block content %}
+
+<div class="update-wrapper">
+
+    <h1 class="title">Update Profile</h1>
+    <p class="subtitle">Manage your personal information and keep your account up to date</p>
+    <img src="{% static 'home/image/separator-img.png' %}" class="separator">
+
+    <div class="update-container">
+
+        <!-- LEFT SIDE — Profile Preview -->
+        <div class="profile-preview">
+
+            <h2 class="section-title">Profile Overview</h2>
+
+            <img src="{{ user.user_image.url }}" class="profile-img">
+
+            <h3 class="profile-name">{{ user.user_name }}</h3>
+            <p class="profile-email">{{ user.user_email }}</p>
+
+            <p class="note">You can update your photo, email, or password anytime</p>
+        </div>
+
+        <!-- RIGHT SIDE — Update Form -->
+        <div class="update-form">
+
+            <h2 class="section-title">Edit Your Details</h2>
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" name="user_name" value="{{ user.user_name }}" class="input big-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Your Email</label>
+                        <input type="email" name="user_email" value="{{ user.user_email }}" class="input big-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Profile Image</label>
+                        <input type="file" name="user_image" accept="home/image/*" class="input big-input file-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Old Password</label>
+                        <input type="password" name="user_old_password" class="input big-input" placeholder="Enter your current password">
+                    </div>
+
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" name="user_new_password" class="input big-input" placeholder="Create a strong password">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" name="user_confirm_password" class="input big-input" placeholder="Re-enter new password">
+                    </div>
+
+                </div>
+
+                <button type="submit" class="save-btn">Save Changes</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% if messages %}
+    {% for msg in messages %}
+        Swal.fire({
+            title: "{{ msg.tags|title }}",
+            text: "{{ msg }}",
+            icon: "{{ msg.tags }}",
+            confirmButtonColor: "#ff7fa8",
+        }).then(() => {
+            {% if msg.tags == "success" %}
+                window.location.href = "{% url 'profile' %}";
+            {% endif %}
+        });
+    {% endfor %}
+{% endif %}
+{% endblock %}

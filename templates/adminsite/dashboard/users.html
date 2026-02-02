@@ -1,0 +1,225 @@
+{% extends "adminsite/base.html" %}
+{% block title %}Users{% endblock %}
+
+{% block content %}
+
+<section class="dashboard" style="margin-left: 19vw;">
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <h1>Users Management</h1>
+    <button class="btn-primary" onclick="toggleAddUser()">+ Add User</button>
+</div>
+
+{% csrf_token %}
+
+<!-- ADD USER CARD -->
+<div class="card" id="addUserCard" style="display:none;">
+    <h3>Add New User</h3>
+
+    <div class="form-grid">
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="password" placeholder="Password">
+
+        <select id="role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn-primary" onclick="addUser()">Save</button>
+        <button class="btn-secondary" onclick="toggleAddUser()">Cancel</button>
+    </div>
+</div>
+
+<!-- EDIT USER CARD -->
+<div class="card" id="editUserCard" style="display:none;">
+    <h3>Edit User</h3>
+
+    <input type="hidden" id="edit_id">
+
+    <div class="form-grid">
+        <input type="text" id="edit_name" placeholder="Full Name">
+        <input type="email" id="edit_email" placeholder="Email Address">
+
+        <select id="edit_role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn-primary" onclick="updateUser()">Update</button>
+        <button class="btn-secondary" onclick="closeEditUser()">Cancel</button>
+    </div>
+</div>
+
+<!-- USERS TABLE -->
+<div class="card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th class="center">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="usersBody"></tbody>
+    </table>
+</div>
+
+</section>
+
+<script>
+const csrfToken = "{{ csrf_token }}";
+
+/* ---------------- TOGGLE ADD USER ---------------- */
+
+function toggleAddUser() {
+    const card = document.getElementById("addUserCard");
+    card.style.display = card.style.display === "none" ? "block" : "none";
+}
+
+/* ---------------- LOAD USERS ---------------- */
+
+function loadUsers() {
+    fetch("/adminsite/api/users/")
+        .then(res => res.json())
+        .then(data => {
+            const users = data.results || data;
+            const body = document.getElementById("usersBody");
+
+            body.innerHTML = "";
+
+            if (!users || users.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="center">No users found</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            users.forEach(u => {
+                body.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img
+                                    src="${u.user_image || '/static/home/image/user.jpg'}"
+                                    class="product-img"
+                                    alt="User">
+                                <div class="product-info">
+                                    <h4>${u.user_name}</h4>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${u.user_email}</td>
+                        <td><span class="badge">${u.role}</span></td>
+                        <td class="center">
+                            <button class="btn-secondary"
+                                onclick="openEditUser(
+                                    ${u.id},
+                                    '${u.user_name}',
+                                    '${u.user_email}',
+                                    '${u.role}'
+                                )">
+                                Edit
+                            </button>
+                            <button class="btn-danger"
+                                onclick="deleteUser(${u.id})">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(err => console.error("Load users error:", err));
+}
+
+/* ---------------- CREATE USER ---------------- */
+
+function addUser() {
+    fetch("/adminsite/api/users/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken
+        },
+        body: JSON.stringify({
+            user_name: document.getElementById("name").value,
+            user_email: document.getElementById("email").value,
+            user_password: document.getElementById("password").value,
+            role: document.getElementById("role").value
+        })
+    }).then(() => {
+        toggleAddUser();
+        loadUsers();
+        document.getElementById("name").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("password").value = "";
+    });
+}
+
+/* ---------------- EDIT USER ---------------- */
+
+function openEditUser(id, name, email, role) {
+    document.getElementById("edit_id").value = id;
+    document.getElementById("edit_name").value = name;
+    document.getElementById("edit_email").value = email;
+    document.getElementById("edit_role").value = role;
+
+    document.getElementById("addUserCard").style.display = "none";
+    document.getElementById("editUserCard").style.display = "block";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function closeEditUser() {
+    document.getElementById("editUserCard").style.display = "none";
+}
+
+/* ---------------- UPDATE USER ---------------- */
+
+function updateUser() {
+    const id = document.getElementById("edit_id").value;
+
+    fetch(`/adminsite/api/users/${id}/`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken
+        },
+        body: JSON.stringify({
+            user_name: document.getElementById("edit_name").value,
+            user_email: document.getElementById("edit_email").value,
+            role: document.getElementById("edit_role").value
+        })
+    }).then(() => {
+        closeEditUser();
+        loadUsers();
+    });
+}
+
+/* ---------------- DELETE USER ---------------- */
+
+function deleteUser(id) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+
+    fetch(`/adminsite/api/users/${id}/`, {
+        method: "DELETE",
+        headers: {
+            "X-CSRFToken": csrfToken
+        }
+    }).then(loadUsers);
+}
+
+/* INITIAL LOAD */
+loadUsers();
+</script>
+
+{% endblock %}

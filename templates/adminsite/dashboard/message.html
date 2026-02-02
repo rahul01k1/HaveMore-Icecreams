@@ -1,0 +1,193 @@
+{% extends "adminsite/base.html" %}
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<section class="dashboard" style="margin-left: 19vw;">
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <h1>Messages</h1>
+</div>
+
+{% csrf_token %}
+
+<!-- VIEW MESSAGE -->
+<div class="card" id="viewMessageCard" style="display:none;">
+    <h3>Message Details</h3>
+
+    <div class="message-view">
+        <p><strong>User:</strong> <span id="view_user"></span></p>
+        <p><strong>Name:</strong> <span id="view_name"></span></p>
+        <p><strong>Email:</strong> <span id="view_email"></span></p>
+        <p><strong>Subject:</strong> <span id="view_subject"></span></p>
+
+        <p><strong>Message:</strong></p>
+        <div class="message-box" id="view_message"></div>
+
+        <p><strong>Date:</strong> <span id="view_date"></span></p>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn-secondary" onclick="closeViewMessage()">Close</button>
+    </div>
+</div>
+
+<!-- MESSAGES TABLE -->
+<div class="card">
+    <h3>Messages List</h3>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#ID</th>
+                <th>User</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Subject</th>
+                <th>Date</th>
+                <th class="center">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="messagesBody"></tbody>
+    </table>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+        <button id="prevBtn" onclick="loadPrev()" disabled>Prev</button>
+        <span id="pageInfo"></span>
+        <button id="nextBtn" onclick="loadNext()" disabled>Next</button>
+    </div>
+</div>
+
+</section>
+
+<script>
+const csrfToken = "{{ csrf_token }}";
+
+let nextPageUrl = null;
+let prevPageUrl = null;
+let currentPage = 1;
+let currentPageUrl = "/adminsite/api/messages/";
+
+/* ---------------- LOAD MESSAGES ---------------- */
+function loadMessages(url = "/adminsite/api/messages/") {
+    currentPageUrl = url;
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            const messages = data.results || [];
+            const body = document.getElementById("messagesBody");
+
+            nextPageUrl = data.next;
+            prevPageUrl = data.previous;
+
+            body.innerHTML = "";
+
+            if (messages.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="center">No messages found</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            messages.forEach(m => {
+                body.innerHTML += `
+                    <tr>
+                        <td>#${m.id}</td>
+                        <td>${m.user_name}</td>
+                        <td>${m.name}</td>
+                        <td>${m.email}</td>
+                        <td>${m.subject}</td>
+                        <td>${m.created_at}</td>
+                        <td class="center">
+                            <button class="btn-secondary"
+                                onclick="openViewMessage(
+                                    '${escapeHtml(m.user_name)}',
+                                    '${escapeHtml(m.name)}',
+                                    '${escapeHtml(m.email)}',
+                                    '${escapeHtml(m.subject)}',
+                                    '${escapeHtml(m.message)}',
+                                    '${m.created_at}'
+                                )">
+                                View
+                            </button>
+                            <button class="btn-danger"
+                                onclick="deleteMessage(${m.id})">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("prevBtn").disabled = !prevPageUrl;
+            document.getElementById("nextBtn").disabled = !nextPageUrl;
+            document.getElementById("pageInfo").innerText = `Page ${currentPage}`;
+        });
+}
+
+/* ---------------- PAGINATION ---------------- */
+function loadNext() {
+    if (nextPageUrl) {
+        currentPage++;
+        loadMessages(nextPageUrl);
+    }
+}
+
+function loadPrev() {
+    if (prevPageUrl) {
+        currentPage--;
+        loadMessages(prevPageUrl);
+    }
+}
+
+/* ---------------- VIEW MESSAGE ---------------- */
+function openViewMessage(user, name, email, subject, message, date) {
+    document.getElementById("view_user").innerText = user;
+    document.getElementById("view_name").innerText = name;
+    document.getElementById("view_email").innerText = email;
+    document.getElementById("view_subject").innerText = subject;
+    document.getElementById("view_message").innerText = message;
+    document.getElementById("view_date").innerText = date;
+
+    document.getElementById("viewMessageCard").style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function closeViewMessage() {
+    document.getElementById("viewMessageCard").style.display = "none";
+}
+
+/* ---------------- DELETE MESSAGE ---------------- */
+function deleteMessage(id) {
+    if (!confirm("Delete this message?")) return;
+
+    fetch(`/adminsite/api/messages/${id}/`, {
+        method: "DELETE",
+        headers: {
+            "X-CSRFToken": csrfToken
+        }
+    }).then(() => {
+        loadMessages(currentPageUrl);
+    });
+}
+
+/* ---------------- SAFE HTML ESCAPE ---------------- */
+function escapeHtml(text) {
+    if (!text) return "";
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+/* INITIAL LOAD */
+loadMessages();
+</script>
+
+{% endblock %}

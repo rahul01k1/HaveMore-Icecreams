@@ -1,0 +1,205 @@
+{% extends "home/base.html" %}
+{% load static %}
+{% block title %}Blue Sky Summer – My Wishlist{% endblock %}
+
+{% block content %}
+
+<div class="products wishlist-page">
+
+  <!-- HEADING -->
+  <div class="heading">
+    <h1>My Wishlist</h1>
+    <p>Save your favorite delights and shop whenever you're ready.</p>
+    <img src="{% static 'home/image/separator-img.png' %}" alt="">
+  </div>
+
+  <!-- ================= SKELETON LOADER ================= -->
+  <div class="wishlist-grid skeleton-wrapper" id="wishlistSkeleton">
+    {% for i in "12345678" %}
+    <div class="product-card skeleton-card">
+      <div class="skeleton-img shimmer"></div>
+      <div class="skeleton-content">
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-btn"></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- ================= REAL CONTENT ================= -->
+  <div class="wishlist-grid" id="wishlistGrid" style="display:none;">
+
+    {% if items %}
+      {% for item in items %}
+      <div class="product-card wishlist-card"
+     data-id="{{ item.id }}"
+     {% if item.product.product_stock == 0 %}disabled{% endif %}>
+
+        <!-- IMAGE -->
+        <div class="wishlist-img-box">
+          <img src="{{ item.product.product_image.url }}"
+               alt="{{ item.product.product_name }}"
+               loading="lazy">
+        </div>
+
+        <!-- STOCK -->
+        {% if item.product.product_stock > 9 %}
+          <span class="stock-label stock-ok">In Stock</span>
+        {% elif item.product.product_stock == 0 %}
+          <span class="stock-label stock-out">Out of Stock</span>
+        {% else %}
+          <span class="stock-label stock-low">
+            Only {{ item.product.product_stock }} left
+          </span>
+        {% endif %}
+
+        <!-- CONTENT -->
+        <div class="wishlist-content">
+          <h3 class="product-title">{{ item.product.product_name }}</h3>
+          <p class="price">₹{{ item.price }}</p>
+
+          <div class="wishlist-footer">
+
+            <!-- ICON ACTIONS -->
+            <div class="wishlist-actions">
+              <button class="icon--btn"
+                      onclick="addToCart('{{ item.product.id }}')">
+                <img src="{% static 'home/image/shopping.png' %}">
+              </button>
+
+              <a href="{% url 'view_product' item.product.id %}"
+                 class="icon--btn">
+                <img src="{% static 'home/image/eye.png' %}">
+              </a>
+
+           <button class="icon--btn delete-btn"
+                    onclick="removeWishlist(this)">
+                <img src="{% static 'home/image/trash.png' %}">
+            </button>
+
+          <!-- BUY -->
+            <a href="{% url 'checkout' %}?buy_now={{ item.product.id }}"
+               class="btn">
+              Buy now
+            </a>
+            </div> 
+
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+
+    {% else %}
+      <div class="empty">
+        <img src="{% static 'home/image/icon/empty.png' %}" width="200">
+        <p>Your wishlist is empty! Start adding some treats.</p>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <!-- PAGINATION -->
+  {% if items.paginator.num_pages > 1 %}
+  <div class="pagination">
+    {% if items.has_previous %}
+      <a href="?page={{ items.previous_page_number }}" class="btn">Prev</a>
+    {% endif %}
+
+    <span class="page-info">
+      Page {{ items.number }} of {{ items.paginator.num_pages }}
+    </span>
+
+    {% if items.has_next %}
+      <a href="?page={{ items.next_page_number }}" class="btn">Next</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+
+ 
+<script>
+function removeWishlist(btn) {
+
+    const card = btn.closest(".wishlist-card");
+    const itemId = card.dataset.id;
+
+    Swal.fire({
+        title: "Remove Item?",
+        text: "Do you want to remove this item from your wishlist?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ff7fa8",
+        cancelButtonColor: "#777",
+        confirmButtonText: "Yes, remove"
+    }).then(result => {
+
+        if (!result.isConfirmed) return;
+
+        fetch(`/remove_wishlist/${itemId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (!data.success) {
+                Swal.fire("Error", "Unable to remove item", "error");
+                return;
+            }
+
+            /* Smooth remove */
+            card.style.opacity = "0";
+            card.style.transform = "scale(0.95)";
+
+            setTimeout(() => {
+                card.remove();
+                updateWishlistCount();
+            }, 300);
+
+            Swal.fire({
+                toast: true,
+                icon: "success",
+                title: "Removed from wishlist",
+                position: "top-end",
+                timer: 1200,
+                showConfirmButton: false
+            });
+        });
+    });
+}
+
+
+
+/* ================= SKELETON HIDE ================= */
+document.addEventListener("DOMContentLoaded", () => {
+  const skeleton = document.getElementById("wishlistSkeleton");
+  const grid = document.getElementById("wishlistGrid");
+
+  if (!skeleton || !grid) return;
+
+  setTimeout(() => {
+    skeleton.style.display = "none";
+    grid.style.display = "grid";
+  }, 300); // smooth UX
+});
+
+// Failsafe: never allow infinite skeleton
+setTimeout(() => {
+  const skeleton = document.getElementById("wishlistSkeleton");
+  const grid = document.getElementById("wishlistGrid");
+
+  if (skeleton && skeleton.style.display !== "none") {
+    skeleton.style.display = "none";
+    grid.style.display = "grid";
+  }
+}, 2000);
+</script>
+
+
+{% endblock %}
