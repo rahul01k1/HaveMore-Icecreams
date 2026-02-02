@@ -9,8 +9,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-dev-key-change-me")
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    "TopsAcademyVipul.pythonanywhere.com",
-    "TopsVipul.pythonanywhere.com",]
+    "topsacademyvipul.pythonanywhere.com",
+    "topsvipul.pythonanywhere.com",
+    ]
 
 
 # PythonAnywhere HTTPS proxy settings
