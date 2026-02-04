@@ -36,7 +36,7 @@
 }
 
 /* ===============================
-   IMAGE
+   IMAGE (DESKTOP)
 ================================ */
 .products-compact .box .image {
   width: 100%;
@@ -161,10 +161,12 @@
     border-radius: 9px;
   }
 
-  /* IMAGE (20% REDUCED) */
+  /* IMAGE — MOBILE REDUCED (NO UI DAMAGE) */
   .products-compact .box .image {
-    height: 76px;
-    border-radius: 9px 9px 0 0;
+    aspect-ratio: 1 / 1;   /* square cards */
+    height: auto;
+    max-height: 72px;
+    object-fit: contain;
   }
 
   /* CONTENT */
@@ -183,16 +185,29 @@
     margin-bottom: 4px;
   }
 
-  /* BUTTONS — ONE ROW */
+  /* BUTTONS */
   .products-compact .flex-btn {
+    display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;     /* 🔥 key line */
     gap: 4px;
   }
 
   .products-compact .btn {
+    flex: 1 1 0;
+    min-width: 0;          /* 🔥 prevents wrapping */
     height: 26px;
     font-size: 10.5px;
     padding: 0;
+    white-space: nowrap;   /* keep text in one line */
+  }
+    .products-compact .stock {
+    top: 6px;
+    left: 6px;
+    font-size: 10px;          /* 🔽 smaller text */
+    padding: 2px 6px;         /* 🔽 reduce height */
+    border-radius: 6px;
+    line-height: 1.2;
   }
 
   .products-compact .btn:first-child {
@@ -203,15 +218,15 @@
     flex: 0.9;
   }
 
-  /* ❤️ WISHLIST — INCREASED SIZE (MOBILE) */
+  /* ❤️ WISHLIST — TOUCH SAFE */
   .products-compact .wishlist-btn {
-    width: 30px;          /* ⬅️ increased */
+    width: 30px;
     height: 30px;
     border-radius: 8px;
   }
 
   .products-compact .wishlist-btn i {
-    font-size: 16px;      /* ⬅️ increased */
+    font-size: 16px;
   }
 }
 
@@ -237,7 +252,6 @@
     font-size: 10px;
   }
 
-  /* ❤️ Wishlist still tappable */
   .products-compact .wishlist-btn {
     width: 28px;
     height: 28px;
@@ -261,7 +275,6 @@
   flex-wrap: wrap;
 }
 
-/* Page info text */
 .pagination span {
   font-size: 13px;
   font-weight: 500;
@@ -269,14 +282,12 @@
   padding: 6px 10px;
   background: rgba(0,0,0,0.05);
   border-radius: 6px;
-  white-space: nowrap;
 }
 
-/* 🔥 Pagination buttons (override global .btn) */
 .pagination .btn {
-  flex: none !important;          /* ⛔ stop stretching */
-  width: auto !important;         /* ⛔ stop 70% width */
-  min-width: 72px;                /* compact but tappable */
+  flex: none !important;
+  width: auto !important;
+  min-width: 72px;
   height: 34px;
   padding: 0 14px;
   border-radius: 20px;
@@ -291,24 +302,14 @@
   color: #fff;
 
   box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-  transition: transform .2s ease, box-shadow .2s ease;
 }
 
-/* Hover */
-.pagination .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
-}
-
-/* Disabled */
 .pagination .btn.disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 
-/* ============================================================================
-   MOBILE OPTIMIZATION
-============================================================================ */
+/* MOBILE PAGINATION */
 @media (max-width: 480px) {
 
   .pagination {
@@ -322,7 +323,7 @@
   }
 
   .pagination .btn {
-    min-width: 64px;   /* smaller on mobile */
+    min-width: 64px;
     height: 32px;
     font-size: 12px;
     padding: 0 12px;

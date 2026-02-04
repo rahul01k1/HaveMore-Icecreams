@@ -218,6 +218,11 @@
   .orders-compact {
     padding: 8px;
   }
+    .status-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
 
   .orders-grid,
   .orders-skeleton-grid {
@@ -225,10 +230,11 @@
     gap: 10px; /* 🔥 very compact */
   }
 
-  .order-img,
-  .skeleton-img {
-    height: 135px; /* 🔥 smaller images */
-  }
+.order-img,
+.skeleton-img {
+  object-fit: contain;
+  background: #fff;
+}
 
   .order-content {
     padding: 10px;
@@ -245,6 +251,9 @@
   .order-btn {
     font-size: 11px;
     padding: 5px 10px;
+  }
+   .order-card {
+    overflow: visible;
   }
 }
 
