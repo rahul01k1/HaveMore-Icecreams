@@ -440,6 +440,7 @@ input[type='submit']:hover {
   background-color: var(--main-color);
 }
 
+
 /* ============================================================================
    MISSION SECTION
    ============================================================================ */
@@ -1279,3 +1280,442 @@ input[type='submit']:hover {
     font-size: 14px;
   }
 }
+/* ============================================================================
+   RESPONSIVE FIX — MOBILE & TABLET
+============================================================================ */
+
+/* ===============================
+   GENERAL MOBILE RESET
+================================ */
+@media (max-width: 768px) {
+
+  body {
+    overflow-x: hidden;
+  }
+
+  section {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* ============================================================================
+   CHEF / ABOUT
+============================================================================ */
+@media (max-width: 768px) {
+
+  .chef {
+    padding-left: 0;
+    padding: 40px 12px;
+  }
+
+  .chef .box .img {
+    width: 85%;
+    margin-bottom: -1rem;
+  }
+
+  .chef .box p {
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+  }
+}
+
+/* ============================================================================
+   STORY SECTION
+============================================================================ */
+@media (max-width: 768px) {
+
+  .story {
+    min-height: auto;
+    padding: 60px 14px;
+    background-attachment: scroll;
+  }
+
+  .story p {
+    font-size: 14px;
+    padding-bottom: 1rem;
+  }
+}
+
+/* ============================================================================
+   CONTAINER / IMAGE BOXES
+============================================================================ */
+@media (max-width: 768px) {
+
+  .container {
+    padding: 20px 12px;
+  }
+
+  .container .box-container .img-box {
+    margin: 0.5rem;
+  }
+
+  .container .box-container .img-box img {
+    width: 90%;
+    margin-bottom: -0.5rem;
+  }
+
+  .container .box-container p {
+    font-size: 14px;
+    margin-bottom: 1.2rem;
+  }
+}
+
+/* ============================================================================
+   TEAM SECTION
+============================================================================ */
+@media (max-width: 768px) {
+
+  .team {
+    padding: 60px 12px;
+    background-attachment: scroll;
+  }
+
+  .team .box-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .team .box-container .box .content {
+    padding: 20px 16px;
+    margin-top: -40px;
+    border-top-right-radius: 40px;
+    font-size: 14px;
+  }
+
+  .team .box-container .box .content .shap {
+    width: 50px;
+    height: 50px;
+    top: -50px;
+  }
+}
+
+/* ============================================================================
+   STANDARDS SECTION
+============================================================================ */
+@media (max-width: 768px) {
+
+  .standers {
+    padding: 60px 14px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .standers p {
+    font-size: 14px;
+  }
+
+  .standers i {
+    font-size: 20px;
+  }
+}
+
+
+/* ============================================================================
+   MISSION SECTION
+============================================================================ */
+@media (max-width: 768px) {
+
+  .mission {
+    padding: 40px 12px;
+  }
+
+  .mission .box-container .box .detail {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .mission .box-container .box .detail .img-box {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .mission .box-container .box .detail .img-box img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .mission .box-container .box .detail h2 {
+    font-size: 16px;
+  }
+
+  .mission .box-container .box .detail p {
+    font-size: 14px;
+  }
+
+  .mission .img {
+    margin-bottom: -1.5rem;
+  }
+}
+
+/* ============================================================================
+   VERY SMALL PHONES (≤ 360px)
+============================================================================ */
+@media (max-width: 360px) {
+
+  .chef .box p,
+  .container .box-container p,
+  .story p,
+  .standers p,
+  .mission .box-container .box .detail p {
+    font-size: 13px;
+  }
+
+  .user-text {
+    padding: 14px;
+  }
+
+  .user-img img {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* ============================================================================
+   FINAL MOBILE & TABLET RESPONSIVE OVERRIDES
+   (SAFE – DOES NOT BREAK DESKTOP)
+============================================================================ */
+
+/* ===============================
+   GLOBAL MOBILE FIX
+================================ */
+@media (max-width: 768px) {
+
+  body {
+    overflow-x: hidden;
+  }
+
+  section {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.35rem; }
+  h3 { font-size: 1.1rem; }
+}
+
+/* ============================================================================
+   CART – MOBILE FIX (PROFESSIONAL)
+============================================================================ */
+@media (max-width: 768px) {
+
+  .cart-container {
+    margin: 20px auto;
+    padding: 0 10px;
+  }
+
+  .cart-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .cart-img {
+    width: 110px;
+    height: 110px;
+  }
+
+  .cart-info h3 {
+    font-size: 16px;
+  }
+
+  .price {
+    font-size: 14px;
+  }
+
+  .qty-box {
+    width: 70px;
+    margin: 6px auto;
+  }
+
+  .remove-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .cart-actions {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .action-btn,
+  .checkout-btn,
+  .empty-btn {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .cart-total-box {
+    font-size: 18px;
+    text-align: center;
+  }
+}
+
+/* ============================================================================
+   PRODUCT DETAIL PAGE – MOBILE
+============================================================================ */
+@media (max-width: 768px) {
+
+  .product-detail-wrapper {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .product-image-box img {
+    height: 320px;
+  }
+
+  .product-info {
+    padding: 18px;
+  }
+
+  .product-name {
+    font-size: 22px;
+  }
+
+  .product-price {
+    font-size: 20px;
+  }
+
+  .product-desc {
+    font-size: 14px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .action-buttons .btn {
+    font-size: 16px;
+    padding: 10px;
+  }
+}
+
+/* ============================================================================
+   SIMILAR PRODUCTS – MOBILE
+============================================================================ */
+@media (max-width: 768px) {
+
+  .similar-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .similar-box {
+    padding: 12px;
+  }
+
+  .similar-box img {
+    height: 140px;
+  }
+
+  .similar-name {
+    font-size: 14px;
+  }
+
+  .similar-price {
+    font-size: 14px;
+  }
+}
+
+/* ============================================================================
+   TESTIMONIAL – FINAL MOBILE FIX (NO BREAKAGE)
+============================================================================ */
+@media (max-width: 768px) {
+
+  .testimonial {
+    width: 100%;
+    padding: 0 12px;
+  }
+
+  .slide-row {
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .slide-col {
+    width: 100%;
+    flex-shrink: 0;
+    height: auto;
+  }
+
+  .user-img {
+    position: static;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .user-img img {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+  }
+
+  .user-text {
+    position: static;
+    width: 100%;
+    transform: none;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .user-text p {
+    font-size: 14px;
+  }
+
+  .indicator {
+    margin-top: 1rem;
+  }
+}
+
+/* ============================================================================
+   FOOTER – MOBILE SAFE
+============================================================================ */
+@media (max-width: 768px) {
+
+  footer {
+    padding-top: 50px;
+  }
+
+  footer .content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  footer .bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+}
+
+/* ============================================================================
+   VERY SMALL DEVICES (≤ 360px)
+============================================================================ */
+@media (max-width: 360px) {
+
+  .cart-img {
+    width: 95px;
+    height: 95px;
+  }
+
+  .product-image-box img {
+    height: 260px;
+  }
+
+  .similar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .user-text {
+    padding: 14px;
+  }
+}
+

@@ -21,7 +21,7 @@
 .wishlist-grid {
   max-width: 1300px;
   margin: 3rem auto;
-  padding: 0 1rem;
+  padding: 0 12px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.6rem;
@@ -47,16 +47,16 @@
 ===================================================== */
 .stock-label {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 5px 12px;
-  font-size: 12px;
+  top: 10px;
+  left: 10px;
+  padding: 4px 10px;
+  font-size: 11px;
   font-weight: 600;
   border-radius: 6px;
   color: #fff;
 }
 
-.stock-ok { background: #22c55e; }
+.stock-ok  { background: #22c55e; }
 .stock-low { background: #f59e0b; }
 .stock-out { background: #ef4444; }
 
@@ -64,20 +64,21 @@
    CONTENT
 ===================================================== */
 .wishlist-content {
-  padding: 14px 16px;
+  padding: 14px 14px 12px;
 }
 
 .product-title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+  line-height: 1.3;
 }
 
 .price {
-  font-size: .95rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #14b8a6;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 /* =====================================================
@@ -87,19 +88,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .wishlist-actions {
   display: flex;
-  gap: 5px;
+  gap: 6px;
 }
 
 .icon--btn {
   background: #da6285;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -107,8 +107,8 @@
 }
 
 .icon--btn img {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
 /* =====================================================
@@ -128,14 +128,14 @@
 }
 
 .skeleton-content {
-  padding: 14px 16px;
+  padding: 14px;
 }
 
 .skeleton-line {
-  height: 14px;
+  height: 12px;
   background: #e5e7eb;
   border-radius: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .skeleton-line.short {
@@ -143,12 +143,13 @@
 }
 
 .skeleton-btn {
-  height: 36px;
+  height: 32px;
   background: #e5e7eb;
-  border-radius: 18px;
-  margin-top: 12px;
+  border-radius: 16px;
+  margin-top: 8px;
 }
 
+/* Shimmer */
 .shimmer {
   background: linear-gradient(
     90deg,
@@ -166,28 +167,87 @@
 }
 
 /* =====================================================
-   RESPONSIVE
+   RESPONSIVE BREAKPOINTS
 ===================================================== */
+
+/* ≤ 1200px (Laptop) */
 @media (max-width: 1200px) {
-  .wishlist-grid { grid-template-columns: repeat(3, 1fr); }
+  .wishlist-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
+/* ≤ 900px (Tablet) */
 @media (max-width: 900px) {
-  .wishlist-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 520px) {
-  .wishlist-grid { grid-template-columns: 1fr; }
-  .wishlist-img-box,
-  .skeleton-img { height: 200px; }
-
-  .wishlist-footer {
-    flex-direction: column;
-    align-items: stretch;
+  .wishlist-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
   }
 
-  .wishlist-footer .btn {
-    width: 100%;
-    text-align: center;
+  .wishlist-img-box,
+  .skeleton-img {
+    height: 180px;
+  }
+}
+
+/* ≤ 600px (Mobile – 2 per row like MENU) */
+@media (max-width: 600px) {
+
+  .wishlist-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px; /* 🔥 tighter gap */
+    padding: 0 8px;
+  }
+
+  .wishlist-img-box,
+  .skeleton-img {
+    height: 140px; /* 🔥 smaller image */
+  }
+
+  .wishlist-content {
+    padding: 10px;
+  }
+
+  .product-title {
+    font-size: 0.85rem;
+  }
+
+  .price {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+
+  /* 🔥 Button alignment fix */
+  .wishlist-footer {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .icon--btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+
+  .icon--btn img {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* ≤ 360px (Very small phones) */
+@media (max-width: 360px) {
+
+  .wishlist-grid {
+    gap: 8px;
+  }
+
+  .wishlist-img-box,
+  .skeleton-img {
+    height: 120px;
+  }
+
+  .product-title {
+    font-size: 0.8rem;
   }
 }
