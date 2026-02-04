@@ -10,6 +10,7 @@ footer {
   width: 100%;
   padding: clamp(80px, 15vw, 200px) 0 0;
   position: relative;
+   min-height: 300px;
 }
 
 /* Decorative overlay */
@@ -149,6 +150,8 @@ footer .bottom a {
 
   footer {
     padding-top: 40px;
+    min-height: auto;
+    padding-bottom: 20px;
   }
 
   footer .content {
