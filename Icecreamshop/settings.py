@@ -6,12 +6,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-dev-key-change-me")
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "topsacademyvipul.pythonanywhere.com",
     "topsvipul.pythonanywhere.com",
-    "127.0.0.1",
+    # "127.0.0.1",
     ]
 
 
@@ -29,19 +29,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Third-party
     'rest_framework',
-
-    # Local apps
     'home',
     'adminsite',
 ]
 
-
-# --------------------------------------------------
-# MIDDLEWARE
-# --------------------------------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -52,18 +44,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
-# --------------------------------------------------
-# URL / WSGI
-# --------------------------------------------------
 ROOT_URLCONF = 'Icecreamshop.urls'
 
 WSGI_APPLICATION = 'Icecreamshop.wsgi.application'
 
-
-# --------------------------------------------------
-# TEMPLATES
-# --------------------------------------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -79,10 +63,6 @@ TEMPLATES = [
     },
 ]
 
-
-# --------------------------------------------------
-# DATABASE (SQLite – OK for PythonAnywhere free tier)
-# --------------------------------------------------
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -90,10 +70,6 @@ DATABASES = {
     }
 }
 
-
-# --------------------------------------------------
-# AUTH PASSWORD VALIDATORS
-# --------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -102,23 +78,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# --------------------------------------------------
-# INTERNATIONALIZATION
-# --------------------------------------------------
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-
-# --------------------------------------------------
-# STATIC & MEDIA FILES
-# --------------------------------------------------
 STATIC_URL = '/static/'
 
-# IMPORTANT:
-# Do NOT use collectstatic if disk quota is tight.
-# Map /static/ directly in PythonAnywhere Web tab.
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 
@@ -128,16 +94,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
-
-# --------------------------------------------------
-# DEFAULT PK
-# --------------------------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-# --------------------------------------------------
-# DJANGO REST FRAMEWORK (FIXED)
-# --------------------------------------------------
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -149,13 +107,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-
-# --------------------------------------------------
-# CSRF / SECURITY (PythonAnywhere-safe)
-# --------------------------------------------------
 CSRF_TRUSTED_ORIGINS = [
     "https://TopsAcademyVipul.pythonanywhere.com",
     "https://TopsVipul.pythonanywhere.com",
+    # "http://127.0.0.1:8000",
 ]
 
 CSRF_COOKIE_SECURE = True

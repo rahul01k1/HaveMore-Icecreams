@@ -88,10 +88,6 @@
   font-size: 18px;
   color: #ff5c8a;
 }
-
-/* ===============================
-   CONTENT
-================================ */
 .products-compact .content {
   padding: 14px;
 }
@@ -115,9 +111,7 @@
   margin-bottom: 10px;
 }
 
-/* ===============================
-   BUTTONS (DESKTOP)
-================================ */
+
 .products-compact .flex-btn {
   display: flex;
   gap: 10px;
@@ -140,9 +134,22 @@
   border: none;
 }
 
-/* ============================================================================
-   MOBILE & TABLET — FINAL COMPACT LAYOUT
-============================================================================ */
+/* Hover states: ensure text and inner icons inherit the hover color */
+.products-compact .btn:hover {
+  background: linear-gradient(135deg, #ff7aa2, #ff4f87);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.products-compact .btn:hover i,
+.products-compact .btn:hover * {
+  color: inherit; }
+
+.products-compact .btn:first-child:hover {
+  filter: brightness(0.98);
+}
+
 @media (max-width: 768px) {
 
   /* EDGE TO EDGE */

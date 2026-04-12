@@ -13,7 +13,6 @@
     <img src="{% static 'home/image/separator-img.png' %}" alt="">
   </div>
 
-  <!-- ================= SKELETON LOADER ================= -->
   <div class="wishlist-grid skeleton-wrapper" id="wishlistSkeleton">
     {% for i in "12345678" %}
     <div class="product-card skeleton-card">
@@ -27,7 +26,6 @@
     {% endfor %}
   </div>
 
-  <!-- ================= REAL CONTENT ================= -->
   <div class="wishlist-grid" id="wishlistGrid" style="display:none;">
 
     {% if items %}
