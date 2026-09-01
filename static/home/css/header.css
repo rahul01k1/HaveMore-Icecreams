@@ -33,13 +33,15 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  background-color: #fff;
-  backdrop-filter: var(--backdrop-filter);
-  border-bottom: 2px solid var(--white-alpha-40);
-  box-shadow: 0 3px 6px #aaa;
-  padding: 0.2rem 1.25%;
-  min-height: 64px;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  padding: 0.5rem 1.25%;
+  min-height: 70px;
   overflow: visible;
+  transition: var(--transition);
 }
 
 .header .flex {
@@ -54,36 +56,84 @@
 }
 
 .header .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-left: 0;
+  transition: transform 0.25s ease;
+}
+
+.header .logo:hover {
+  transform: translateY(-1px);
+}
+
+.header .logo .brand-logo-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--pink-color, #ff7fa8);
+  box-shadow: 0 3px 10px rgba(255, 107, 129, 0.2);
   display: flex;
   align-items: center;
-  gap: 5px;
-  text-decoration: none;
-  margin-left: -6px;
+  justify-content: center;
+  background: #ffffff;
+  flex-shrink: 0;
 }
 
-.header .logo img {
-  height: 46px; /* slightly reduced */
-  width: auto;
-  object-fit: contain;
+.header .logo .brand-logo-badge .brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.header .logo .brand-text {
-  font-family: "Proxemic", "Segoe UI", Arial, sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  color: #f4a3c0;
-  letter-spacing: 0.4px;
-  white-space: nowrap;
+.header .logo .brand-typography {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.05;
+}
+
+.header .logo .brand-top {
+  font-family: "Outfit", "Poppins", sans-serif;
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  background: linear-gradient(135deg, #ff4f87, #e83872);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  display: block;
+}
+
+.header .logo .brand-bottom {
+  font-family: "Outfit", "Poppins", sans-serif;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 3.2px;
+  color: #64748b;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 1px;
 }
 
 
 .user-avatar {
-  width: 40px; /* reduced */
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
   border: 2px solid var(--pink-color);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  display: block;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-avatar:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(255, 107, 129, 0.3);
 }
 
 
@@ -92,30 +142,52 @@
 }
 
 .header .navbar a {
-  color: var(--main-color);
-  font-size: 0.85rem;
-  margin: 0 1rem;
+  color: #555;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 1.2rem;
   line-height: 1.4;
   padding: 0.6rem 0;
   transition: color 0.3s ease;
+  position: relative;
+}
+
+.header .navbar a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--main-color);
+  transition: width 0.3s ease;
 }
 
 .header .navbar a:hover {
-  color: var(--pink-color);
+  color: var(--main-color);
+}
+
+.header .navbar a:hover::after {
+  width: 100%;
 }
 
 .header .search-form {
   position: relative;
-
-  /* 🔥 increased */
   max-width: 32rem;
-
   width: 100%;
-  border: 1px solid var(--pink-color);
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.5);
   border-radius: 2rem;
   display: flex;
   align-items: center;
   padding: 0.45rem 1rem;
+  transition: var(--transition);
+}
+
+.header .search-form:focus-within {
+  background: #fff;
+  border-color: var(--main-color);
+  box-shadow: 0 0 15px rgba(255, 107, 129, 0.2);
 }
 
 .header .search-form input {
@@ -160,16 +232,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  width: 40px;  /* reduced */
-  height: 40px;
-
+  width: 44px;  
+  height: 44px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid var(--white-alpha-40);
-  box-shadow: var(--box-shadow);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   cursor: pointer;
   pointer-events: auto;
+  transition: var(--transition);
+}
+
+.icon-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 107, 129, 0.2);
 }
 
 .icon-btn i {
@@ -279,8 +355,19 @@
 
 
 @media (max-width: 480px) {
-  .header .logo .brand-text {
-    display: none;
+  .header .logo .brand-top {
+    font-size: 15px;
+    letter-spacing: 0.8px;
+  }
+
+  .header .logo .brand-bottom {
+    font-size: 7.5px;
+    letter-spacing: 2px;
+  }
+
+  .header .logo .brand-logo-badge {
+    width: 36px;
+    height: 36px;
   }
 
   .header .profile-detail {
@@ -345,16 +432,6 @@
 }
 
 
-.header .logo img {
-  height: 44px;         
-}
-
-.header .logo .brand-text {
-  line-height: 1.05;    
-  margin-top: -1px;    
-}
-
-
 .header .navbar a {
   line-height: 1.2;    
   padding-top: 6px;
@@ -374,23 +451,26 @@
 
 
 .header {
-  padding-right: 1%;    /
+  padding-right: 1.25%;
 }
 
 /* Icons closer & tighter */
 .header .icons {
-  gap: 6px;             /* was ~8px */
+  gap: 8px;
 }
 
-/* Icon buttons slightly smaller */
+/* Icon buttons */
 .icon-btn {
   width: 38px;
   height: 38px;
 }
 
-/* Avatar match icons */
-.user-avatar {
+/* User Icon Container */
+.user-icon {
   width: 38px;
   height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 

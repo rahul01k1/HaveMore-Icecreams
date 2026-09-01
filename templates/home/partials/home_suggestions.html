@@ -1,0 +1,232 @@
+{% load static %}
+
+<!-- TRUST & ASSURANCE TICKER BAR -->
+<div class="home-trust-bar">
+    <div class="trust-bar-container">
+        <div class="trust-card">
+            <div class="trust-icon-box">
+                <i class="bx bx-snowflake"></i>
+            </div>
+            <div class="trust-content">
+                <h4>-18°C Chilled Delivery</h4>
+                <p>Insulated packaging guaranteed</p>
+            </div>
+        </div>
+
+        <div class="trust-card">
+            <div class="trust-icon-box">
+                <i class="bx bx-leaf"></i>
+            </div>
+            <div class="trust-content">
+                <h4>100% Real Farm Milk</h4>
+                <p>Pure artisanal ingredients</p>
+            </div>
+        </div>
+
+        <div class="trust-card">
+            <div class="trust-icon-box">
+                <i class="bx bx-timer"></i>
+            </div>
+            <div class="trust-content">
+                <h4>Fast 30–45 Mins</h4>
+                <p>Melt-free doorstep speed</p>
+            </div>
+        </div>
+
+        <div class="trust-card">
+            <div class="trust-icon-box">
+                <i class="bx bx-heart"></i>
+            </div>
+            <div class="trust-content">
+                <h4>Loved by 10,000+</h4>
+                <p>4.9 Star customer rating</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SUGGESTED PRODUCTS SHOWCASE -->
+{% if featured_products %}
+<section class="home-suggestions-section">
+    <div class="suggestions-header">
+        <div class="suggestions-badge">
+            <i class="bx bxs-flame"></i> Fresh & Trending Suggestions
+        </div>
+        <h2 class="suggestions-main-title">Handcrafted Scoops For You 🍦</h2>
+        <p class="suggestions-subtitle">
+            Curated by our master creamery chefs — bursting with rich, velvety natural goodness.
+        </p>
+    </div>
+
+    <!-- SUGGESTIONS GRID (CENTERED & RESPONSIVE) -->
+    <div class="suggestions-products-grid">
+        {% for product in featured_products %}
+        <div class="suggestion-product-card {% if product.product_stock == 0 %}out-of-stock-card{% endif %}"
+             onclick="window.location.href='{% url 'view_product' product.id %}'">
+
+            <!-- MEDIA -->
+            <div class="suggestion-media-box">
+                <img src="{{ product.product_image.url }}" 
+                     alt="{{ product.product_name }}" 
+                     class="suggestion-img"
+                     loading="lazy">
+
+                <!-- STOCK BADGE -->
+                {% if product.product_stock > 9 %}
+                    <span class="stock-pill stock-in">
+                        <span class="dot"></span> In Stock
+                    </span>
+                {% elif product.product_stock == 0 %}
+                    <span class="stock-pill stock-out">
+                        <span class="dot"></span> Out of Stock
+                    </span>
+                {% else %}
+                    <span class="stock-pill stock-low">
+                        <span class="dot"></span> Only {{ product.product_stock }} left
+                    </span>
+                {% endif %}
+
+                <!-- QUICK WISHLIST BUTTON -->
+                <button type="button" 
+                        class="btn-quick-wishlist"
+                        onclick="event.stopPropagation(); quickAddWishlist('{{ product.id }}', this);"
+                        title="Save to Wishlist">
+                    <i class="bx bx-heart"></i>
+                </button>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="suggestion-content-box">
+                <h3 class="suggestion-title" title="{{ product.product_name }}">
+                    {{ product.product_name }}
+                </h3>
+
+                <div class="suggestion-price-row">
+                    <span class="price-val">₹{{ product.product_price }}</span>
+                    <span class="veg-dot-pill" title="100% Vegetarian">
+                        <span class="veg-dot-inner"></span>
+                    </span>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="suggestion-actions-row">
+                    {% if product.product_stock > 0 %}
+                        <a href="{% url 'checkout' %}?buy_now={{ product.id }}"
+                           class="btn-sugg-buy"
+                           onclick="event.stopPropagation();">
+                            <i class="bx bxs-zap"></i>
+                            <span>Buy</span>
+                        </a>
+                        <button type="button"
+                                class="btn-sugg-cart"
+                                onclick="event.stopPropagation(); addToCart('{{ product.id }}');"
+                                title="Add to Cart">
+                            <i class="bx bx-shopping-bag"></i>
+                        </button>
+                    {% else %}
+                        <button class="btn-sugg-buy disabled" disabled>
+                            <span>Sold Out</span>
+                        </button>
+                    {% endif %}
+
+                    <a href="{% url 'view_product' product.id %}"
+                       class="btn-sugg-view"
+                       onclick="event.stopPropagation();"
+                       title="View Details">
+                        <i class="bx bx-show"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- EXPLORE MORE MENU CTA -->
+    <div class="explore-menu-cta-wrap">
+        <a href="{% url 'menu' %}" class="btn-explore-full-menu">
+            <span>Explore Complete Menu & All Flavors</span>
+            <i class="bx bx-right-arrow-alt"></i>
+        </a>
+    </div>
+</section>
+{% endif %}
+
+<!-- WHY CHOOSE HAVEMORE CRAFTSMANSHIP BANNER -->
+<section class="craftsmanship-section">
+    <div class="craft-container">
+        <div class="craft-header">
+            <span class="craft-badge"><i class="bx bxs-award"></i> The HaveMore Difference</span>
+            <h2>Why Our Ice Creams Taste So Extraordinary</h2>
+            <p>Every batch is prepared with devotion to authentic flavor, dense creaminess, and real ingredients.</p>
+        </div>
+
+        <div class="craft-features-grid">
+            <div class="craft-card">
+                <div class="craft-icon">
+                    <i class="bx bx-bowl-rice"></i>
+                </div>
+                <h3>Slow Batch Churned</h3>
+                <p>Traditional slow-churning yields an ultra-velvety texture with minimal air overrun.</p>
+            </div>
+
+            <div class="craft-card">
+                <div class="craft-icon">
+                    <i class="bx bxs-droplet"></i>
+                </div>
+                <h3>Fresh Farm Cream</h3>
+                <p>Sourced from local certified dairy farms delivering pure richness in every bite.</p>
+            </div>
+
+            <div class="craft-card">
+                <div class="craft-icon">
+                    <i class="bx bx-sun"></i>
+                </div>
+                <h3>100% Real Fruit Extracts</h3>
+                <p>Infused with handpicked mangoes, strawberries, and vanilla beans. No artificial colors.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function quickAddWishlist(productId, btn) {
+    const icon = btn.querySelector('i');
+    fetch(`/add_to_wishlist/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error === "login_required") {
+            window.location.href = "{% url 'login' %}";
+            return;
+        }
+
+        btn.classList.toggle('active');
+        if (btn.classList.contains('active')) {
+            icon.className = 'bx bxs-heart';
+            Swal.fire({
+                toast: true,
+                icon: "success",
+                title: "Added to wishlist! 💖",
+                position: "top-end",
+                timer: 1200,
+                showConfirmButton: false
+            });
+        } else {
+            icon.className = 'bx bx-heart';
+        }
+
+        if (typeof updateWishlistCount === 'function') {
+            updateWishlistCount();
+        }
+    })
+    .catch(() => {
+        window.location.href = `/add_to_wishlist/${productId}/`;
+    });
+}
+</script>

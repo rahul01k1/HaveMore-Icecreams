@@ -69,6 +69,9 @@
         </thead>
         <tbody id="usersBody"></tbody>
     </table>
+    
+    <!-- PAGINATION -->
+    <div class="pagination" id="paginationContainer"></div>
 </div>
 
 </section>
@@ -84,61 +87,91 @@ function toggleAddUser() {
 }
 
 /* ---------------- LOAD USERS ---------------- */
+let allUsers = [];
+let currentPage = 1;
+const itemsPerPage = 10;
 
 function loadUsers() {
     fetch("/adminsite/api/users/")
         .then(res => res.json())
         .then(data => {
-            const users = data.results || data;
-            const body = document.getElementById("usersBody");
-
-            body.innerHTML = "";
-
-            if (!users || users.length === 0) {
-                body.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="center">No users found</td>
-                    </tr>
-                `;
-                return;
-            }
-
-            users.forEach(u => {
-                body.innerHTML += `
-                    <tr>
-                        <td>
-                            <div class="product-cell">
-                                <img
-                                    src="${u.user_image || '/static/home/image/user.jpg'}"
-                                    class="product-img"
-                                    alt="User">
-                                <div class="product-info">
-                                    <h4>${u.user_name}</h4>
-                                </div>
-                            </div>
-                        </td>
-                        <td>${u.user_email}</td>
-                        <td><span class="badge">${u.role}</span></td>
-                        <td class="center">
-                            <button class="btn-secondary"
-                                onclick="openEditUser(
-                                    ${u.id},
-                                    '${u.user_name}',
-                                    '${u.user_email}',
-                                    '${u.role}'
-                                )">
-                                Edit
-                            </button>
-                            <button class="btn-danger"
-                                onclick="deleteUser(${u.id})">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
+            allUsers = data.results || data;
+            currentPage = 1;
+            renderTable();
         })
         .catch(err => console.error("Load users error:", err));
+}
+
+function renderTable() {
+    const body = document.getElementById("usersBody");
+    body.innerHTML = "";
+
+    if (!allUsers || allUsers.length === 0) {
+        body.innerHTML = `<tr><td colspan="4" class="center">No users found</td></tr>`;
+        document.getElementById("paginationContainer").innerHTML = "";
+        return;
+    }
+
+    const totalPages = Math.ceil(allUsers.length / itemsPerPage);
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedUsers = allUsers.slice(start, end);
+
+    paginatedUsers.forEach(u => {
+        body.innerHTML += `
+            <tr>
+                <td>
+                    <div class="product-cell" style="display:flex; align-items:center; gap:12px;">
+                        <img src="${u.user_image || '/static/home/image/user.jpg'}" class="product-img" style="width:40px; height:40px; border-radius:50%; object-fit:cover;" alt="User">
+                        <div class="product-info">
+                            <strong style="font-size:14px; color:#334155;">${u.user_name}</strong>
+                        </div>
+                    </div>
+                </td>
+                <td>${u.user_email}</td>
+                <td><span class="badge ${u.role === 'admin' ? 'badge-danger' : 'badge-success'}">${u.role.toUpperCase()}</span></td>
+                <td class="center">
+                    <button class="btn-secondary" onclick="openEditUser(${u.id}, '${u.user_name}', '${u.user_email}', '${u.role}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn-danger" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+    const container = document.getElementById("paginationContainer");
+    let html = "";
+    
+    if (totalPages > 1) {
+        html += `<button class="btn ${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(1)">First</button>`;
+        html += `<button class="btn ${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(${currentPage - 1})">Prev</button>`;
+        
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+        
+        for (let i = startPage; i <= endPage; i++) {
+            html += `<span class="page-num ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</span>`;
+        }
+        
+        html += `<button class="btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${currentPage + 1})">Next</button>`;
+        html += `<button class="btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${totalPages})">Last</button>`;
+    }
+    
+    container.innerHTML = html;
+}
+
+function goToPage(page) {
+    const totalPages = Math.ceil(allUsers.length / itemsPerPage);
+    if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        renderTable();
+    }
 }
 
 /* ---------------- CREATE USER ---------------- */

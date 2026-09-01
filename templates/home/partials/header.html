@@ -4,9 +4,14 @@
     <section class="flex">
 
         <!-- LOGO -->
-        <a href="{% url 'home' %}" class="logo">
-            <img src="{% static 'home/image/logo.jpg' %}" alt="HaveMore IceCreams Logo">
-            <span class="brand-text">HaveMore IceCreams</span>
+        <a href="{% url 'home' %}" class="logo" title="HaveMore IceCreams">
+            <div class="brand-logo-badge">
+                <img src="{% static 'home/image/logo.jpg' %}" alt="HaveMore IceCreams Logo" class="brand-logo-img">
+            </div>
+            <div class="brand-typography">
+                <span class="brand-top">HAVEMORE</span>
+                <span class="brand-bottom">ICECREAMS</span>
+            </div>
         </a>
 
         <!-- NAVIGATION -->
@@ -58,17 +63,25 @@
                 <span id="cart-count">{{ cart_count }}</span>
             </a>
 
-            <!-- USER AVATAR (✅ FIXED ONLY HERE) -->
-             <!-- USER AVATAR -->
+            <!-- USER AVATAR -->
             <div class="user-icon">
-                {% if request.session.user_id %}
+                {% if current_user and current_user.user_image %}
+                    <img src="{{ current_user.user_image.url }}"
+                         id="user-btn"
+                         class="user-avatar"
+                         alt="Profile"
+                         onerror="this.src='{% static 'home/image/devil.jpeg' %}'">
+                {% elif request.session.user_id and request.session.user_image %}
                     <img src="/media/{{ request.session.user_image }}"
                          id="user-btn"
-                         class="user-avatar">
+                         class="user-avatar"
+                         alt="Profile"
+                         onerror="this.src='{% static 'home/image/devil.jpeg' %}'">
                 {% else %}
-                    <img src="{% static 'home/image/icon/profile.png' %}"
+                    <img src="{% static 'home/image/devil.jpeg' %}"
                          id="user-btn"
-                         class="user-avatar">
+                         class="user-avatar"
+                         alt="Profile">
                 {% endif %}
             </div>
 
@@ -77,11 +90,36 @@
         <!-- PROFILE DROPDOWN -->
         <div class="profile-detail">
 
-            {% if request.session.user_id %}
+            {% if current_user %}
+
+                {% if current_user.user_image %}
+                    <img src="{{ current_user.user_image.url }}"
+                         alt="Profile"
+                         class="profile-photo"
+                         onerror="this.src='{% static 'home/image/devil.jpeg' %}'">
+                {% else %}
+                    <img src="{% static 'home/image/devil.jpeg' %}"
+                         alt="Profile"
+                         class="profile-photo">
+                {% endif %}
+
+                <h3 class="username">{{ current_user.user_name }}</h3>
+
+                <div class="flex-btn">
+                    <a href="{% url 'profile' %}" class="btn">View Profile</a>
+                    <a href="{% url 'logout' %}" 
+                       onclick="return confirm('Logout from this website?');" 
+                       class="btn">
+                       Logout
+                    </a>
+                </div>
+
+            {% elif request.session.user_id %}
 
                 <img src="/media/{{ request.session.user_image }}"
                      alt="Profile"
-                     class="profile-photo">
+                     class="profile-photo"
+                     onerror="this.src='{% static 'home/image/devil.jpeg' %}'">
 
                 <h3 class="username">{{ request.session.user_name }}</h3>
 

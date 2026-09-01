@@ -33,6 +33,20 @@ if (menuBtn) {
 // =============================== SLIDER ===============================
 const slides = document.getElementsByClassName('slideBox');
 let i = 0;
+let slideInterval = null;
+
+// Initialize active index based on markup
+function initSlider() {
+    if (slides.length > 0) {
+        for (let idx = 0; idx < slides.length; idx++) {
+            if (slides[idx].classList.contains('active')) {
+                i = idx;
+                break;
+            }
+        }
+        startSlideTimer();
+    }
+}
 
 function nextSlide() {
     if (slides.length > 0) {
@@ -49,6 +63,23 @@ function prevSlide() {
         slides[i].classList.add('active');
     }
 }
+
+function startSlideTimer() {
+    if (slides.length > 1) {
+        clearInterval(slideInterval);
+        slideInterval = setInterval(nextSlide, 5000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initSlider();
+
+    const sliderContainer = document.querySelector('.slider-container');
+    if (sliderContainer) {
+        sliderContainer.addEventListener('mouseenter', () => clearInterval(slideInterval));
+        sliderContainer.addEventListener('mouseleave', startSlideTimer);
+    }
+});
 
 // ============================ TESTIMONIAL SLIDER ============================
 const btn = document.getElementsByClassName('btn1');

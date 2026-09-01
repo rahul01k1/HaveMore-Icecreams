@@ -3,33 +3,33 @@
 <div class="slider-container">
     <div class="slider">
 
-        <div class="slideBox">
+        <div class="slideBox active">
             <div class="textBox">
                 <h1>Cold treats are my kind <br>of comfort food<br>Exceptional flavours</h1>
                 <a href="{% url 'menu' %}" class="btn">Shop now</a>
             </div>
             <div class="imgBox">
-                <img src="{% static 'home/image/slider0.jpg' %}" alt="Slider Image 2">
+                <img src="{% static 'home/image/slider0.jpg' %}" alt="Cold Treats">
             </div>
         </div>
 
-        <div class="slideBox active">
+        <div class="slideBox">
             <div class="textBox">
                 <h1>We pride ourselves on <br>exceptional flavours</h1><br>
                 <a href="{% url 'menu' %}" class="btn">Shop now</a>
             </div>
             <div class="imgBox">
-                <img src="{% static 'home/image/slider.jpg' %}" alt="Slider Image 1">
+                <img src="{% static 'home/image/slider.jpg' %}" alt="Exceptional Flavours">
             </div>
         </div>
 
     </div>
 
     <ul class="controls">
-        <li onclick="nextSlide();" class="next">
+        <li onclick="nextSlide();" class="next" title="Next Slide" aria-label="Next slide">
             <i class="bx bx-right-arrow-alt"></i>
         </li>
-        <li onclick="prevSlide();" class="prev">
+        <li onclick="prevSlide();" class="prev" title="Previous Slide" aria-label="Previous slide">
             <i class="bx bx-left-arrow-alt"></i>
         </li>
     </ul>

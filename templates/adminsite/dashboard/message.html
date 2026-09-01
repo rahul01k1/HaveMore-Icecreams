@@ -4,190 +4,202 @@
 {% block content %}
 <section class="dashboard" style="margin-left: 19vw;">
 
-<!-- PAGE HEADER -->
-<div class="page-header">
-    <h1>Messages</h1>
-</div>
-
-{% csrf_token %}
-
-<!-- VIEW MESSAGE -->
-<div class="card" id="viewMessageCard" style="display:none;">
-    <h3>Message Details</h3>
-
-    <div class="message-view">
-        <p><strong>User:</strong> <span id="view_user"></span></p>
-        <p><strong>Name:</strong> <span id="view_name"></span></p>
-        <p><strong>Email:</strong> <span id="view_email"></span></p>
-        <p><strong>Subject:</strong> <span id="view_subject"></span></p>
-
-        <p><strong>Message:</strong></p>
-        <div class="message-box" id="view_message"></div>
-
-        <p><strong>Date:</strong> <span id="view_date"></span></p>
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>Messages</h1>
     </div>
 
-    <div class="form-actions">
-        <button class="btn-secondary" onclick="closeViewMessage()">Close</button>
+    {% csrf_token %}
+
+    <!-- VIEW MESSAGE MODAL -->
+    <div class="modal-overlay" id="viewMessageCard" onclick="if(event.target === this) closeViewMessage()">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Message Details</h3>
+                <button class="modal-close" onclick="closeViewMessage()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="message-view" style="font-size:14px; color:#334155; line-height:1.6;">
+                    <p><strong>User:</strong> <span id="view_user"></span></p>
+                    <p><strong>Name:</strong> <span id="view_name"></span></p>
+                    <p><strong>Email:</strong> <span id="view_email" style="color:#64748b;"></span></p>
+                    <p><strong>Subject:</strong> <strong id="view_subject" style="color:#1e293b;"></strong></p>
+
+                    <div style="margin-top:16px;">
+                        <strong>Message:</strong>
+                        <div id="view_message"
+                            style="margin-top:8px; padding:16px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0; white-space:pre-wrap;">
+                        </div>
+                    </div>
+                    <p style="margin-top:12px; font-size:12px; color:#94a3b8;"><i class="far fa-clock"></i> <span
+                            id="view_date"></span></p>
+                </div>
+
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn-secondary" onclick="closeViewMessage()">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<!-- MESSAGES TABLE -->
-<div class="card">
-    <h3>Messages List</h3>
+    <!-- MESSAGES TABLE -->
+    <div class="card">
+        <h3>Messages List</h3>
 
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>#ID</th>
-                <th>User</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Subject</th>
-                <th>Date</th>
-                <th class="center">Actions</th>
-            </tr>
-        </thead>
-        <tbody id="messagesBody"></tbody>
-    </table>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#ID</th>
+                    <th>User</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th class="center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="messagesBody"></tbody>
+        </table>
 
-    <!-- PAGINATION -->
-    <div class="pagination">
-        <button id="prevBtn" onclick="loadPrev()" disabled>Prev</button>
-        <span id="pageInfo"></span>
-        <button id="nextBtn" onclick="loadNext()" disabled>Next</button>
+        <!-- PAGINATION -->
+        <div class="pagination" id="paginationContainer"></div>
     </div>
-</div>
 
 </section>
 
 <script>
-const csrfToken = "{{ csrf_token }}";
+    const csrfToken = "{{ csrf_token }}";
 
-let nextPageUrl = null;
-let prevPageUrl = null;
-let currentPage = 1;
-let currentPageUrl = "/adminsite/api/messages/";
+    let nextPageUrl = null;
+    let prevPageUrl = null;
+    let currentPage = 1;
+    let currentPageUrl = "/adminsite/api/messages/";
 
-/* ---------------- LOAD MESSAGES ---------------- */
-function loadMessages(url = "/adminsite/api/messages/") {
-    currentPageUrl = url;
+    /* ---------------- LOAD MESSAGES ---------------- */
+    function loadMessages(url = "/adminsite/api/messages/") {
+        currentPageUrl = url;
 
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            const messages = data.results || [];
-            const body = document.getElementById("messagesBody");
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                const messages = data.results || [];
+                const body = document.getElementById("messagesBody");
 
-            nextPageUrl = data.next;
-            prevPageUrl = data.previous;
+                nextPageUrl = data.next;
+                prevPageUrl = data.previous;
 
-            body.innerHTML = "";
+                body.innerHTML = "";
 
-            if (messages.length === 0) {
-                body.innerHTML = `
+                if (messages.length === 0) {
+                    body.innerHTML = `
                     <tr>
                         <td colspan="7" class="center">No messages found</td>
                     </tr>
                 `;
-                return;
-            }
+                    return;
+                }
 
-            messages.forEach(m => {
-                body.innerHTML += `
+                messages.forEach(m => {
+                    body.innerHTML += `
                     <tr>
-                        <td>#${m.id}</td>
-                        <td>${m.user_name}</td>
+                        <td><strong>#${m.id}</strong></td>
+                        <td><strong style="color:#334155;">${m.user_name}</strong></td>
                         <td>${m.name}</td>
-                        <td>${m.email}</td>
-                        <td>${m.subject}</td>
-                        <td>${m.created_at}</td>
-                        <td class="center">
-                            <button class="btn-secondary"
-                                onclick="openViewMessage(
-                                    '${escapeHtml(m.user_name)}',
-                                    '${escapeHtml(m.name)}',
-                                    '${escapeHtml(m.email)}',
-                                    '${escapeHtml(m.subject)}',
-                                    '${escapeHtml(m.message)}',
-                                    '${m.created_at}'
-                                )">
-                                View
-                            </button>
-                            <button class="btn-danger"
-                                onclick="deleteMessage(${m.id})">
-                                Delete
-                            </button>
+                        <td><span style="color:#64748b;">${m.email}</span></td>
+                        <td><strong>${m.subject}</strong></td>
+                        <td style="font-size:13px; color:#94a3b8; white-space:nowrap;">${m.created_at}</td>
+                        <td class="center" style="white-space:nowrap;">
+                            <button class="btn-secondary" onclick="openViewMessage('${escapeHtml(m.user_name)}', '${escapeHtml(m.name)}', '${escapeHtml(m.email)}', '${escapeHtml(m.subject)}', '${escapeHtml(m.message)}', '${m.created_at}')" title="Read"><i class="fas fa-eye"></i></button>
+                            <button class="btn-danger" onclick="deleteMessage(${m.id})" title="Delete"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
+                });
+
+                renderPagination();
             });
-
-            document.getElementById("prevBtn").disabled = !prevPageUrl;
-            document.getElementById("nextBtn").disabled = !nextPageUrl;
-            document.getElementById("pageInfo").innerText = `Page ${currentPage}`;
-        });
-}
-
-/* ---------------- PAGINATION ---------------- */
-function loadNext() {
-    if (nextPageUrl) {
-        currentPage++;
-        loadMessages(nextPageUrl);
     }
-}
 
-function loadPrev() {
-    if (prevPageUrl) {
-        currentPage--;
-        loadMessages(prevPageUrl);
-    }
-}
+    /* ================= PAGINATION RENDER ================= */
+    function renderPagination() {
+        const container = document.getElementById("paginationContainer");
+        let html = "";
 
-/* ---------------- VIEW MESSAGE ---------------- */
-function openViewMessage(user, name, email, subject, message, date) {
-    document.getElementById("view_user").innerText = user;
-    document.getElementById("view_name").innerText = name;
-    document.getElementById("view_email").innerText = email;
-    document.getElementById("view_subject").innerText = subject;
-    document.getElementById("view_message").innerText = message;
-    document.getElementById("view_date").innerText = date;
-
-    document.getElementById("viewMessageCard").style.display = "block";
-    window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function closeViewMessage() {
-    document.getElementById("viewMessageCard").style.display = "none";
-}
-
-/* ---------------- DELETE MESSAGE ---------------- */
-function deleteMessage(id) {
-    if (!confirm("Delete this message?")) return;
-
-    fetch(`/adminsite/api/messages/${id}/`, {
-        method: "DELETE",
-        headers: {
-            "X-CSRFToken": csrfToken
+        if (prevPageUrl) {
+            html += `<button class="btn" onclick="loadPrev()">Prev</button>`;
+        } else {
+            html += `<button class="btn disabled">Prev</button>`;
         }
-    }).then(() => {
-        loadMessages(currentPageUrl);
-    });
-}
 
-/* ---------------- SAFE HTML ESCAPE ---------------- */
-function escapeHtml(text) {
-    if (!text) return "";
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+        html += `<span class="page-num active">${currentPage}</span>`;
 
-/* INITIAL LOAD */
-loadMessages();
+        if (nextPageUrl) {
+            html += `<button class="btn" onclick="loadNext()">Next</button>`;
+        } else {
+            html += `<button class="btn disabled">Next</button>`;
+        }
+
+        container.innerHTML = html;
+    }
+
+    /* ---------------- PAGINATION ---------------- */
+    function loadNext() {
+        if (nextPageUrl) {
+            currentPage++;
+            loadMessages(nextPageUrl);
+        }
+    }
+
+    function loadPrev() {
+        if (prevPageUrl) {
+            currentPage--;
+            loadMessages(prevPageUrl);
+        }
+    }
+
+    /* ---------------- VIEW MESSAGE ---------------- */
+    function openViewMessage(user, name, email, subject, message, date) {
+        document.getElementById("view_user").innerText = user;
+        document.getElementById("view_name").innerText = name;
+        document.getElementById("view_email").innerText = email;
+        document.getElementById("view_subject").innerText = subject;
+        document.getElementById("view_message").innerText = message;
+        document.getElementById("view_date").innerText = date;
+
+        document.getElementById("viewMessageCard").classList.add("show");
+    }
+
+    function closeViewMessage() {
+        document.getElementById("viewMessageCard").classList.remove("show");
+    }
+
+    /* ---------------- DELETE MESSAGE ---------------- */
+    function deleteMessage(id) {
+        if (!confirm("Delete this message?")) return;
+
+        fetch(`/adminsite/api/messages/${id}/`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRFToken": csrfToken
+            }
+        }).then(() => {
+            loadMessages(currentPageUrl);
+        });
+    }
+
+    /* ---------------- SAFE HTML ESCAPE ---------------- */
+    function escapeHtml(text) {
+        if (!text) return "";
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    /* INITIAL LOAD */
+    loadMessages();
 </script>
 
 {% endblock %}

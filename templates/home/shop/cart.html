@@ -5,9 +5,12 @@
 {% block content %}
 
 <div class="cart-container">
+    <div class="cart-header">
+        <h1>🛒 Your Sweet Cart</h1>
+        <p>Review your delicious selections before checking out!</p>
+    </div>
 
-    <h1>Your Cart</h1>
-
+    {% if cart_items %}
     <!-- CART ITEMS -->
     <div id="cart-items">
         {% for item in cart_items %}
@@ -30,8 +33,8 @@
             <div style="margin-left:auto; text-align:right;">
                 <p><strong>Subtotal:</strong> ₹<span id="subtotal-{{ item.id }}">{{ item.subtotal }}</span></p>
 
-                <button class="remove-btn" onclick="removeItem({{ item.id }})">
-                    Remove
+                <button class="remove-btn" onclick="removeItem({{ item.id }})" title="Remove item">
+                    <i class="bx bx-trash"></i> Remove
                 </button>
             </div>
         </div>
@@ -40,13 +43,25 @@
 
     <!-- TOTAL BOX -->
     <div class="cart-total-box">
-        Total Amount: ₹<span id="total">{{ total_amount }}</span>
+        <span>Total Amount:</span>
+        <span class="total-price">₹<span id="total">{{ total_amount }}</span></span>
     </div>
 
-    <br>
+    <div class="cart-actions">
+        <a class="empty-btn" onclick="emptyCart()"><i class="bx bx-x-circle"></i> Empty Cart</a>
+        <a href="{% url 'checkout' %}" class="checkout-btn">Proceed to Checkout <i class="bx bx-right-arrow-alt"></i></a>
+    </div>
 
-    <a class="empty-btn" onclick="emptyCart()">Empty Cart</a>
-    <a href="{% url 'checkout' %}" class="checkout-btn">Proceed to Checkout</a>
+    {% else %}
+    <!-- EMPTY STATE -->
+    <div class="empty-cart-state">
+        <img src="{% static 'home/image/icon/empty.png' %}" alt="Empty Cart" class="empty-cart-img">
+        <h2>Your Cart is Empty!</h2>
+        <p>Looks like you haven't added any sweet treats yet. Let's change that!</p>
+        <a href="{% url 'menu' %}" class="btn shop-now-btn">Start Shopping</a>
+    </div>
+    {% endif %}
+
 </div>
 
 

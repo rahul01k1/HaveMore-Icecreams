@@ -6,18 +6,17 @@
 
 
 <!--------------------------------------banner section------------------------------------------------------------------------>
- {% comment %} <div class="banner">
-    <div class="detail">
-        <h1>about us</h1>
-        <p>Step into a world of creamy indulgence where each bite is a moment of pure bliss. 
-            From classic flavors to bold new creations, there's something delicious for everyone!</p>
+<section class="about-hero">
+    <div class="hero-content">
+        <h1>About Us</h1>
+        <p>Step into a world of creamy indulgence where each bite is a moment of pure bliss. From classic flavors to bold new creations, there's something delicious for everyone!</p>
 
-        <span>
-            <a href="{% url 'home' %}">home</a>
-            <i class="bx bx-right-arrow-alt"></i> About Us
+        <span class="breadcrumb">
+            <a href="{% url 'home' %}">Home</a>
+            <i class="bx bx-chevron-right"></i> About Us
         </span>
     </div>
-</div>  {% endcomment %}
+</section>
 
 <!--------------------------------------ceaf section------------------------------------------------------------------------>
 <div class="chef">
@@ -122,18 +121,20 @@
 </div>
 
 <!-----------------------------------------------info---------------------------------------------------------------->
-<div class="standers">
-    <div class="detail">
-        <div class="heading">
-            <h1>Our Standards</h1>
-            <img src="{% static 'home/image/separator-img.png' %}" alt="">
-        </div>
+<div class="standards-section">
+    <div class="heading">
+        <h1>Our Standards</h1>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+    </div>
 
-        <p>Step into a world of creamy indulgence where each bite is a moment of pure bliss.</p> <img src="{% static 'home/image/icon/wl.png' %}">
-        <p>"Scoops of happiness served daily!"</p> <img src="{% static 'home/image/icon/wl.png' %}">
-        <p>"Chill vibes, colder treats!"</p> <img src="{% static 'home/image/icon/wl.png' %}">
-        <p>"Your sweet escape from the heat."</p> <img src="{% static 'home/image/icon/wl.png' %}">
-        <p>"Where every flavor tells a story."</p> <img src="{% static 'home/image/icon/wl.png' %}">
+    <div class="standards-content">
+        <p>Step into a world of creamy indulgence where each bite is a moment of pure bliss.</p>
+        <ul class="standards-list">
+            <li><i class="bx bxs-star"></i> "Scoops of happiness served daily!"</li>
+            <li><i class="bx bxs-star"></i> "Chill vibes, colder treats!"</li>
+            <li><i class="bx bxs-star"></i> "Your sweet escape from the heat."</li>
+            <li><i class="bx bxs-star"></i> "Where every flavor tells a story."</li>
+        </ul>
     </div>
 </div>
 
@@ -263,8 +264,293 @@
     </div>
 </div>
 
+<!------------------------------------------------------why choose us-------------------------------------------------------->
+<div class="why-choose-us">
+    <div class="heading">
+        <h1>Why Choose Us?</h1>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+    </div>
 
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="icon-circle"><i class="bx bxs-leaf"></i></div>
+            <h3>100% Natural</h3>
+            <p>We use only the finest natural ingredients with no artificial preservatives or flavors.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon-circle"><i class="bx bxs-heart"></i></div>
+            <h3>Made with Love</h3>
+            <p>Every batch is handcrafted in small quantities to ensure the highest quality and taste.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon-circle"><i class="bx bxs-award"></i></div>
+            <h3>Award Winning</h3>
+            <p>Recognized globally for our unique flavors and unparalleled creamy texture.</p>
+        </div>
+    </div>
+</div>
 
+<style>
+/* ================= HERO ================= */
+.about-hero {
+    background: linear-gradient(135deg, var(--pink-opacity), #fff0f5);
+    padding: 60px 20px;
+    text-align: center;
+}
 
+.about-hero h1 {
+    font-size: 46px;
+    font-weight: 800;
+    color: #333;
+}
+
+.about-hero p {
+    max-width: 720px;
+    margin: 15px auto 0;
+    color: #555;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.breadcrumb {
+    display: inline-block;
+    margin-top: 20px;
+    font-weight: 600;
+    color: #888;
+}
+
+.breadcrumb a {
+    color: var(--main-color);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.breadcrumb a:hover {
+    color: var(--pink-color);
+}
+
+/* ================= CHEF & TEAM ================= */
+.chef .box-container, .team .box-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.chef .box {
+    padding: 25px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease;
+}
+
+.chef .box:hover {
+    transform: translateY(-5px);
+}
+
+.team .box {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.team .box:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(218, 98, 133, 0.15);
+}
+
+/* ================= STANDARDS ================= */
+.standards-section {
+    padding: 50px 20px;
+    background: linear-gradient(135deg, #fff, var(--pink-opacity));
+    text-align: center;
+}
+
+.standards-content {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+}
+
+.standards-content p {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.standards-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-size: 16px;
+    color: #666;
+}
+
+.standards-list li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.standards-list i {
+    color: var(--main-color);
+    font-size: 20px;
+}
+
+/* ================= MISSION ================= */
+.mission {
+    padding: 60px 4%;
+}
+
+.mission .box-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+}
+
+.mission .box-container .box:first-child {
+    flex: 1 1 500px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.mission .box-container .box .heading {
+    grid-column: 1 / -1; /* Make heading span full width */
+    text-align: left;
+}
+
+.mission .detail {
+    background: #fff;
+    padding: 25px 20px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.mission .detail:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(218, 98, 133, 0.12);
+}
+
+.mission .detail .img-box {
+    margin: 0 auto 15px;
+    background: var(--pink-opacity);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.mission .detail .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border: none !important; /* Override user_style.css dashed border */
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    transition: transform 0.4s ease;
+}
+
+.mission .detail:hover .img-box img {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.mission .detail h2 {
+    color: var(--main-color);
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.mission .detail p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.mission .box:last-child {
+    flex: 1 1 400px;
+    display: flex;
+    justify-content: center;
+}
+
+.mission .box:last-child img {
+    max-width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* ================= WHY CHOOSE US ================= */
+.why-choose-us {
+    padding: 50px 20px;
+    background: #fdfdfd;
+    text-align: center;
+}
+
+.features-grid {
+    max-width: 1100px;
+    margin: 40px auto 0;
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.feature-card {
+    background: #fff;
+    padding: 30px 20px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(218, 98, 133, 0.1);
+}
+
+.feature-card .icon-circle {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    background: var(--pink-opacity);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-card .icon-circle i {
+    font-size: 35px;
+    color: var(--main-color);
+}
+
+.feature-card h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.6;
+}
+</style>
 {% endblock content %}
 

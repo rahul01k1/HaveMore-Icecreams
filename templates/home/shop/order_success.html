@@ -1,81 +1,236 @@
 {% extends "home/base.html" %}
 {% load static %}
 
-{% block title %}Order Success{% endblock %}
+{% block title %}Order Confirmed #{{ order.id }} - Blue Sky Summer{% endblock %}
 
 {% block content %}
 
-<div class="invoice-wrapper">
+<link rel="stylesheet" href="{% static 'home/css/invoice.css' %}">
 
-    <!-- HEADER -->
-    <div class="invoice-header">
-        <div class="success-icon">✔</div>
-        <h2>Order Confirmed</h2>
-        <p>Thank you for shopping with <strong>Blue Sky Summer</strong></p>
+<div class="success-page-container">
+
+    <!-- HERO ANIMATION & CONFIRMATION -->
+    <div class="success-hero">
+
+        <!-- Animated SVG Checkmark -->
+        <div class="success-checkmark-wrapper">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+        </div>
+
+        <span class="success-badge">Order Confirmed</span>
+        <h1 class="success-title">Thank You For Your Order! 🎉</h1>
+        <p class="success-subtitle">
+            Woohoo! Your order <strong class="order-id-highlight">#{{ order.id }}</strong> has been placed successfully.
+        </p>
+
+        <!-- Delivery ETA Card -->
+        <div class="delivery-eta-card">
+            <div class="eta-icon">
+                <i class="bx bx-rocket"></i>
+            </div>
+            <div class="eta-content">
+                <h4>Estimated Delivery</h4>
+                <p>Today, within <strong>30–45 minutes</strong> (Chilled & Fresh)</p>
+            </div>
+        </div>
     </div>
 
-    <!-- INVOICE CARD -->
-    <div class="invoice-card">
-
-        <!-- ORDER META -->
-        <div class="invoice-meta">
-            <div>
-                <p><span>Order ID</span>#{{ order.id }}</p>
-                <p><span>Order Status</span>{{ order.status }}</p>
-                <p><span>Payment</span>{{ order.payment_status }}</p>
+    <!-- ORDER TRACKING TIMELINE -->
+    <div class="order-timeline-card">
+        <h3 class="timeline-title">Order Status</h3>
+        <div class="timeline-steps">
+            <div class="timeline-step completed">
+                <div class="step-icon"><i class="bx bx-check"></i></div>
+                <div class="step-info">
+                    <span class="step-name">Order Placed</span>
+                    <span class="step-time">{{ order.date|date:"h:i A" }}</span>
+                </div>
             </div>
-            <div>
-                <p><span>Name</span>{{ order.name }}</p>
-                <p><span>Email</span>{{ order.email }}</p>
-                <p><span>Phone</span>{{ order.number }}</p>
+            <div class="timeline-step active">
+                <div class="step-icon"><i class="bx bx-package"></i></div>
+                <div class="step-info">
+                    <span class="step-name">Preparation</span>
+                    <span class="step-time">In Kitchen</span>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="step-icon"><i class="bx bx-cycling"></i></div>
+                <div class="step-info">
+                    <span class="step-name">Out for Delivery</span>
+                    <span class="step-time">Next</span>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="step-icon"><i class="bx bx-home-heart"></i></div>
+                <div class="step-info">
+                    <span class="step-name">Delivered</span>
+                    <span class="step-time">Enjoy!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAILS GRID: DELIVERY & PAYMENT -->
+    <div class="order-details-grid">
+
+        <!-- Delivery Address Card -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <i class="bx bx-map-pin"></i>
+                <h3>Delivery Address</h3>
+                <span class="address-tag">{{ order.address_type|default:"Home" }}</span>
+            </div>
+            <div class="detail-card-body">
+                <p class="recipient-name">{{ order.name }}</p>
+                <p class="recipient-address">{{ order.address }}</p>
+                <div class="recipient-contacts">
+                    <span><i class="bx bx-phone"></i> +91 {{ order.number }}</span>
+                    <span><i class="bx bx-envelope"></i> {{ order.email }}</span>
+                </div>
             </div>
         </div>
 
-        <!-- ADDRESS -->
-        <div class="invoice-address">
-            <p><strong>Delivery Address ({{ order.address_type }})</strong></p>
-            <p>{{ order.address }}</p>
+        <!-- Payment Info Card -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <i class="bx bx-credit-card-front"></i>
+                <h3>Payment Details</h3>
+                <span class="status-tag {% if order.payment_status|lower == 'paid' %}paid{% else %}pending{% endif %}">
+                    {{ order.payment_status|upper }}
+                </span>
+            </div>
+            <div class="detail-card-body">
+                <div class="info-row">
+                    <span class="info-label">Order Number:</span>
+                    <span class="info-value">#{{ order.id }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Order Date:</span>
+                    <span class="info-value">{{ order.date|date:"d M Y, h:i A" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Payment Mode:</span>
+                    <span class="info-value">{{ order.payment_status|title }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Order Status:</span>
+                    <span class="info-value status-badge">{{ order.status }}</span>
+                </div>
+            </div>
         </div>
 
-        <!-- ITEMS TABLE -->
-        <div class="invoice-items">
-            <div class="items-head">
+    </div>
+
+    <!-- ORDERED ITEMS CARD -->
+    <div class="items-card">
+        <div class="items-header">
+            <h3>Items in this Order ({{ order_items|length }})</h3>
+        </div>
+
+        <div class="items-table">
+            <div class="items-table-head">
                 <span>Product</span>
-                <span>Price</span>
-                <span>Qty</span>
-                <span>Total</span>
+                <span class="text-center">Qty</span>
+                <span class="text-right">Price</span>
+                <span class="text-right">Total</span>
             </div>
 
             {% for item in order_items %}
-            <div class="items-row">
-                <div class="product">
-                    <img src="{{ item.product.product_image.url }}" alt="">
-                    <span>{{ item.product.product_name }}</span>
+            <div class="items-table-row">
+                <div class="item-product-info">
+                    <img src="{{ item.product.product_image.url }}" alt="{{ item.product.product_name }}" class="product-thumb">
+                    <div>
+                        <h4 class="product-name">{{ item.product.product_name }}</h4>
+                        <span class="seller-name">Sold by HaveMore IceCreams</span>
+                    </div>
                 </div>
-                <span>₹{{ item.price }}</span>
-                <span>{{ item.qty }}</span>
-                <span><strong>₹{{ item.total_price }}</strong></span>
+                <div class="text-center">
+                    <span class="qty-pill">x{{ item.qty }}</span>
+                </div>
+                <div class="text-right price-val">
+                    ₹{{ item.price }}
+                </div>
+                <div class="text-right total-val">
+                    ₹{{ item.total_price }}
+                </div>
             </div>
             {% endfor %}
         </div>
 
-        <!-- TOTAL -->
-        <div class="invoice-total">
-            <span>Total Paid</span>
-            <strong>₹{{ total_amount }}</strong>
+        <!-- Summary Calculation -->
+        <div class="order-summary-box">
+            <div class="summary-line">
+                <span>Subtotal</span>
+                <span>₹{{ total_amount }}</span>
+            </div>
+            <div class="summary-line">
+                <span>Chilled Packaging</span>
+                <span class="free-text">FREE</span>
+            </div>
+            <div class="summary-line">
+                <span>Delivery Charge</span>
+                <span class="free-text">FREE</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-line grand-total-line">
+                <span>Grand Total</span>
+                <span class="grand-total-price">₹{{ total_amount }}</span>
+            </div>
         </div>
-
     </div>
 
     <!-- ACTION BUTTONS -->
-    <div class="invoice-actions">
-        <a href="{% url 'home' %}" class="btn-primary">Continue Shopping</a>
-        <a href="{% url 'download_invoice' order.id %}" class="btn-secondary">
-            Download Invoice (PDF)
+    <div class="success-actions no-print">
+        <a href="{% url 'download_invoice' order.id %}" class="btn-action btn-download-invoice">
+            <i class="bx bxs-file-pdf"></i>
+            <span>Download Invoice (PDF)</span>
+        </a>
+        <button type="button" onclick="window.print()" class="btn-action btn-print-receipt">
+            <i class="bx bx-printer"></i>
+            <span>Print Receipt</span>
+        </button>
+        <a href="{% url 'order' %}" class="btn-action btn-track-orders">
+            <i class="bx bx-list-ul"></i>
+            <span>View All Orders</span>
+        </a>
+        <a href="{% url 'menu' %}" class="btn-action btn-shop-more">
+            <i class="bx bx-shopping-bag"></i>
+            <span>Order More Treats</span>
         </a>
     </div>
 
 </div>
 
+<!-- Canvas Confetti Effect -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Trigger celebration confetti
+    if (typeof confetti === 'function') {
+        const count = 200;
+        const defaults = {
+            origin: { y: 0.7 }
+        };
+
+        function fire(particleRatio, opts) {
+            confetti({
+                ...defaults,
+                ...opts,
+                particleCount: Math.floor(count * particleRatio),
+                colors: ['#ff6b81', '#ffa8b6', '#22c55e', '#3b82f6', '#fbbf24']
+            });
+        }
+
+        fire(0.25, { spread: 26, startVelocity: 55 });
+        fire(0.2, { spread: 60 });
+        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+        fire(0.1, { spread: 120, startVelocity: 45 });
+    }
+});
+</script>
 
 {% endblock %}

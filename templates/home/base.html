@@ -8,6 +8,13 @@
     <title>{% block title %}{% endblock title %}</title>
 
     <link rel="icon" type="image/x-icon" href="{% static 'home/image/favicon.ico' %}">
+    <link rel="icon" type="image/png" href="{% static 'home/image/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'home/image/favicon.png' %}">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{% static 'home/css/user_style.css' %}">
@@ -49,7 +56,20 @@
     <!-- Global Count Updaters -->
  
     <script>
-function toggleWishlist(btn, productId) {
+function toggleWishlist(btnOrId, productId) {
+    let btn = null;
+    let id = null;
+
+    if (productId !== undefined) {
+        btn = (typeof btnOrId === "string" || typeof btnOrId === "number") ? document.getElementById(btnOrId) : btnOrId;
+        id = productId;
+    } else {
+        id = btnOrId;
+        btn = document.getElementById("wishlistToggleBtn") || (id ? document.querySelector(`[data-product-id="${id}"]`) : null);
+    }
+
+    if (!id) return;
+
     fetch("/toggle_wishlist/", {
         method: "POST",
         headers: {
@@ -57,7 +77,7 @@ function toggleWishlist(btn, productId) {
             "X-CSRFToken": "{{ csrf_token }}",
             "X-Requested-With": "XMLHttpRequest"
         },
-        body: JSON.stringify({ product_id: productId })
+        body: JSON.stringify({ product_id: id })
     })
     .then(res => res.json())
     .then(data => {
@@ -73,12 +93,18 @@ function toggleWishlist(btn, productId) {
             return;
         }
 
-        const icon = btn.querySelector("i");
-        if (!icon) return;
+        const icon = btn ? btn.querySelector("i") : null;
 
         /* ❤️ ADDED */
         if (data.added) {
-            icon.classList.replace("bx-heart", "bxs-heart");
+            if (btn) {
+                btn.classList.add("active");
+                btn.setAttribute("title", "Remove from Wishlist");
+            }
+            if (icon) {
+                icon.classList.remove("bx-heart");
+                icon.classList.add("bxs-heart");
+            }
 
             Swal.fire({
                 toast: true,
@@ -92,7 +118,14 @@ function toggleWishlist(btn, productId) {
 
         /* 💔 REMOVED */
         if (data.removed) {
-            icon.classList.replace("bxs-heart", "bx-heart");
+            if (btn) {
+                btn.classList.remove("active");
+                btn.setAttribute("title", "Add to Wishlist");
+            }
+            if (icon) {
+                icon.classList.remove("bxs-heart");
+                icon.classList.add("bx-heart");
+            }
 
             Swal.fire({
                 toast: true,
@@ -104,7 +137,9 @@ function toggleWishlist(btn, productId) {
             });
         }
 
-        updateWishlistCount();
+        if (typeof updateWishlistCount === "function") {
+            updateWishlistCount();
+        }
     })
     .catch(() => {
         Swal.fire("Error", "Something went wrong", "error");
@@ -112,13 +147,15 @@ function toggleWishlist(btn, productId) {
 }    
 
      
-function addToCart(productId) {
+function addToCart(productId, qty = 1) {
     fetch(`/add_to_cart/${productId}/`, {
         method: "POST",
         headers: {
+            "Content-Type": "application/json",
             "X-CSRFToken": "{{ csrf_token }}",
             "X-Requested-With": "XMLHttpRequest"
-        }
+        },
+        body: JSON.stringify({ qty: parseInt(qty) || 1 })
     })
     .then(res => res.json())
     .then(data => {
@@ -136,7 +173,7 @@ function addToCart(productId) {
         Swal.fire({
             toast: true,
             icon: "success",
-            title: "Added to cart",
+            title: `Added ${qty > 1 ? qty + ' items' : 'to cart'}! 🍨`,
             position: "top-end",
             timer: 1200,
             showConfirmButton: false

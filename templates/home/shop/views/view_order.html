@@ -1,105 +1,257 @@
 {% extends "home/base.html" %}
 {% load static %}
-{% block title %}Order Details - Blue Sky Summer{% endblock %}
+
+{% block title %}Order #{{ order.id }} Details - HaveMore IceCreams{% endblock %}
 
 {% block content %}
 
-<div class="order-view-wrapper">
+<link rel="stylesheet" href="{% static 'home/css/view_order.css' %}">
 
-    <!-- HEADER -->
-    <div class="order-header">
-        <h1>Order #{{ order.id }}</h1>
-        <p>Placed on {{ order.date|date:"M d, Y" }}</p>
-        <img src="{% static 'home/image/separator-img.png' %}" />
-    </div>
+<div class="order-detail-page">
 
-   <div class="order-cards-grid">
-    {% for item in order_items %}
-    <div class="order-card">
+    <!-- BREADCRUMB -->
+    <nav class="order-breadcrumb no-print">
+        <a href="{% url 'home' %}">Home</a>
+        <i class="bx bx-chevron-right"></i>
+        <a href="{% url 'order' %}">My Orders</a>
+        <i class="bx bx-chevron-right"></i>
+        <span class="active-crumb">Order #{{ order.id }}</span>
+    </nav>
 
-        <div class="order-image-box">
-            <img src="{{ item.product.product_image.url }}" alt="{{ item.product.product_name }}">
+    <!-- TOP HEADER -->
+    <div class="order-main-header">
+        <div class="order-title-group">
+            <div class="order-id-badge">
+                <i class="bx bx-receipt"></i> Order #{{ order.id }}
+            </div>
+            <h1 class="order-heading">Order Details & Tracking</h1>
+            <p class="order-meta-text">
+                Placed on <strong>{{ order.date|date:"d M Y, h:i A" }}</strong>
+            </p>
         </div>
 
-        <div class="order-info-box">
-            <h2>{{ item.product.product_name }}</h2>
+        <div class="order-status-badge-wrap no-print">
+            {% if order.status|lower == 'delivered' %}
+                <span class="status-pill status-delivered">
+                    <i class="bx bx-check-circle"></i> Delivered
+                </span>
+            {% elif order.status|lower == 'canceled' %}
+                <span class="status-pill status-canceled">
+                    <i class="bx bx-x-circle"></i> Canceled
+                </span>
+            {% else %}
+                <span class="status-pill status-progress">
+                    <i class="bx bx-time-five bx-spin"></i> In Progress
+                </span>
+            {% endif %}
+        </div>
+    </div>
 
-            <span class="price">₹{{ item.price }}</span>
-            <span class="stock">Qty: {{ item.qty }}</span>
+    <!-- LIVE TRACKING STEPPER (If not canceled) -->
+    {% if order.status|lower != 'canceled' %}
+    <div class="tracking-card no-print">
+        <h3 class="tracking-title">
+            <i class="bx bx-radar"></i> Live Order Tracking
+        </h3>
+        
+        <div class="stepper-track">
+            <!-- Step 1 -->
+            <div class="step-node completed">
+                <div class="step-icon"><i class="bx bx-check"></i></div>
+                <div class="step-label">
+                    <span class="step-title">Order Placed</span>
+                    <span class="step-subtitle">{{ order.date|date:"h:i A" }}</span>
+                </div>
+            </div>
 
-            <p class="desc">
-                {{ item.product.product_detail|default:"Premium handcrafted ice cream made with love." }}
-            </p>
+            <!-- Step 2 -->
+            <div class="step-node {% if order.status|lower == 'delivered' %}completed{% else %}active{% endif %}">
+                <div class="step-icon"><i class="bx bx-package"></i></div>
+                <div class="step-label">
+                    <span class="step-title">Preparation</span>
+                    <span class="step-subtitle">Chilled packing</span>
+                </div>
+            </div>
 
-            <div class="meta">
-                <p><strong>Seller:</strong> {{ item.seller.seller_name }}</p>
-                <p><strong>Item Total:</strong> ₹{{ item.total_price }}</p>
+            <!-- Step 3 -->
+            <div class="step-node {% if order.status|lower == 'delivered' %}completed{% else %}pending{% endif %}">
+                <div class="step-icon"><i class="bx bx-cycling"></i></div>
+                <div class="step-label">
+                    <span class="step-title">Out for Delivery</span>
+                    <span class="step-subtitle">Express courier</span>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-node {% if order.status|lower == 'delivered' %}completed{% else %}pending{% endif %}">
+                <div class="step-icon"><i class="bx bx-home-heart"></i></div>
+                <div class="step-label">
+                    <span class="step-title">Delivered</span>
+                    <span class="step-subtitle">{% if order.status|lower == 'delivered' %}Delivered{% else %}Doorstep{% endif %}</span>
+                </div>
             </div>
         </div>
-
     </div>
-    {% endfor %}
-</div>
-
-
-    <!-- ORDER SUMMARY -->
-    <div class="order-summary">
-
-        <h3>Order Summary</h3>
-
-        <div class="summary-row">
-            <span>Status</span>
-            <span class="status
-                {% if order.status == 'delivered' %}delivered
-                {% elif order.status == 'canceled' %}canceled
-                {% else %}progress{% endif %}">
-                {{ order.status }}
-            </span>
-        </div>
-
-     <div class="summary-row">
-    <span>Payment</span>
-
-    {% if order.status == "canceled" %}
-        {% if order.payment_status == "Paid" %}
-            <span class="pending">Refund Initiated</span>
-        {% else %}
-            <span class="pending">Not Paid</span>
-        {% endif %}
     {% else %}
-        <span class="{% if order.payment_status == 'Paid' %}paid{% else %}pending{% endif %}">
-            {{ order.payment_status }}
-        </span>
+    <!-- CANCELED ALERT BANNER -->
+    <div class="canceled-banner no-print">
+        <div class="canceled-icon">
+            <i class="bx bx-info-circle"></i>
+        </div>
+        <div>
+            <h4>This order has been canceled</h4>
+            <p>
+                {% if order.payment_status|lower == 'paid' %}
+                    Your refund of ₹{{ total_amount }} has been initiated to your original payment method.
+                {% else %}
+                    No amount was charged for this order.
+                {% endif %}
+            </p>
+        </div>
+    </div>
     {% endif %}
-</div>
 
-        <div class="summary-row total">
-            <span>Grand Total</span>
-            <span>₹{{ total_amount }}</span>
+    <!-- TWO-COLUMN MAIN LAYOUT -->
+    <div class="order-content-grid">
+
+        <!-- LEFT COLUMN: ORDER ITEMS & ADDRESS -->
+        <div class="order-left-col">
+
+            <!-- ORDER ITEMS CARD -->
+            <div class="order-section-card">
+                <div class="section-card-header">
+                    <h3>Items in Order ({{ order_items|length }})</h3>
+                </div>
+
+                <div class="items-list-wrapper">
+                    {% for item in order_items %}
+                    <div class="order-item-row">
+                        <div class="item-media">
+                            <img src="{{ item.product.product_image.url }}" alt="{{ item.product.product_name }}">
+                        </div>
+
+                        <div class="item-details">
+                            <h4 class="item-name">{{ item.product.product_name }}</h4>
+                            <span class="item-seller">Seller: {{ item.seller.seller_name|default:"HaveMore" }}</span>
+                            <div class="item-price-qty">
+                                <span class="unit-price">₹{{ item.price }}</span>
+                                <span class="qty-pill">Qty: {{ item.qty }}</span>
+                            </div>
+                        </div>
+
+                        <div class="item-total-col">
+                            <span class="item-total-label">Subtotal</span>
+                            <span class="item-total-val">₹{{ item.total_price }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- DELIVERY ADDRESS CARD -->
+            <div class="order-section-card">
+                <div class="section-card-header">
+                    <h3>Delivery Information</h3>
+                    <span class="address-chip">{{ order.address_type|default:"Home" }}</span>
+                </div>
+
+                <div class="delivery-card-body">
+                    <div class="recipient-box">
+                        <i class="bx bx-user-circle contact-icon"></i>
+                        <div>
+                            <p class="recipient-name">{{ order.name }}</p>
+                            <p class="recipient-phone"><i class="bx bx-phone"></i> +91 {{ order.number }}</p>
+                            <p class="recipient-email"><i class="bx bx-envelope"></i> {{ order.email }}</p>
+                        </div>
+                    </div>
+
+                    <div class="address-box">
+                        <i class="bx bx-map-pin contact-icon"></i>
+                        <div>
+                            <p class="address-label">Delivery Address:</p>
+                            <p class="address-text">{{ order.address }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        {% if order.status != "canceled" %}
-        <button class="cancel-btn" onclick="confirmCancel({{ order.id }})">
-            Cancel Order
-        </button>
-        {% endif %}
+        <!-- RIGHT COLUMN: SUMMARY & ACTIONS -->
+        <div class="order-right-col">
 
-        <a href="{% url 'order' %}" class="back-link">← Back to Orders</a>
+            <!-- PRICE BREAKDOWN CARD -->
+            <div class="order-section-card sticky-sidebar">
+                <div class="section-card-header">
+                    <h3>Payment Summary</h3>
+                    <span class="payment-badge {% if order.payment_status|lower == 'paid' %}paid{% else %}pending{% endif %}">
+                        {{ order.payment_status|upper }}
+                    </span>
+                </div>
+
+                <div class="price-breakdown-body">
+                    <div class="breakdown-line">
+                        <span>Items Subtotal</span>
+                        <span>₹{{ total_amount }}</span>
+                    </div>
+                    <div class="breakdown-line">
+                        <span>Delivery Charges</span>
+                        <span class="free-text"><i class="bx bx-check"></i> FREE</span>
+                    </div>
+                    <div class="breakdown-line">
+                        <span>Insulated Packaging</span>
+                        <span class="free-text"><i class="bx bx-check"></i> FREE</span>
+                    </div>
+                    <div class="breakdown-divider"></div>
+                    <div class="breakdown-line grand-total-line">
+                        <span>Total Paid</span>
+                        <span class="grand-total-val">₹{{ total_amount }}</span>
+                    </div>
+                </div>
+
+                <!-- ACTIONS BUTTONS -->
+                <div class="order-actions-container no-print">
+                    <a href="{% url 'download_invoice' order.id %}" class="btn-action-primary">
+                        <i class="bx bxs-file-pdf"></i>
+                        <span>Download PDF Invoice</span>
+                    </a>
+
+                    <button type="button" onclick="window.print()" class="btn-action-secondary">
+                        <i class="bx bx-printer"></i>
+                        <span>Print Order Receipt</span>
+                    </button>
+
+                    {% if order.status|lower != "canceled" and order.status|lower != "delivered" %}
+                    <button type="button" class="btn-action-danger" onclick="confirmCancel({{ order.id }})">
+                        <i class="bx bx-x"></i>
+                        <span>Cancel Order</span>
+                    </button>
+                    {% endif %}
+
+                    <a href="{% url 'order' %}" class="btn-back-link">
+                        <i class="bx bx-arrow-back"></i> Back to All Orders
+                    </a>
+                </div>
+            </div>
+
+        </div>
 
     </div>
+
 </div>
 
-<!-- SWEETALERT -->
+<!-- SWEETALERT CANCEL CONFIRMATION -->
 <script>
 function confirmCancel(orderId) {
     Swal.fire({
-        title: "Cancel Order?",
-        text: "This action cannot be undone.",
+        title: "Cancel This Order?",
+        text: "Are you sure you want to cancel? This action cannot be reversed.",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#ff7fa8",
-        cancelButtonColor: "#aaa",
-        confirmButtonText: "Yes, Cancel"
+        confirmButtonColor: "#ef4444",
+        cancelButtonColor: "#94a3b8",
+        confirmButtonText: "Yes, Cancel Order",
+        cancelButtonText: "Keep My Order"
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = `/cancel_order/${orderId}/`;
@@ -107,262 +259,5 @@ function confirmCancel(orderId) {
     });
 }
 </script>
-<style>
 
-/* ============================================================================
-   ORDER VIEW PAGE
-============================================================================ */
-
-.order-view-wrapper {
-  background: #f7f7f9;
-  padding: 60px 0 80px;
-}
-
-/* ============================================================================
-   HEADER
-============================================================================ */
-
-.order-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.order-header h1 {
-  font-size: 34px;
-  font-weight: 700;
-  color: #222;
-}
-
-.order-header p {
-  margin-top: 6px;
-  font-size: 15px;
-  color: #777;
-}
-
-.order-header img {
-  width: 150px;
-  margin-top: 10px;
-}
-
-/* ============================================================================
-   ORDER CARDS GRID
-============================================================================ */
-
-.order-cards-grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: grid;
-  gap: 28px;
-  grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
-}
-
-/* ============================================================================
-   ORDER CARD
-============================================================================ */
-
-.order-card {
-  background: #fff;
-  border-radius: 18px;
-  display: grid;
-  grid-template-columns: 1.1fr 1.9fr;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
-
-/* IMAGE */
-.order-image-box {
-  background: #efeff2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 28px;
-}
-
-.order-image-box img {
-  width: 100%;
-  max-width: 240px;
-  object-fit: cover;
-}
-
-/* DETAILS */
-.order-info-box {
-  padding: 30px;
-}
-
-.order-info-box h2 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.order-info-box .price {
-  font-size: 20px;
-  font-weight: 700;
-  color: #ff7fa8;
-}
-
-.order-info-box .stock {
-  display: inline-block;
-  margin: 10px 0 14px;
-  padding: 6px 14px;
-  border-radius: 18px;
-  background: #e8f7ed;
-  color: #2e7d32;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.order-info-box .desc {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.5;
-  margin-bottom: 16px;
-}
-
-.order-info-box .meta p {
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-
-/* ============================================================================
-   ORDER SUMMARY
-============================================================================ */
-
-.order-summary {
-  max-width: 1200px;
-  margin: 40px auto 0;
-  background: #fff;
-  border-radius: 18px;
-  padding: 30px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
-
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.summary-row.total {
-  font-size: 18px;
-  font-weight: 700;
-}
-
-/* STATUS */
-.status.delivered { color: #2e7d32; }
-.status.canceled { color: #d32f2f; }
-.status.progress { color: #f57c00; }
-
-.paid { color: #2e7d32; }
-.pending { color: #d32f2f; }
-
-/* ACTIONS */
-.cancel-btn {
-  width: 100%;
-  margin-top: 20px;
-  padding: 14px;
-  border-radius: 14px;
-  background: #ff4f4f;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.back-link {
-  display: block;
-  margin-top: 16px;
-  text-align: center;
-  font-weight: 600;
-  color: #ff7fa8;
-}
-
-/* ============================================================================
-   MOBILE RESPONSIVENESS (KEY PART)
-============================================================================ */
-
-/* Tablets & below */
-@media (max-width: 768px) {
-
-  /* DEFAULT: 2 ITEMS PER ROW */
-  .order-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-
-  .order-card {
-    grid-template-columns: 1fr;
-  }
-
-  .order-image-box {
-    padding: 18px;
-  }
-
-  .order-image-box img {
-    max-width: 100%;
-    height: 160px;
-  }
-
-  .order-info-box {
-    padding: 18px;
-    text-align: center;
-  }
-
-  .order-info-box h2 {
-    font-size: 16px;
-  }
-
-  .order-info-box .price {
-    font-size: 15px;
-  }
-
-  .order-info-box .desc {
-    font-size: 13px;
-  }
-}
-
-/* ⭐ SPECIAL CASE: ONLY ONE ITEM */
-@media (max-width: 768px) {
-
-  .order-cards-grid > .order-card:only-child {
-    grid-column: 1 / -1;
-    max-width: 420px;
-    margin: 0 auto;
-  }
-
-  .order-cards-grid > .order-card:only-child .order-image-box img {
-    height: 220px;
-  }
-
-  .order-cards-grid > .order-card:only-child .order-info-box h2 {
-    font-size: 20px;
-  }
-
-  .order-cards-grid > .order-card:only-child .price {
-    font-size: 18px;
-  }
-}
-
-/* Small phones */
-@media (max-width: 480px) {
-
-  .order-cards-grid {
-    gap: 14px;
-  }
-
-  .order-header h1 {
-    font-size: 24px;
-  }
-
-  .order-summary {
-    margin: 30px 12px 0;
-    padding: 22px;
-  }
-}
-
-
-</style>
 {% endblock %}

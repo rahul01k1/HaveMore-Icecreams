@@ -1,64 +1,306 @@
 {% extends "home/base.html" %}
 {% load static %}
 
-{% block title %}{{ product.product_name }} - Product Detail{% endblock %}
+{% block title %}{{ product.product_name }} - HaveMore IceCreams{% endblock %}
 
 {% block content %}
 
-<!-- PRODUCT DETAIL WRAPPER -->
-<div class="product-detail-wrapper">
+<link rel="stylesheet" href="{% static 'home/css/view_product.css' %}">
 
-    <!-- LEFT: PRODUCT IMAGE -->
-    <div class="product-image-box">
-        <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}">
-    </div>
+<div class="product-page-container">
 
-    <!-- RIGHT: PRODUCT DETAILS -->
-    <div class="product-info">
+    <!-- BREADCRUMB -->
+    <nav class="product-breadcrumb">
+        <a href="{% url 'home' %}">Home</a>
+        <i class="bx bx-chevron-right"></i>
+        <a href="{% url 'menu' %}">Menu</a>
+        <i class="bx bx-chevron-right"></i>
+        <span class="active-crumb">{{ product.product_name }}</span>
+    </nav>
 
-        <h1 class="product-name">{{ product.product_name }}</h1>
+    <!-- PRODUCT DETAIL MAIN CARD -->
+    <div class="product-detail-layout">
 
-        <div class="product-price">₹{{ product.product_price }}</div>
+        <!-- LEFT: PRODUCT MEDIA -->
+        <div class="product-media-card">
+            <div class="main-image-viewport">
+                <img src="{{ product.product_image.url }}" 
+                     alt="{{ product.product_name }}" 
+                     id="mainProductImg"
+                     class="main-image">
 
-        <!-- STOCK BADGES -->
-        {% if product.product_stock > 9 %}
-            <span class="stock-status stock-in">In Stock</span>
-        {% elif product.product_stock == 0 %}
-            <span class="stock-status stock-out">Out of Stock</span>
-        {% else %}
-            <span class="stock-status stock-low">Hurry! Only {{ product.product_stock }} left</span>
-        {% endif %}
+                <!-- FLOATING BADGES -->
+                <div class="media-floating-badges">
+                    {% if product.product_stock > 9 %}
+                        <span class="stock-pill stock-in">
+                            <span class="dot"></span> In Stock
+                        </span>
+                    {% elif product.product_stock == 0 %}
+                        <span class="stock-pill stock-out">
+                            <span class="dot"></span> Out of Stock
+                        </span>
+                    {% else %}
+                        <span class="stock-pill stock-low">
+                            <span class="dot"></span> Only {{ product.product_stock }} left
+                        </span>
+                    {% endif %}
 
-        <p class="product-desc">
-            {{ product.product_detail }}
-        </p>
+                    <span class="veg-badge" title="100% Vegetarian">
+                        <span class="veg-icon-box"><span class="veg-dot"></span></span> Vegetarian
+                    </span>
+                </div>
 
-        <!-- ADD TO CART + WISHLIST -->
-        <form action="{% url 'add_to_cart' product.id %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="qty" value="1">
-
-            <div class="action-buttons">
-
-                <button type="submit"
-                        formaction="{% url 'add_to_wishlist' product.id %}"
-                        class="btn">
-                    Add to Wishlist
+                <!-- FLOATING WISHLIST TOGGLE -->
+                <button type="button" 
+                        class="btn-wishlist-toggle {% if is_in_wishlist %}active{% endif %}"
+                        id="wishlistToggleBtn"
+                        onclick="toggleWishlist(this, '{{ product.id }}')"
+                        title="{% if is_in_wishlist %}Remove from Wishlist{% else %}Add to Wishlist{% endif %}">
+                    <i class="bx {% if is_in_wishlist %}bxs-heart{% else %}bx-heart{% endif %}"></i>
                 </button>
-
-                <button type="submit" class="btn">
-                    Add to Cart
-                </button>
-
             </div>
-        </form>
+            
+            <div class="quality-assurance-tag">
+                <i class="bx bxs-award"></i>
+                <span>Fresh Artisanal Batch • Chilled Insulated Packaging</span>
+            </div>
+        </div>
 
-        <!-- BUY NOW -->
-        <a href="{% url 'checkout' %}?buy_now={{ product.id }}" class="buy-now-btn">
-            Buy Now
-        </a>
+        <!-- RIGHT: PRODUCT INFORMATION & ACTIONS -->
+        <div class="product-info-card">
+
+            <!-- Category / Subtitle -->
+            <div class="product-seller-meta">
+                <span class="seller-pill">
+                    <i class="bx bx-store-alt"></i> HaveMore Artisanal Desserts
+                </span>
+                <div class="rating-box">
+                    <div class="stars">
+                        <i class="bx bxs-star"></i>
+                        <i class="bx bxs-star"></i>
+                        <i class="bx bxs-star"></i>
+                        <i class="bx bxs-star"></i>
+                        <i class="bx bxs-star-half"></i>
+                    </div>
+                    <span class="rating-text">4.9 (120+ reviews)</span>
+                </div>
+            </div>
+
+            <!-- Product Title -->
+            <h1 class="product-heading">{{ product.product_name }}</h1>
+
+            <!-- Price & Tax Info -->
+            <div class="price-display-wrapper">
+                <div class="price-amount" id="unitPriceDisplay">
+                    ₹<span id="basePrice">{{ product.product_price }}</span>
+                </div>
+                <span class="tax-info">Inclusive of all taxes</span>
+            </div>
+
+            <!-- Short Description -->
+            <div class="product-description-box">
+                <p class="description-text">{{ product.product_detail }}</p>
+            </div>
+
+            <!-- QUANTITY SELECTOR -->
+            {% if product.product_stock > 0 %}
+            <div class="quantity-control-section">
+                <span class="control-label">Quantity:</span>
+                <div class="qty-stepper">
+                    <button type="button" class="qty-btn" onclick="decreaseQty()" title="Decrease">
+                        <i class="bx bx-minus"></i>
+                    </button>
+                    <input type="number" 
+                           id="productQtyInput" 
+                           value="1" 
+                           min="1" 
+                           max="{{ product.product_stock }}" 
+                           readonly>
+                    <button type="button" class="qty-btn" onclick="increaseQty('{{ product.product_stock }}')" title="Increase">
+                        <i class="bx bx-plus"></i>
+                    </button>
+                </div>
+                <span class="subtotal-indicator">
+                    Total: <strong id="dynamicTotalDisplay">₹{{ product.product_price }}</strong>
+                </span>
+            </div>
+            {% endif %}
+
+            <!-- PRIMARY ACTION BUTTONS -->
+            <div class="product-cta-group">
+                {% if product.product_stock > 0 %}
+                    <button type="button" 
+                            class="btn-cta btn-add-cart-primary" 
+                            onclick="handleAddToCartWithQty('{{ product.id }}')">
+                        <i class="bx bx-shopping-bag"></i>
+                        <span>Add to Cart</span>
+                    </button>
+
+                    <button type="button" 
+                            class="btn-cta btn-buy-now-primary" 
+                            onclick="handleBuyNowWithQty('{{ product.id }}')">
+                        <i class="bx bxs-zap"></i>
+                        <span>Buy Now</span>
+                    </button>
+                {% else %}
+                    <button class="btn-cta btn-out-of-stock" disabled>
+                        <i class="bx bx-bell"></i>
+                        <span>Currently Sold Out</span>
+                    </button>
+                {% endif %}
+            </div>
+
+            <!-- PRODUCT HIGHLIGHTS BADGES -->
+            <div class="highlights-grid">
+                <div class="highlight-item">
+                    <div class="highlight-icon">
+                        <i class="bx bx-snowflake"></i>
+                    </div>
+                    <div class="highlight-text">
+                        <h4>-18°C Chilled Delivery</h4>
+                        <p>Special insulated packaging</p>
+                    </div>
+                </div>
+
+                <div class="highlight-item">
+                    <div class="highlight-icon">
+                        <i class="bx bx-leaf"></i>
+                    </div>
+                    <div class="highlight-text">
+                        <h4>Pure Ingredients</h4>
+                        <p>Real farm milk & natural fruits</p>
+                    </div>
+                </div>
+
+                <div class="highlight-item">
+                    <div class="highlight-icon">
+                        <i class="bx bx-timer"></i>
+                    </div>
+                    <div class="highlight-text">
+                        <h4>Express 30–45 Mins</h4>
+                        <p>Arrives fast & melt-free</p>
+                    </div>
+                </div>
+
+                <div class="highlight-item">
+                    <div class="highlight-icon">
+                        <i class="bx bx-check-shield"></i>
+                    </div>
+                    <div class="highlight-text">
+                        <h4>100% Quality Seal</h4>
+                        <p>Guaranteed freshness & taste</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
     </div>
+
+    <!-- RELATED PRODUCTS SECTION -->
+    {% if related_products %}
+    <div class="related-products-section">
+        <div class="section-title-wrap">
+            <span class="section-badge"><i class="bx bxs-heart"></i> Handpicked For You</span>
+            <h2 class="section-title">You Might Also Crave 🍨</h2>
+            <p class="section-subtitle">Discover more delicious scoops handcrafted to delight your sweet tooth.</p>
+        </div>
+
+        <div class="related-grid">
+            {% for item in related_products %}
+            <div class="related-card" onclick="window.location.href='{% url 'view_product' item.id %}'">
+                <div class="related-img-box">
+                    <img src="{{ item.product_image.url }}" alt="{{ item.product_name }}" loading="lazy">
+                    <span class="related-price">₹{{ item.product_price }}</span>
+                </div>
+                <div class="related-info">
+                    <h4 class="related-title">{{ item.product_name }}</h4>
+                    <div class="related-actions">
+                        <a href="{% url 'view_product' item.id %}" class="btn-related-view" onclick="event.stopPropagation();">
+                            View Details
+                        </a>
+                        <button type="button" 
+                                class="btn-related-cart" 
+                                onclick="event.stopPropagation(); addToCart('{{ item.id }}');" 
+                                title="Add to Cart">
+                            <i class="bx bx-shopping-bag"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
 </div>
+
+<script>
+const basePrice = parseFloat("{{ product.product_price }}");
+
+function getQty() {
+    const input = document.getElementById("productQtyInput");
+    return input ? parseInt(input.value) || 1 : 1;
+}
+
+function updateDynamicPrice() {
+    const qty = getQty();
+    const total = (basePrice * qty).toFixed(2);
+    const totalDisplay = document.getElementById("dynamicTotalDisplay");
+    if (totalDisplay) {
+        totalDisplay.innerText = "₹" + total;
+    }
+}
+
+function increaseQty(maxStock) {
+    const input = document.getElementById("productQtyInput");
+    if (!input) return;
+    let current = parseInt(input.value) || 1;
+    const max = parseInt(maxStock) || 999;
+    if (current < max) {
+        input.value = current + 1;
+        updateDynamicPrice();
+    }
+}
+
+function decreaseQty() {
+    const input = document.getElementById("productQtyInput");
+    if (!input) return;
+    let current = parseInt(input.value) || 1;
+    if (current > 1) {
+        input.value = current - 1;
+        updateDynamicPrice();
+    }
+}
+
+function handleAddToCartWithQty(productId) {
+    const qty = getQty();
+    if (typeof addToCart === 'function') {
+        addToCart(productId, qty);
+    } else {
+        // Fallback form submit
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/add_to_cart/${productId}/`;
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = 'csrfmiddlewaretoken';
+        csrf.value = '{{ csrf_token }}';
+        form.appendChild(csrf);
+        const qtyInput = document.createElement('input');
+        qtyInput.type = 'hidden';
+        qtyInput.name = 'qty';
+        qtyInput.value = qty;
+        form.appendChild(qtyInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function handleBuyNowWithQty(productId) {
+    const qty = getQty();
+    window.location.href = `{% url 'checkout' %}?buy_now=${productId}&qty=${qty}`;
+}
+</script>
 
 {% endblock %}

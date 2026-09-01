@@ -10,11 +10,15 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
 from django.urls import reverse
 
 # Navbar  Functions
 def home(request):
-    return render(request,"home/pages/home.html")
+    featured_products = Product.objects.filter(product_status="active")[:8]
+    return render(request, "home/pages/home.html", {
+        "featured_products": featured_products
+    })
 
 def order(request):
     user_id = request.session.get("user_id")
@@ -30,7 +34,7 @@ def order(request):
 def menu(request):
     products = Product.objects.filter(product_status="active")
 
-    paginator = Paginator(products, 10)
+    paginator = Paginator(products, 15)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -122,17 +126,22 @@ def search_product(request):
 
         products_qs = Product.objects.filter(q_filter).distinct().order_by("-id")
 
-        if not products_qs.exists():
-            messages.error(request, "No products found.")
+    total_results = products_qs.count()
 
-    # ✅ PAGINATION
-    paginator = Paginator(products_qs, 12)  # 12 products per page
+    # 15 products per page
+    paginator = Paginator(products_qs, 15)
     page_number = request.GET.get("page")
     products = paginator.get_page(page_number)
 
+    suggested_products = None
+    if total_results == 0:
+        suggested_products = Product.objects.filter(product_status="active")[:6]
+
     context = {
         "products": products,
-        "search_query": query
+        "search_query": query,
+        "total_results": total_results,
+        "suggested_products": suggested_products,
     }
 
     return render(request, "home/search/search_product.html", context)
@@ -196,17 +205,31 @@ def add_to_cart(request, id):
     user = Buyer.objects.get(id=user_id)
     product = Product.objects.get(id=id)
 
+    qty_to_add = 1
+    if request.method == "POST":
+        if request.body and request.headers.get("Content-Type") == "application/json":
+            try:
+                body_data = json.loads(request.body)
+                qty_to_add = int(body_data.get("qty", 1))
+            except Exception:
+                qty_to_add = 1
+        elif request.POST.get("qty"):
+            try:
+                qty_to_add = int(request.POST.get("qty", 1))
+            except Exception:
+                qty_to_add = 1
+
     existing_item = Cart.objects.filter(user=user, product=product).first()
 
     if existing_item:
-        existing_item.qty += 1
+        existing_item.qty += qty_to_add
         existing_item.save()
     else:
         Cart.objects.create(
             user=user,
             product=product,
             price=product.product_price,
-            qty=1
+            qty=qty_to_add
         )
 
     # ---------- IMPORTANT PART ----------
@@ -427,31 +450,60 @@ def wishlist(request):
 
 def add_to_wishlist(request, id):
     user_id = request.session.get("user_id")
+    is_ajax = request.headers.get("x-requested-with") == "XMLHttpRequest"
     if not user_id:
+        if is_ajax:
+            return JsonResponse({"error": "login_required"}, status=401)
         return redirect("login")
 
-    user = Buyer.objects.get(id=user_id)
-    product = Product.objects.get(id=id)
+    try:
+        user = Buyer.objects.get(id=user_id)
+        product = Product.objects.get(id=id)
+    except (Buyer.DoesNotExist, Product.DoesNotExist):
+        if is_ajax:
+            return JsonResponse({"error": "not_found"}, status=404)
+        return redirect("wishlist")
 
-    Wishlist.objects.get_or_create(
+    item, created = Wishlist.objects.get_or_create(
         user=user,
         product=product,
         defaults={"price": product.product_price}
     )
 
+    if is_ajax:
+        return JsonResponse({"added": True, "created": created})
+
     return redirect("wishlist")
 
 @csrf_exempt
 def toggle_wishlist(request):
-    data = json.loads(request.body)
-    product_id = data["product_id"]
+    if request.method != "POST":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    product_id = None
+    if request.body:
+        try:
+            data = json.loads(request.body)
+            if isinstance(data, dict):
+                product_id = data.get("product_id") or data.get("id")
+        except (json.JSONDecodeError, UnicodeDecodeError, ValueError):
+            pass
+
+    if not product_id:
+        product_id = request.POST.get("product_id") or request.POST.get("id")
+
+    if not product_id:
+        return JsonResponse({"error": "Product ID is required"}, status=400)
 
     user_id = request.session.get("user_id")
     if not user_id:
         return JsonResponse({"error": "Login required"}, status=403)
 
-    user = Buyer.objects.get(id=user_id)
-    product = Product.objects.get(id=product_id)
+    try:
+        user = Buyer.objects.get(id=user_id)
+        product = Product.objects.get(id=product_id)
+    except (Buyer.DoesNotExist, Product.DoesNotExist):
+        return JsonResponse({"error": "Product or user not found"}, status=404)
 
     existing = Wishlist.objects.filter(user=user, product=product)
     if existing.exists():
@@ -480,7 +532,7 @@ def view_product(request, id):
     product = get_object_or_404(Product, id=id)
 
     # CHECK IF USER LOGGED IN
-    user_id = request.session.get("buyer_id")
+    user_id = request.session.get("user_id")
 
     is_in_wishlist = False
 
@@ -490,9 +542,12 @@ def view_product(request, id):
             product=product
         ).exists()
 
+    related_products = Product.objects.filter(product_status="active").exclude(id=product.id)[:4]
+
     return render(request, "home/shop/views/view_product.html", {
         "product": product,
         "is_in_wishlist": is_in_wishlist,
+        "related_products": related_products,
     })
 
 
@@ -568,9 +623,18 @@ def profile(request):
         return redirect("login")
 
     user = Buyer.objects.get(id=user_id)
+    orders = Order.objects.filter(user=user).order_by("-id")
+    total_orders = orders.count()
+    recent_orders = orders[:3]
+    wishlist_count = Wishlist.objects.filter(user=user).count()
+    cart_count = Cart.objects.filter(user=user).count()
 
     return render(request, "home/user/profile.html", {
-        "user": user
+        "user": user,
+        "total_orders": total_orders,
+        "recent_orders": recent_orders,
+        "wishlist_count": wishlist_count,
+        "cart_count": cart_count,
     })
 
 def update_profile(request):
@@ -620,6 +684,12 @@ def update_profile(request):
 
         # Save all updates
         user.save()
+
+        # Update session with new profile details
+        request.session['user_name'] = user.user_name
+        request.session['user_email'] = user.user_email
+        request.session['user_image'] = str(user.user_image)
+        request.session.modified = True
 
         messages.success(request, "Profile updated successfully.")
         return redirect("profile")
@@ -733,91 +803,234 @@ def user_login(request):
 
 def user_logout(request):
     request.session.flush()
-    messages.success(request,"Logout Successfully!")
+    messages.success(request, "Logout Successfully!")
     return redirect("login")
 
+
 def download_invoice(request, order_id):
-    order = Order.objects.get(id=order_id)
+    order = get_object_or_404(Order, id=order_id)
     items = order.items.all() #type: ignore
 
     # Create the PDF response
     response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = f'attachment; filename="Invoice_{order.id}.pdf"'
+    response["Content-Disposition"] = f'attachment; filename="Invoice_HaveMore_#{order.id}.pdf"'
 
     # Initialize PDF canvas
     p = canvas.Canvas(response, pagesize=A4) #type: ignore
     width, height = A4
 
-    y = height - 50
+    # Theme Colors
+    brand_pink = colors.HexColor("#ff6b81")
+    brand_dark = colors.HexColor("#e8415a")
+    navy_dark = colors.HexColor("#0f172a")
+    text_body = colors.HexColor("#334155")
+    text_muted = colors.HexColor("#64748b")
+    card_bg = colors.HexColor("#f8fafc")
+    card_border = colors.HexColor("#e2e8f0")
+    row_alt = colors.HexColor("#fafafa")
+    green_badge = colors.HexColor("#16a34a")
+    green_bg = colors.HexColor("#dcfce7")
 
-    # ============= HEADER ==============
+    margin = 40
+    content_width = width - (margin * 2) # 515 pt
+
+    # 1. TOP BRAND ACCENT BAR
+    p.setFillColor(brand_pink)
+    p.rect(0, height - 6, width, 6, fill=1, stroke=0)
+
+    # 2. BRAND HEADER & INVOICE META
+    p.setFillColor(navy_dark)
     p.setFont("Helvetica-Bold", 20)
-    p.drawString(50, y, "Blue Sky Summer")
-    y -= 30
+    p.drawString(margin, height - 38, "HaveMore IceCreams")
+    p.setFont("Helvetica", 8.5)
+    p.setFillColor(text_muted)
+    p.drawString(margin, height - 51, "Fresh Handcrafted Artisanal Ice Creams & Desserts")
+    p.drawString(margin, height - 62, "support@havemoreicecreams.com  |  havemoreicecreams.com")
 
-    p.setFont("Helvetica", 12)
-    p.drawString(50, y, "Customer Invoice")
-    y -= 20
+    # Right Header Info
+    p.setFillColor(navy_dark)
+    p.setFont("Helvetica-Bold", 18)
+    p.drawRightString(width - margin, height - 38, "TAX INVOICE")
+    
+    order_date_str = order.date.strftime("%d %b %Y, %I:%M %p") if order.date else "N/A"
+    p.setFont("Helvetica-Bold", 9.5)
+    p.setFillColor(text_body)
+    p.drawRightString(width - margin, height - 51, f"Invoice #: INV-{order.id:05d}")
+    p.setFont("Helvetica", 8.5)
+    p.setFillColor(text_muted)
+    p.drawRightString(width - margin, height - 62, f"Date: {order_date_str}")
 
-    p.line(50, y, width - 50, y)
-    y -= 30
+    # Separator Line
+    p.setStrokeColor(card_border)
+    p.setLineWidth(0.8)
+    p.line(margin, height - 72, width - margin, height - 72)
 
-    # ============= ORDER INFO ==============
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(50, y, f"Order ID: #{order.id}")
-    y -= 20
-    p.setFont("Helvetica", 12)
-    p.drawString(50, y, f"Name: {order.name}")
-    y -= 20
-    p.drawString(50, y, f"Email: {order.email}")
-    y -= 20
-    p.drawString(50, y, f"Phone: {order.number}")
-    y -= 20
-    p.drawString(50, y, f"Address: {order.address}")
-    y -= 20
-    p.drawString(50, y, f"Payment Status: {order.payment_status}")
-    y -= 30
+    # 3. DUAL DETAILS CARDS (CUSTOMER INFO & PAYMENT DETAILS)
+    y_card = height - 82
+    card_h = 72
+    card_w = (content_width - 14) / 2 # ~250 pt each
 
-    p.line(50, y, width - 50, y)
-    y -= 40
+    # Card 1: Billed To
+    p.setFillColor(card_bg)
+    p.setStrokeColor(card_border)
+    p.setLineWidth(1)
+    p.roundRect(margin, y_card - card_h, card_w, card_h, 5, fill=1, stroke=1)
 
-    # ============= TABLE HEADER ==============
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(50, y, "Product")
-    p.drawString(250, y, "Qty")
-    p.drawString(320, y, "Price")
-    p.drawString(400, y, "Total")
-    y -= 20
+    p.setFillColor(text_muted)
+    p.setFont("Helvetica-Bold", 8)
+    p.drawString(margin + 10, y_card - 14, "CUSTOMER & DELIVERY INFO")
 
-    p.line(50, y, width - 50, y)
-    y -= 25
+    p.setFont("Helvetica-Bold", 9.5)
+    p.setFillColor(navy_dark)
+    p.drawString(margin + 10, y_card - 27, str(order.name)[:30])
 
-    # ============= ORDER ITEMS ==============
-    p.setFont("Helvetica", 12)
+    p.setFont("Helvetica", 8.5)
+    p.setFillColor(text_body)
+    p.drawString(margin + 10, y_card - 40, f"Phone: +91 {order.number}")
+    p.drawString(margin + 10, y_card - 52, f"Email: {str(order.email)[:28]}")
+    p.drawString(margin + 10, y_card - 64, f"Address: {str(order.address)[:26]} ({order.address_type})")
+
+    # Card 2: Order & Payment Info
+    col2_x = margin + card_w + 14
+    p.setFillColor(card_bg)
+    p.setStrokeColor(card_border)
+    p.roundRect(col2_x, y_card - card_h, card_w, card_h, 5, fill=1, stroke=1)
+
+    p.setFillColor(text_muted)
+    p.setFont("Helvetica-Bold", 8)
+    p.drawString(col2_x + 10, y_card - 14, "PAYMENT & ORDER STATUS")
+
+    p.setFont("Helvetica-Bold", 9.5)
+    p.setFillColor(navy_dark)
+    p.drawString(col2_x + 10, y_card - 27, f"Order ID: #{order.id}")
+
+    p.setFont("Helvetica", 8.5)
+    p.setFillColor(text_body)
+    p.drawString(col2_x + 10, y_card - 40, f"Order Status: {order.status}")
+    p.drawString(col2_x + 10, y_card - 55, "Payment Status:")
+
+    # Payment Status Badge
+    is_paid = order.payment_status and order.payment_status.lower() in ["paid", "completed"]
+    badge_text = "PAID" if is_paid else str(order.payment_status).upper()
+    badge_bg = green_bg if is_paid else colors.HexColor("#fff0f3")
+    badge_color = green_badge if is_paid else brand_dark
+    
+    p.setFillColor(badge_bg)
+    p.roundRect(col2_x + 84, y_card - 61, 52, 15, 3, fill=1, stroke=0)
+    p.setFillColor(badge_color)
+    p.setFont("Helvetica-Bold", 7.5)
+    p.drawCentredString(col2_x + 110, y_card - 50, badge_text)
+
+    # 4. ITEMS TABLE HEADER
+    y_tbl_top = y_card - card_h - 16
+    tbl_hdr_h = 22
+    p.setFillColor(navy_dark)
+    p.roundRect(margin, y_tbl_top - tbl_hdr_h, content_width, tbl_hdr_h, 3, fill=1, stroke=0)
+
+    p.setFillColor(colors.white)
+    p.setFont("Helvetica-Bold", 8)
+    p.drawString(margin + 10, y_tbl_top - 15, "#")
+    p.drawString(margin + 30, y_tbl_top - 15, "ITEM DESCRIPTION")
+    p.drawCentredString(345, y_tbl_top - 15, "QTY")
+    p.drawRightString(445, y_tbl_top - 15, "PRICE (INR)")
+    p.drawRightString(width - margin - 10, y_tbl_top - 15, "TOTAL (INR)")
+
+    # 5. ITEM ROWS (Drawn with clear vertical separation below the header)
+    y_row = y_tbl_top - tbl_hdr_h - 16
+    row_height = 24
     total = 0
+    row_num = 1
 
     for item in items:
-        p.drawString(50, y, item.product.product_name)
-        p.drawString(250, y, str(item.qty))
-        p.drawString(320, y, f"${item.price}")
-        p.drawString(400, y, f"${item.total_price()}")
-        total += item.total_price()
+        # Alternating row background
+        if row_num % 2 == 0:
+            p.setFillColor(row_alt)
+            p.rect(margin, y_row - 6, content_width, row_height - 4, fill=1, stroke=0)
 
-        y -= 20
+        p.setStrokeColor(colors.HexColor("#f1f5f9"))
+        p.setLineWidth(0.5)
+        p.line(margin, y_row - 6, width - margin, y_row - 6)
 
-        if y < 100:
+        # Product Title
+        raw_name = str(item.product.product_name)
+        display_name = raw_name[:34] + ("..." if len(raw_name) > 34 else "")
+
+        p.setFillColor(navy_dark)
+        p.setFont("Helvetica", 9)
+        p.drawString(margin + 10, y_row, str(row_num))
+        p.drawString(margin + 30, y_row, display_name)
+        p.drawCentredString(345, y_row, str(item.qty))
+        p.drawRightString(445, y_row, f"Rs. {item.price:.2f}")
+        
+        item_tot = item.total_price()
+        p.setFont("Helvetica-Bold", 9)
+        p.drawRightString(width - margin - 10, y_row, f"Rs. {item_tot:.2f}")
+
+        total += item_tot
+        row_num += 1
+        y_row -= row_height
+
+        if y_row < 140:
             p.showPage()
-            y = height - 50
+            y_row = height - 60
 
-    # ============= TOTAL AMOUNT ==============
-    y -= 20
-    p.line(50, y, width - 50, y)
-    y -= 30
+    # 6. TOTALS & SUMMARY SECTION
+    y_sum = y_row - 8
+    p.setStrokeColor(card_border)
+    p.setLineWidth(1)
+    p.line(margin, y_sum, width - margin, y_sum)
+    y_sum -= 16
 
-    p.setFont("Helvetica-Bold", 14)
-    p.drawString(50, y, f"Grand Total: ${total}")
+    # Breakdown Block on Right
+    summary_x = 330
+    p.setFont("Helvetica", 9)
+    p.setFillColor(text_muted)
+    p.drawString(summary_x, y_sum, "Items Subtotal:")
+    p.drawRightString(width - margin - 10, y_sum, f"Rs. {total:.2f}")
+    y_sum -= 16
 
-    # Finish PDF
+    p.drawString(summary_x, y_sum, "Delivery Charges:")
+    p.setFillColor(green_badge)
+    p.setFont("Helvetica-Bold", 9)
+    p.drawRightString(width - margin - 10, y_sum, "FREE")
+    y_sum -= 16
+
+    p.setFont("Helvetica", 9)
+    p.setFillColor(text_muted)
+    p.drawString(summary_x, y_sum, "Insulated Packaging:")
+    p.setFillColor(green_badge)
+    p.setFont("Helvetica-Bold", 9)
+    p.drawRightString(width - margin - 10, y_sum, "FREE")
+    y_sum -= 20
+
+    # Grand Total Highlight Box
+    p.setFillColor(colors.HexColor("#fff0f3"))
+    p.setStrokeColor(brand_pink)
+    p.setLineWidth(1.2)
+    p.roundRect(summary_x - 10, y_sum - 22, 235, 28, 5, fill=1, stroke=1)
+
+    p.setFillColor(brand_dark)
+    p.setFont("Helvetica-Bold", 11)
+    p.drawString(summary_x, y_sum - 12, "Grand Total:")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawRightString(width - margin - 10, y_sum - 12, f"Rs. {total:.2f}")
+
+    # 7. FOOTER NOTE
+    p.setStrokeColor(card_border)
+    p.setLineWidth(0.8)
+    p.line(margin, 50, width - margin, 50)
+
+    p.setFillColor(text_muted)
+    p.setFont("Helvetica-Bold", 8)
+    p.drawString(margin, 36, "Thank you for choosing HaveMore IceCreams! Crafted with pure joy.")
+    p.setFont("Helvetica", 7.5)
+    p.drawString(margin, 24, "For support or queries regarding this order, contact: support@havemoreicecreams.com")
+    
+    p.setFont("Helvetica", 7.5)
+    p.drawRightString(width - margin, 36, "Authorized Computer-Generated Invoice")
+    p.drawRightString(width - margin, 24, "Page 1 of 1")
+
+    # Finish and save PDF
     p.showPage()
     p.save()
 

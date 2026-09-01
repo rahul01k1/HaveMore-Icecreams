@@ -115,6 +115,36 @@
             <h4>Email</h4>
             <p>lilaparavipul123@gmail.com</p>
         </div>
+
+        <div class="address-card">
+            <i class="bx bx-time"></i>
+            <h4>Business Hours</h4>
+            <p>Mon - Sun: 10:00 AM - 11:00 PM</p>
+        </div>
+    </div>
+</section>
+
+<!-- ======================= FAQ ======================= -->
+<section class="faq-section">
+    <div class="heading">
+        <h1>Frequently Asked Questions</h1>
+        <p>Got questions? We've got answers.</p>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+    </div>
+
+    <div class="faq-grid">
+        <div class="faq-card">
+            <h4>Do you offer vegan or dairy-free options?</h4>
+            <p>Yes! We have a delightful selection of dairy-free sorbets and vegan ice creams made from almond and coconut milk.</p>
+        </div>
+        <div class="faq-card">
+            <h4>Can I order ice cream cakes for parties?</h4>
+            <p>Absolutely! We require a 48-hour notice for custom ice cream cakes. Please contact us directly via phone or email to place an order.</p>
+        </div>
+        <div class="faq-card">
+            <h4>Do you deliver?</h4>
+            <p>We do! We offer local delivery within a 5-mile radius through our website and partner delivery apps.</p>
+        </div>
     </div>
 </section>
 
@@ -173,9 +203,10 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
 
 /* HERO */
 .contact-hero {
-    background: linear-gradient(to right, #d8ecff, #fef5ff);
-    padding: 90px 0;
+    background: linear-gradient(135deg, var(--pink-opacity), #fef5ff);
+    padding: 100px 0;
     text-align: center;
+    position: relative;
 }
 
 .contact-hero h1 {
@@ -209,7 +240,14 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
     background: #fff;
     padding: 40px 30px;
     border-radius: 20px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(218, 98, 133, 0.15);
 }
 
 /* FORM */
@@ -219,7 +257,9 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
     background: #fff;
     padding: 55px 60px;
     border-radius: 22px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.03);
 }
 
 .input-row {
@@ -248,11 +288,21 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
 }
 
 .contact-form .btn {
-    background: linear-gradient(135deg, #ff7fa8, #ff4d6d);
+    background: linear-gradient(135deg, var(--main-color), var(--pink-color));
     color: #fff;
-    padding: 14px 22px;
-    border-radius: 14px;
+    padding: 14px 28px;
+    border-radius: 30px;
     font-weight: 600;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 127, 168, 0.4);
+}
+
+.contact-form .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 127, 168, 0.6);
 }
 
 /* ADDRESS */
@@ -264,6 +314,63 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
     gap: 35px;
 }
 
+.address-card {
+    background: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.address-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(218, 98, 133, 0.15);
+}
+
+.address-card i {
+    font-size: 45px;
+    color: var(--main-color);
+    margin-bottom: 12px;
+}
+
+/* FAQ */
+.faq-section {
+    padding: 60px 20px 100px;
+    background: #fdfdfd;
+    text-align: center;
+}
+
+.faq-grid {
+    width: 88%;
+    max-width: 1000px;
+    margin: 40px auto 0;
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.faq-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    text-align: left;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+    border-left: 4px solid var(--main-color);
+}
+
+.faq-card h4 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.faq-card p {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.5;
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .input-row {
@@ -272,6 +379,10 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
 
     .contact-form {
         padding: 40px 24px;
+    }
+
+    .faq-section {
+        padding: 50px 16px 70px;
     }
 }
 

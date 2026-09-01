@@ -1,97 +1,210 @@
 {% extends "home/base.html" %}
 {% load static %}
-{% block title %}My Profile - Blue Sky Summer{% endblock %}
+{% block title %}My Profile - HaveMore IceCreams{% endblock %}
 
 {% block content %}
 
-<div class="profile-wrapper">
+<link rel="stylesheet" href="{% static 'home/css/profile.css' %}">
 
-    <h1 class="title">My Profile</h1><br>
-    <p class="subtitle">Manage your personal information and account settings</p>
-    <img src="{% static 'home/image/separator-img.png' %}" class="separator">
+<div class="profile-page-wrapper">
 
-    <div class="outer-container">
+    <!-- TOP HEADER -->
+    <div class="profile-header-banner">
+        <div class="profile-header-text">
+            <span class="badge-account"><i class="bx bxs-user-badge"></i> Member Profile</span>
+            <h1 class="profile-title">Welcome back, {{ user.user_name }}! 👋</h1>
+            <p class="profile-subtitle">Manage your account preferences, track orders, and view saved ice cream favorites.</p>
+        </div>
+        <div class="profile-header-actions">
+            <a href="{% url 'update_profile' %}" class="btn-header-edit">
+                <i class="bx bx-edit-alt"></i> Edit Profile
+            </a>
+            <button type="button" onclick="confirmLogout()" class="btn-header-logout">
+                <i class="bx bx-log-out"></i> Logout
+            </button>
+        </div>
+    </div>
 
-        <!-- LEFT SIDE PANEL -->
-        <div class="profile-sidebar">
-            <img src="{{ user.user_image.url }}" class="avatar">
+    <!-- STATS OVERVIEW GRID -->
+    <div class="profile-stats-grid">
+        <a href="{% url 'order' %}" class="stat-card">
+            <div class="stat-icon-wrap icon-orders">
+                <i class="bx bx-package"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-value">{{ total_orders|default:0 }}</span>
+                <span class="stat-label">Total Orders</span>
+            </div>
+            <i class="bx bx-chevron-right stat-arrow"></i>
+        </a>
 
-            <h2 class="username">{{ user.user_name }}</h2>
-            <p class="email">{{ user.user_email }}</p>
+        <a href="{% url 'wishlist' %}" class="stat-card">
+            <div class="stat-icon-wrap icon-wishlist">
+                <i class="bx bx-heart"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-value">{{ wishlist_count|default:0 }}</span>
+                <span class="stat-label">Saved in Wishlist</span>
+            </div>
+            <i class="bx bx-chevron-right stat-arrow"></i>
+        </a>
 
-            <a href="{% url 'update_profile' %}" class="btn-edit">Edit Profile</a>
+        <a href="{% url 'cart' %}" class="stat-card">
+            <div class="stat-icon-wrap icon-cart">
+                <i class="bx bx-shopping-bag"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-value">{{ cart_count|default:0 }}</span>
+                <span class="stat-label">Items in Bag</span>
+            </div>
+            <i class="bx bx-chevron-right stat-arrow"></i>
+        </a>
 
-            <div class="side-links">
-                <a href="{% url 'order' %}">My Orders</a>
-                <a href="{% url 'wishlist' %}">My Wishlist</a>
-                <a href="{% url 'user_messages' %}">Messages</a>
+        <div class="stat-card stat-card-static">
+            <div class="stat-icon-wrap icon-member">
+                <i class="bx bx-calendar-star"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-value">{{ user.created_at|date:"M Y" }}</span>
+                <span class="stat-label">Member Since</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TWO-COLUMN MAIN CONTENT -->
+    <div class="profile-main-layout">
+
+        <!-- LEFT SIDE: USER IDENTITY CARD -->
+        <div class="profile-sidebar-col">
+            <div class="profile-user-card">
+                <div class="avatar-container">
+                    <img src="{{ user.user_image.url }}" alt="{{ user.user_name }}" class="user-avatar-img">
+                    <a href="{% url 'update_profile' %}" class="avatar-edit-badge" title="Change Photo">
+                        <i class="bx bx-camera"></i>
+                    </a>
+                </div>
+
+                <h2 class="user-fullname">{{ user.user_name }}</h2>
+                <span class="user-role-badge"><i class="bx bx-check-shield"></i> Verified Customer</span>
+                <p class="user-email-text"><i class="bx bx-envelope"></i> {{ user.user_email }}</p>
+
+                <div class="sidebar-nav-menu">
+                    <a href="{% url 'order' %}" class="side-nav-item">
+                        <i class="bx bx-receipt"></i>
+                        <span>Order History</span>
+                        <span class="count-pill">{{ total_orders|default:0 }}</span>
+                    </a>
+                    <a href="{% url 'wishlist' %}" class="side-nav-item">
+                        <i class="bx bx-heart"></i>
+                        <span>My Wishlist</span>
+                        <span class="count-pill">{{ wishlist_count|default:0 }}</span>
+                    </a>
+                    <a href="{% url 'user_messages' %}" class="side-nav-item">
+                        <i class="bx bx-message-rounded-dots"></i>
+                        <span>Support Messages</span>
+                    </a>
+                    <a href="{% url 'update_profile' %}" class="side-nav-item">
+                        <i class="bx bx-cog"></i>
+                        <span>Account & Security</span>
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- RIGHT SIDE CONTENT AREA -->
-        <div class="profile-content">
+        <!-- RIGHT SIDE: ACCOUNT DETAILS & RECENT ORDERS -->
+        <div class="profile-details-col">
 
-            <!-- SECTION 1: ACCOUNT INFORMATION -->
-            <div class="section-card">
-                <h3 class="section-title">Account Information</h3>
+            <!-- SECTION: PERSONAL INFORMATION -->
+            <div class="content-section-card">
+                <div class="section-card-header">
+                    <h3><i class="bx bx-id-card"></i> Account Information</h3>
+                    <a href="{% url 'update_profile' %}" class="section-link">Edit Details</a>
+                </div>
 
-                <div class="info-grid">
-                    <div>
-                        <p class="label">Full Name</p>
-                        <p class="value">{{ user.user_name }}</p>
+                <div class="account-info-grid">
+                    <div class="info-cell">
+                        <span class="info-label">Full Name</span>
+                        <span class="info-val">{{ user.user_name }}</span>
                     </div>
 
-                    <div>
-                        <p class="label">Email</p>
-                        <p class="value">{{ user.user_email }}</p>
+                    <div class="info-cell">
+                        <span class="info-label">Email Address</span>
+                        <span class="info-val">{{ user.user_email }}</span>
                     </div>
 
-                    <div>
-                        <p class="label">Joined On</p>
-                        <p class="value">{{ user.created_at|date:"M d, Y" }}</p>
+                    <div class="info-cell">
+                        <span class="info-label">Account Status</span>
+                        <span class="info-status-pill active">Active • Verified</span>
+                    </div>
+
+                    <div class="info-cell">
+                        <span class="info-label">Joined HaveMore</span>
+                        <span class="info-val">{{ user.created_at|date:"d F Y" }}</span>
                     </div>
                 </div>
             </div>
 
-            <!-- SECTION 2: ACCOUNT ACTIVITY -->
-            <div class="section-card">
-                <h3 class="section-title">Quick Actions</h3>
-
-                <div class="action-grid">
-                    <a href="{% url 'order' %}" class="action-box">
-                        <img src="{% static 'home/image/icon/order.png' %}">
-                        <p>View Orders</p>
-                    </a>
-
-                    <a href="{% url 'wishlist' %}" class="action-box">
-                        <img src="{% static 'home/image/icon/wishlist.png' %}">
-                        <p>My Wishlist</p>
-                    </a>
-
-                    <a href="{% url 'user_messages' %}" class="action-box">
-                        <img src="{% static 'home/image/icon/message.png' %}">
-                        <p>Messages</p>
-                    </a>
+            <!-- SECTION: RECENT ORDERS -->
+            <div class="content-section-card">
+                <div class="section-card-header">
+                    <h3><i class="bx bx-package"></i> Recent Orders</h3>
+                    <a href="{% url 'order' %}" class="section-link">View All ({{ total_orders }})</a>
                 </div>
-                <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+
+                {% if recent_orders %}
+                <div class="recent-orders-list">
+                    {% for order in recent_orders %}
+                    <div class="recent-order-item">
+                        <div class="order-primary-info">
+                            <div class="order-icon-box">
+                                <i class="bx bx-shopping-bag"></i>
+                            </div>
+                            <div>
+                                <h4 class="order-number-title">Order #{{ order.id }}</h4>
+                                <span class="order-date-text">{{ order.date|date:"d M Y, h:i A" }} • {{ order.items.count }} item{% if order.items.count != 1 %}s{% endif %}</span>
+                            </div>
+                        </div>
+
+                        <div class="order-secondary-info">
+                            <span class="order-price-val">₹{{ order.order_total }}</span>
+                            <span class="order-status-tag {% if order.status|lower == 'delivered' %}delivered{% elif order.status|lower == 'canceled' %}canceled{% else %}progress{% endif %}">
+                                {{ order.status|title }}
+                            </span>
+                        </div>
+
+                        <a href="{% url 'view_order' order.id %}" class="btn-view-order-link" title="Track & View">
+                            <i class="bx bx-chevron-right"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-orders-box">
+                    <i class="bx bx-cookie"></i>
+                    <p>You haven't placed any orders yet. Discover our fresh handcrafted ice creams!</p>
+                    <a href="{% url 'menu' %}" class="btn-start-shopping">Explore Menu</a>
+                </div>
+                {% endif %}
             </div>
 
         </div>
+
     </div>
 
 </div>
 
-
+<!-- LOGOUT SWEETALERT -->
 <script>
 function confirmLogout() {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You will be logged out.",
+        title: "Log out of your account?",
+        text: "You will need to login again to access your saved items and orders.",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#ff4d6d",
-        cancelButtonColor: "#777",
-        confirmButtonText: "Logout",
+        confirmButtonColor: "#ef4444",
+        cancelButtonColor: "#94a3b8",
+        confirmButtonText: "Yes, Logout",
+        cancelButtonText: "Stay Logged In"
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = "{% url 'logout' %}";

@@ -1,6 +1,6 @@
 {% load static %}
 <!-- ================= MAIN CONTAINER ================= -->
-<div class="main-container" style="margin-top: 65px;">
+<div class="main-container">
 
     <!-- ========== SIDEBAR ========== -->
     <aside class="sidebar">
@@ -22,43 +22,53 @@
 </div>
 
 
-        <h5>menu</h5>
-        <ul>
-            <li data-title="Dashboard">
-                <i class="fas fa-home"></i>
-                <a href="{% url 'admin_dashboard' %}">dashboard</a>
-            </li>
+        <div class="sidebar-menu">
+            <h5 class="menu-heading">Overview</h5>
+            <ul>
+                <li data-title="Dashboard" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                </li>
+            </ul>
 
-            <li data-title="Dashboard">
-                <i class="fas fa-users"></i>
-                <a href="{% url 'admin_users' %}">users</a>
-            </li>
+            <h5 class="menu-heading">Store Management</h5>
+            <ul>
+                <li data-title="Users" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <a href="{% url 'admin_users' %}">Users</a>
+                </li>
+                <li data-title="Sellers" class="menu-item">
+                    <i class="fas fa-store"></i>
+                    <a href="{% url 'admin_sellers' %}">Sellers</a>
+                </li>
+                <li data-title="Products" class="menu-item">
+                    <i class="fas fa-box"></i>
+                    <a href="{% url 'admin_products' %}">Products</a>
+                </li>
+                <li data-title="Orders" class="menu-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <a href="{% url 'admin_orders' %}">Orders</a>
+                </li>
+            </ul>
 
-            <li data-title="Dashboard">
-                <i class="fas fa-store"></i>
-                <a href="{% url 'admin_sellers' %}">sellers</a>
-            </li>
+            <h5 class="menu-heading">Support</h5>
+            <ul>
+                <li data-title="Messages" class="menu-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="{% url 'admin_messages' %}">Messages</a>
+                </li>
+                <li class="menu-item logout-item" data-title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <a href="javascript:void(0)" onclick="logoutUser()">Logout</a>
+                </li>
+            </ul>
+        </div>
 
-            <li data-title="Dashboard">
-                <i class="fas fa-box"></i>
-                <a href="{% url 'admin_products' %}">products</a>
-            </li>
-            <li data-title="Dashboard">
-                <i class="fas fa-shopping-cart"></i>
-                <a href="{% url 'admin_orders' %}">orders</a>
-            </li>
-
-
-            <li data-title="Dashboard">
-                <i class="fas fa-envelope"></i>
-                <a href="{% url 'admin_messages' %}">messages</a>
-            </li>
-             <li class="logout-item" data-title="Dashboard">
-                <i class="fas fa-sign-out-alt"></i>
-                <a href="javascript:void(0)" onclick="logoutUser()">logout</a>
-            </li>
-
-        </ul>
+        <div class="sidebar-footer">
+            <button id="sidebarToggleBtn" class="toggle-btn" aria-label="Toggle Sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
            
     </aside>
 

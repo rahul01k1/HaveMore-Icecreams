@@ -1,219 +1,655 @@
-/* =========================================================
-   CHECKOUT PAGE – BLUE SKY SUMMER (PROFESSIONAL)
-========================================================= */
+/* ============================================================================
+   CHECKOUT PAGE – BLUE SKY SUMMER (PREMIUM, USER-FRIENDLY & RESPONSIVE)
+============================================================================ */
 
 /* ===============================
-   WRAPPER
+   PAGE CONTAINER
 ================================ */
-
-.checkout-wrapper {
-    max-width: 1150px;
-    margin: 50px auto 80px;
-    padding: 0 16px;
-    display: grid;
-    grid-template-columns: 1.3fr 0.9fr;
-    gap: 30px;
+.checkout-page-container {
+  max-width: 1240px;
+  margin: 1.5rem auto 4rem;
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+  width: 100%;
 }
 
 /* ===============================
-   SHARED CARD STYLE (MATCH CART)
+   HEADER & BREADCRUMB
 ================================ */
+.checkout-header {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
-.billing-card,
-.summary-card {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 32px 36px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+.checkout-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.checkout-breadcrumb a {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.checkout-breadcrumb a:hover {
+  color: var(--main-color, #ff6b81);
+}
+
+.checkout-breadcrumb .active {
+  color: var(--main-color, #ff6b81);
+  font-weight: 700;
+}
+
+.checkout-main-title {
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  font-weight: 800;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.checkout-main-title i {
+  color: var(--main-color, #ff6b81);
+}
+
+.security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 4px 12px;
+  border-radius: 20px;
+  width: fit-content;
 }
 
 /* ===============================
-   TITLES
+   MAIN 2-COLUMN LAYOUT
 ================================ */
-
-.billing-title,
-.summary-title {
-    font-size: 26px;
-    font-weight: 700;
-    color: #e56b92;
-    text-align: center;
-    margin-bottom: 25px;
-    letter-spacing: .3px;
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1.35fr 0.9fr;
+  gap: clamp(1.5rem, 2.5vw, 2.5rem);
+  align-items: start;
 }
 
 /* ===============================
-   FORM GRID
+   CHECKOUT CARD STYLE
 ================================ */
+.checkout-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: clamp(1.5rem, 2.5vw, 2.2rem);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.3s ease;
+}
 
+.checkout-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.step-num {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--main-color, #ff6b81), #ff4f87);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(255, 107, 129, 0.3);
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 2px;
+}
+
+.card-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* ===============================
+   FORM CONTROLS & INPUTS
+================================ */
 .form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 22px 26px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
 }
 
-.form-group p {
-    margin-bottom: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #444;
-    text-transform: uppercase;
-    letter-spacing: .4px;
+.form-group.full-width {
+  grid-column: span 2;
 }
 
-.form-group span {
-    color: #ef4444;
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
 }
 
-/* ===============================
-   INPUTS (MATCH THEME)
-================================ */
-
-.input {
-    width: 100%;
-    padding: 14px 15px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    font-size: 15px;
-    background: #fafafa;
-    transition: border .25s ease, box-shadow .25s ease, background .25s ease;
+.form-group label .req {
+  color: #ef4444;
 }
 
-.input:focus {
-    outline: none;
-    background: #fff;
-    border-color: #e56b92;
-    box-shadow: 0 0 0 3px rgba(229,107,146,0.18);
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-/* ERROR STATE (YOU ALREADY USE THIS) */
-.input.error {
-    border-color: #ef4444 !important;
-    background: #fff5f5;
+.input-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 19px;
+  color: #94a3b8;
+  pointer-events: none;
+  transition: color 0.2s ease;
 }
 
-/* ===============================
-   PLACE ORDER BUTTON
-================================ */
-
-.btn-place-order {
-    margin-top: 30px;
-    width: 100%;
-    padding: 15px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #e56b92, #ff8fb3);
-    color: #fff;
-    font-size: 18px;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    transition: transform .2s ease, box-shadow .25s ease, opacity .2s ease;
+.textarea-icon .input-icon {
+  top: 14px;
+  transform: none;
 }
 
-.btn-place-order:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(229,107,146,0.35);
+.form-input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 14.5px;
+  color: #1e293b;
+  font-family: inherit;
+  transition: all 0.25s ease;
 }
 
-.btn-place-order:disabled {
-    opacity: .7;
-    cursor: not-allowed;
+.form-input::placeholder {
+  color: #94a3b8;
+  font-size: 13.5px;
 }
 
-/* ===============================
-   CART SUMMARY
-================================ */
-
-.summary-card .item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding-bottom: 16px;
-    margin-bottom: 16px;
-    border-bottom: 1px solid #eee;
+.form-input:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: var(--main-color, #ff6b81);
+  box-shadow: 0 0 0 4px rgba(255, 107, 129, 0.15);
 }
 
-.summary-card img {
-    width: 72px;
-    height: 72px;
-    object-fit: cover;
-    border-radius: 12px;
-    background: #f3f3f3;
+.input-with-icon:focus-within .input-icon {
+  color: var(--main-color, #ff6b81);
 }
 
-.summary-card h4 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: #222;
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
 }
 
-.summary-card .price {
-    font-size: 14px;
-    color: #666;
+/* ERROR STATE */
+.form-input.error {
+  border-color: #ef4444 !important;
+  background: #fef2f2 !important;
+}
+
+.form-input.error:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
 }
 
 /* ===============================
-   TOTAL BOX
+   ADDRESS TYPE PILLS
 ================================ */
-
-.total-box {
-    margin-top: 22px;
-    padding: 16px;
-    background: #fff2f7;
-    border-radius: 14px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #222;
-    text-align: right;
+.address-type-selector {
+  display: flex;
+  gap: 10px;
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+.type-pill {
+  flex: 1;
+  cursor: pointer;
+}
 
-/* ---------- Tablets ---------- */
+.type-pill input {
+  display: none;
+}
+
+.pill-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.type-pill input:checked + .pill-content {
+  background: #fff0f3;
+  border-color: var(--main-color, #ff6b81);
+  color: var(--main-color, #ff6b81);
+  box-shadow: 0 2px 8px rgba(255, 107, 129, 0.2);
+}
+
+/* ===============================
+   PAYMENT METHOD CARDS
+================================ */
+.payment-methods-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.payment-option {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+.payment-option input {
+  display: none;
+}
+
+.payment-card-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  transition: all 0.25s ease;
+}
+
+.payment-option:hover .payment-card-content {
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
+.payment-option.selected .payment-card-content {
+  background: #ffffff;
+  border-color: var(--main-color, #ff6b81);
+  box-shadow: 0 4px 16px rgba(255, 107, 129, 0.16);
+}
+
+.payment-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.cod-icon { background: #dcfce7; color: #166534; }
+.upi-icon { background: #e0e7ff; color: #4338ca; }
+.card-icon { background: #fee2e2; color: #991b1b; }
+.bank-icon { background: #fef3c7; color: #92400e; }
+
+.payment-text {
+  flex-grow: 1;
+}
+
+.payment-text h4 {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 2px;
+}
+
+.payment-text p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.radio-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.radio-indicator::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--main-color, #ff6b81);
+  transform: scale(0);
+  transition: transform 0.2s ease;
+}
+
+.payment-option.selected .radio-indicator {
+  border-color: var(--main-color, #ff6b81);
+}
+
+.payment-option.selected .radio-indicator::after {
+  transform: scale(1);
+}
+
+/* ===============================
+   COMPLETE ORDER BUTTON
+================================ */
+.btn-complete-order {
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #ff7aa2, #ff4f87);
+  color: #ffffff;
+  font-size: 16.5px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(255, 79, 135, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  margin-top: 1rem;
+}
+
+.btn-complete-order:hover {
+  background: linear-gradient(135deg, #ff6694, #e83872);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255, 79, 135, 0.48);
+}
+
+.btn-complete-order:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-loader {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===============================
+   STICKY ORDER SUMMARY (RIGHT SIDE)
+================================ */
+.checkout-summary-col {
+  position: sticky;
+  top: 90px;
+}
+
+.summary-sticky-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: clamp(1.4rem, 2vw, 1.8rem);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 1.2rem;
+}
+
+.summary-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+}
+
+.items-count-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--main-color, #ff6b81);
+  background: #fff0f3;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+/* ITEM LIST */
+.summary-items-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-bottom: 1.2rem;
+}
+
+.summary-items-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.summary-items-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.item-img-box {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f1f5f9;
+  flex-shrink: 0;
+}
+
+.item-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-qty-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--main-color, #ff6b81);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #ffffff;
+}
+
+.item-info {
+  flex-grow: 1;
+}
+
+.item-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+}
+
+.item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.item-qty-text {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.item-price {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--main-color, #ff6b81);
+}
+
+.empty-summary {
+  text-align: center;
+  padding: 2rem 0;
+  color: #94a3b8;
+}
+
+.empty-summary i {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* PRICE BREAKDOWN */
+.price-breakdown {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 1.2rem;
+  border: 1px solid #e2e8f0;
+}
+
+.breakdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.free-highlight {
+  font-weight: 700;
+  color: #166534;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.breakdown-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 10px 0;
+}
+
+.breakdown-row.total-row {
+  margin-bottom: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.total-price-val {
+  font-size: 19px;
+  color: var(--main-color, #ff6b81);
+}
+
+/* TRUST GUARANTEES */
+.trust-guarantees {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.trust-item i {
+  font-size: 16px;
+  color: var(--main-color, #ff6b81);
+  flex-shrink: 0;
+}
+
+/* ============================================================================
+   RESPONSIVE BREAKPOINTS
+============================================================================ */
 @media (max-width: 992px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
 
-    .checkout-wrapper {
-        grid-template-columns: 1fr;
-        gap: 26px;
-    }
-
-    .billing-card,
-    .summary-card {
-        padding: 28px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
+  .checkout-summary-col {
+    position: static;
+    order: -1; /* Order summary first on mobile/tablet for easy review */
+    margin-bottom: 1rem;
+  }
 }
 
-/* ---------- Mobile ---------- */
-@media (max-width: 576px) {
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
 
-    .billing-title,
-    .summary-title {
-        font-size: 22px;
-    }
+  .form-group.full-width {
+    grid-column: span 1;
+  }
 
-    .input {
-        font-size: 14px;
-        padding: 13px;
-    }
+  .checkout-card {
+    padding: 1.2rem;
+    border-radius: 16px;
+  }
 
-    .btn-place-order {
-        font-size: 16px;
-        padding: 14px;
-    }
-
-    .summary-card img {
-        width: 64px;
-        height: 64px;
-    }
-
-    .total-box {
-        font-size: 16px;
-        padding: 14px;
-    }
+  .btn-complete-order {
+    font-size: 15px;
+    padding: 14px 20px;
+  }
 }

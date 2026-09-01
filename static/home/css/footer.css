@@ -101,8 +101,14 @@ footer .content .box1 p {
   align-items: center;
   gap: 8px;
   font-size: 0.95rem;
-  color: #222;
+  color: #444;
   margin-bottom: 0.6rem;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+footer .content .box1 a:hover {
+  color: var(--main-color);
+  transform: translateX(5px);
 }
 
 /* Social icons */
@@ -120,6 +126,15 @@ footer .content .box1 .icons i {
   border-radius: 50%;
   border: 2px solid var(--main-color);
   color: var(--main-color);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+footer .content .box1 .icons i:hover {
+  background-color: var(--main-color);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 107, 129, 0.3);
 }
 
 /* ============================================================================

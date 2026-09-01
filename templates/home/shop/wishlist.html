@@ -1,18 +1,23 @@
 {% extends "home/base.html" %}
 {% load static %}
-{% block title %}Blue Sky Summer – My Wishlist{% endblock %}
+{% block title %}My Wishlist - HaveMore IceCreams{% endblock %}
 
 {% block content %}
 
-<div class="products wishlist-page">
+<link rel="stylesheet" href="{% static 'home/css/wishlist.css' %}">
+
+<div class="wishlist-page-wrapper">
 
   <!-- HEADING -->
-  <div class="heading">
-    <h1>My Wishlist</h1>
-    <p>Save your favorite delights and shop whenever you're ready.</p>
-    <img src="{% static 'home/image/separator-img.png' %}" alt="">
+  <div class="wishlist-header">
+    <div class="wishlist-title-badge">
+      <i class="bx bxs-heart"></i> Saved Favorites
+    </div>
+    <h1 class="wishlist-main-title">My Sweet Wishlist</h1>
+    <p class="wishlist-subtitle">Save your favorite handcrafted scoops and indulge whenever you're ready.</p>
   </div>
 
+  <!-- SKELETON LOADER -->
   <div class="wishlist-grid skeleton-wrapper" id="wishlistSkeleton">
     {% for i in "12345678" %}
     <div class="product-card skeleton-card">
@@ -26,73 +31,102 @@
     {% endfor %}
   </div>
 
+  <!-- PRODUCT GRID -->
   <div class="wishlist-grid" id="wishlistGrid" style="display:none;">
 
     {% if items %}
       {% for item in items %}
-      <div class="product-card wishlist-card"
-     data-id="{{ item.id }}"
-     {% if item.product.product_stock == 0 %}disabled{% endif %}>
+      <div class="wishlist-card {% if item.product.product_stock == 0 %}out-of-stock-card{% endif %}"
+           data-id="{{ item.id }}">
 
-        <!-- IMAGE -->
-        <div class="wishlist-img-box">
-          <img src="{{ item.product.product_image.url }}"
-               alt="{{ item.product.product_name }}"
-               loading="lazy">
+        <!-- MEDIA WRAPPER -->
+        <div class="card-media-wrapper">
+          <a href="{% url 'view_product' item.product.id %}" class="card-img-link">
+            <img src="{{ item.product.product_image.url }}"
+                 alt="{{ item.product.product_name }}"
+                 class="product-thumb-img"
+                 loading="lazy">
+          </a>
+
+          <!-- STOCK STATUS BADGE -->
+          {% if item.product.product_stock > 9 %}
+            <span class="stock-pill stock-in">
+              <span class="dot"></span> In Stock
+            </span>
+          {% elif item.product.product_stock == 0 %}
+            <span class="stock-pill stock-out">
+              <span class="dot"></span> Out of Stock
+            </span>
+          {% else %}
+            <span class="stock-pill stock-low">
+              <span class="dot"></span> {{ item.product.product_stock }} left
+            </span>
+          {% endif %}
+
+          <!-- QUICK REMOVE BUTTON -->
+          <button type="button" 
+                  class="btn-remove-wishlist" 
+                  onclick="removeWishlist(this)" 
+                  title="Remove from Wishlist">
+            <i class="bx bx-trash"></i>
+          </button>
         </div>
 
-        <!-- STOCK -->
-        {% if item.product.product_stock > 9 %}
-          <span class="stock-label stock-ok">In Stock</span>
-        {% elif item.product.product_stock == 0 %}
-          <span class="stock-label stock-out">Out of Stock</span>
-        {% else %}
-          <span class="stock-label stock-low">
-            Only {{ item.product.product_stock }} left
-          </span>
-        {% endif %}
+        <!-- CONTENT BODY -->
+        <div class="card-body">
+          <a href="{% url 'view_product' item.product.id %}" class="title-link">
+            <h3 class="product-name" title="{{ item.product.product_name }}">
+              {{ item.product.product_name }}
+            </h3>
+          </a>
 
-        <!-- CONTENT -->
-        <div class="wishlist-content">
-          <h3 class="product-title">{{ item.product.product_name }}</h3>
-          <p class="price">₹{{ item.price }}</p>
-
-          <div class="wishlist-footer">
-
-            <!-- ICON ACTIONS -->
-            <div class="wishlist-actions">
-              <button class="icon--btn"
-                      onclick="addToCart('{{ item.product.id }}')">
-                <img src="{% static 'home/image/shopping.png' %}">
-              </button>
-
-              <a href="{% url 'view_product' item.product.id %}"
-                 class="icon--btn">
-                <img src="{% static 'home/image/eye.png' %}">
-              </a>
-
-           <button class="icon--btn delete-btn"
-                    onclick="removeWishlist(this)">
-                <img src="{% static 'home/image/trash.png' %}">
-            </button>
-
-          <!-- BUY -->
-            <a href="{% url 'checkout' %}?buy_now={{ item.product.id }}"
-               class="btn">
-              Buy
-            </a>
-            </div> 
-
+          <div class="price-row">
+            <span class="price-tag">₹{{ item.price }}</span>
           </div>
+
+          <!-- ACTION BUTTONS -->
+          <div class="card-actions">
+            {% if item.product.product_stock > 0 %}
+              <a href="{% url 'checkout' %}?buy_now={{ item.product.id }}"
+                 class="btn-buy-now">
+                <i class="bx bxs-zap"></i>
+                <span>Buy</span>
+              </a>
+              <button type="button" 
+                      class="btn-icon-action btn-add-cart" 
+                      onclick="addToCart('{{ item.product.id }}')" 
+                      title="Add to Cart">
+                <i class="bx bx-shopping-bag"></i>
+              </button>
+            {% else %}
+              <button class="btn-buy-now disabled" disabled>
+                <span>Out of Stock</span>
+              </button>
+            {% endif %}
+
+            <a href="{% url 'view_product' item.product.id %}" 
+               class="btn-icon-action btn-view-prod" 
+               title="View Details">
+              <i class="bx bx-show"></i>
+            </a>
+          </div>
+
         </div>
 
       </div>
       {% endfor %}
 
     {% else %}
-      <div class="empty">
-        <img src="{% static 'home/image/icon/empty.png' %}" width="200">
-        <p>Your wishlist is empty! Start adding some treats.</p>
+      <!-- EMPTY STATE -->
+      <div class="empty-wishlist-card">
+          <div class="empty-icon-circle">
+            <i class="bx bx-heart"></i>
+          </div>
+          <h2>Your Wishlist is Empty!</h2>
+          <p>You haven't saved any sweet treats yet. Discover your next favorite scoop today!</p>
+          <a href="{% url 'menu' %}" class="btn-explore-menu">
+            <i class="bx bx-grid-alt"></i> Start Exploring Menu
+          </a>
       </div>
     {% endif %}
 
@@ -100,40 +134,42 @@
 
   <!-- PAGINATION -->
   {% if items.paginator.num_pages > 1 %}
-  <div class="pagination">
+  <div class="wishlist-pagination">
     {% if items.has_previous %}
-      <a href="?page={{ items.previous_page_number }}" class="btn">Prev</a>
+      <a href="?page={{ items.previous_page_number }}" class="page-nav-btn">
+        <i class="bx bx-chevron-left"></i> Prev
+      </a>
     {% endif %}
 
-    <span class="page-info">
-      Page {{ items.number }} of {{ items.paginator.num_pages }}
+    <span class="page-indicator">
+      Page <strong>{{ items.number }}</strong> of <strong>{{ items.paginator.num_pages }}</strong>
     </span>
 
     {% if items.has_next %}
-      <a href="?page={{ items.next_page_number }}" class="btn">Next</a>
+      <a href="?page={{ items.next_page_number }}" class="page-nav-btn">
+        Next <i class="bx bx-chevron-right"></i>
+      </a>
     {% endif %}
   </div>
   {% endif %}
 
 </div>
 
- 
 <script>
 function removeWishlist(btn) {
-
     const card = btn.closest(".wishlist-card");
     const itemId = card.dataset.id;
 
     Swal.fire({
-        title: "Remove Item?",
-        text: "Do you want to remove this item from your wishlist?",
+        title: "Remove from Wishlist?",
+        text: "Are you sure you want to remove this treat?",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#ff7fa8",
-        cancelButtonColor: "#777",
-        confirmButtonText: "Yes, remove"
+        confirmButtonColor: "#ff6b81",
+        cancelButtonColor: "#94a3b8",
+        confirmButtonText: "Yes, remove",
+        cancelButtonText: "Keep it"
     }).then(result => {
-
         if (!result.isConfirmed) return;
 
         fetch(`/remove_wishlist/${itemId}/`, {
@@ -145,36 +181,45 @@ function removeWishlist(btn) {
         })
         .then(res => res.json())
         .then(data => {
-
             if (!data.success) {
                 Swal.fire("Error", "Unable to remove item", "error");
                 return;
             }
 
-            /* Smooth remove */
+            // Smooth fadeout animation
+            card.style.transition = "all 0.35s ease";
             card.style.opacity = "0";
-            card.style.transform = "scale(0.95)";
+            card.style.transform = "scale(0.9)";
 
             setTimeout(() => {
                 card.remove();
-                updateWishlistCount();
-            }, 300);
+                if (typeof updateWishlistCount === 'function') {
+                    updateWishlistCount();
+                }
+
+                // If no more cards left, reload or show empty state
+                const remaining = document.querySelectorAll('.wishlist-card');
+                if (remaining.length === 0) {
+                    location.reload();
+                }
+            }, 350);
 
             Swal.fire({
                 toast: true,
                 icon: "success",
                 title: "Removed from wishlist",
                 position: "top-end",
-                timer: 1200,
+                timer: 1500,
                 showConfirmButton: false
             });
+        })
+        .catch(() => {
+            Swal.fire("Error", "Server error. Try again.", "error");
         });
     });
 }
 
-
-
-/* ================= SKELETON HIDE ================= */
+// Skeleton smooth transition
 document.addEventListener("DOMContentLoaded", () => {
   const skeleton = document.getElementById("wishlistSkeleton");
   const grid = document.getElementById("wishlistGrid");
@@ -184,10 +229,10 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     skeleton.style.display = "none";
     grid.style.display = "grid";
-  }, 300); // smooth UX
+  }, 250);
 });
 
-// Failsafe: never allow infinite skeleton
+// Failsafe
 setTimeout(() => {
   const skeleton = document.getElementById("wishlistSkeleton");
   const grid = document.getElementById("wishlistGrid");
@@ -196,8 +241,7 @@ setTimeout(() => {
     skeleton.style.display = "none";
     grid.style.display = "grid";
   }
-}, 2000);
+}, 1500);
 </script>
-
 
 {% endblock %}

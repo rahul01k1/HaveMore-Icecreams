@@ -1,0 +1,690 @@
+/* ============================================================================
+   ORDER DETAIL & TRACKING VIEW – USER-FRIENDLY & RESPONSIVE
+============================================================================ */
+
+.order-detail-page {
+  max-width: 1200px;
+  margin: 1.5rem auto 5rem;
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+  width: 100%;
+}
+
+/* ===============================
+   BREADCRUMB
+================================ */
+.order-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 1.8rem;
+}
+
+.order-breadcrumb a {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.order-breadcrumb a:hover {
+  color: var(--main-color, #ff6b81);
+}
+
+.order-breadcrumb .active-crumb {
+  color: var(--main-color, #ff6b81);
+  font-weight: 700;
+}
+
+/* ===============================
+   MAIN HEADER
+================================ */
+.order-main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.order-id-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff0f3;
+  color: var(--main-color, #ff6b81);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+}
+
+.order-heading {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 4px;
+}
+
+.order-meta-text {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.order-meta-text strong {
+  color: #1e293b;
+}
+
+/* Status Pills */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+.status-delivered {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-canceled {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.status-progress {
+  background: #fff0f3;
+  color: var(--main-color, #ff6b81);
+  border: 1px solid rgba(255, 107, 129, 0.3);
+}
+
+/* ===============================
+   LIVE TRACKING CARD
+================================ */
+.tracking-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px 28px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 2.2rem;
+}
+
+.tracking-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 24px;
+}
+
+.tracking-title i {
+  color: var(--main-color, #ff6b81);
+}
+
+.stepper-track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  position: relative;
+  gap: 10px;
+}
+
+.step-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.step-node:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  width: 100%;
+  height: 3px;
+  background: #e2e8f0;
+  z-index: 1;
+}
+
+.step-node.completed:not(:last-child)::after {
+  background: #22c55e;
+}
+
+.step-node.active:not(:last-child)::after {
+  background: linear-gradient(90deg, var(--main-color, #ff6b81), #e2e8f0);
+}
+
+.step-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  position: relative;
+  z-index: 2;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.step-node.completed .step-icon {
+  background: #22c55e;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.35);
+}
+
+.step-node.active .step-icon {
+  background: var(--main-color, #ff6b81);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(255, 107, 129, 0.4);
+  animation: pulseNode 1.8s infinite;
+}
+
+@keyframes pulseNode {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.step-label {
+  margin-top: 10px;
+}
+
+.step-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.step-subtitle {
+  display: block;
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* Canceled Banner */
+.canceled-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 2rem;
+}
+
+.canceled-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.canceled-banner h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #991b1b;
+  margin: 0 0 2px;
+}
+
+.canceled-banner p {
+  font-size: 13px;
+  color: #7f1d1d;
+  margin: 0;
+}
+
+/* ===============================
+   TWO-COLUMN CONTENT GRID
+================================ */
+.order-content-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.9fr;
+  gap: clamp(1.5rem, 2.5vw, 2.2rem);
+  align-items: start;
+}
+
+/* Cards */
+.order-section-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px 26px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+}
+
+.section-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 16px;
+}
+
+.section-card-header h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+}
+
+/* ===============================
+   ORDER ITEMS LIST
+================================ */
+.items-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-item-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.order-item-row:last-child {
+  border-bottom: none;
+}
+
+.item-media {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f1f5f9;
+  flex-shrink: 0;
+}
+
+.item-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-details {
+  flex-grow: 1;
+}
+
+.item-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 2px;
+}
+
+.item-seller {
+  font-size: 11.5px;
+  color: #94a3b8;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.item-price-qty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.unit-price {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.qty-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.item-total-col {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.item-total-label {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.item-total-val {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--main-color, #ff6b81);
+}
+
+/* ===============================
+   DELIVERY INFO BODY
+================================ */
+.delivery-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.address-chip {
+  font-size: 11px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 3px 10px;
+  border-radius: 8px;
+}
+
+.recipient-box,
+.address-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.contact-icon {
+  font-size: 22px;
+  color: var(--main-color, #ff6b81);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.recipient-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 3px;
+}
+
+.recipient-phone,
+.recipient-email {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.recipient-phone i,
+.recipient-email i {
+  color: var(--main-color, #ff6b81);
+}
+
+.address-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin: 0 0 2px;
+}
+
+.address-text {
+  font-size: 13.5px;
+  color: #334155;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ===============================
+   RIGHT SIDEBAR: SUMMARY & ACTIONS
+================================ */
+.sticky-sidebar {
+  position: sticky;
+  top: 90px;
+}
+
+.payment-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+}
+
+.payment-badge.paid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.payment-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.price-breakdown-body {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 1.5rem;
+}
+
+.breakdown-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.free-text {
+  font-weight: 700;
+  color: #166534;
+}
+
+.breakdown-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 10px 0;
+}
+
+.grand-total-line {
+  margin-bottom: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.grand-total-val {
+  font-size: 18px;
+  color: var(--main-color, #ff6b81);
+}
+
+/* ACTIONS */
+.order-actions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-action-primary {
+  padding: 12px 18px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #ff7aa2, #ff4f87);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(255, 79, 135, 0.35);
+  transition: all 0.25s ease;
+}
+
+.btn-action-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 79, 135, 0.45);
+  color: #ffffff;
+}
+
+.btn-action-secondary {
+  padding: 12px 18px;
+  border-radius: 25px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #1e293b;
+  font-size: 13.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-action-secondary:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  transform: translateY(-2px);
+}
+
+.btn-action-danger {
+  padding: 11px 18px;
+  border-radius: 25px;
+  background: #fef2f2;
+  border: 1.5px solid #fecaca;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-action-danger:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-2px);
+}
+
+.btn-back-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  margin-top: 6px;
+  transition: color 0.2s ease;
+}
+
+.btn-back-link:hover {
+  color: var(--main-color, #ff6b81);
+}
+
+/* ===============================
+   RESPONSIVE BREAKPOINTS
+================================ */
+@media (max-width: 992px) {
+  .order-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sticky-sidebar {
+    position: static;
+  }
+
+  .stepper-track {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .stepper-track {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .step-node:not(:last-child)::after {
+    display: none;
+  }
+
+  .order-section-card {
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+
+  .order-item-row {
+    gap: 12px;
+  }
+
+  .item-media {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+/* ===============================
+   PRINT STYLESHEET (@media print)
+================================ */
+@media print {
+  header,
+  footer,
+  .header,
+  .footer,
+  .no-print,
+  .order-breadcrumb,
+  .tracking-card,
+  .order-actions-container {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .order-detail-page {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .order-section-card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+}

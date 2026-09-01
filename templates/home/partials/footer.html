@@ -3,8 +3,14 @@
     <div class="content">
 
         <div class="box1">
-            <img src="{% static 'home/image/logo.png' %}" alt="">
-            <p>We're always in search for talented and motivated people. Don't be shy introduce yourself!</p>
+            <div class="footer-brand-wrap" style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                <img src="{% static 'home/image/logo.png' %}" alt="HaveMore Logo" style="width:50px; height:50px; border-radius:50%; border:2px solid #ff7fa8; object-fit:cover;">
+                <div style="display:flex; flex-direction:column;">
+                    <span style="font-size:18px; font-weight:900; color:#ff4f87; letter-spacing:1.2px; font-family:'Outfit', sans-serif;">HAVEMORE</span>
+                    <span style="font-size:9px; font-weight:800; color:#94a3b8; letter-spacing:3px; font-family:'Outfit', sans-serif;">ICECREAMS</span>
+                </div>
+            </div>
+            <p>Handcrafted artisanal ice creams made with fresh farm milk and pure natural ingredients.</p>
             <a href="{% url 'contact' %}" class="btn">Contact now</a>
         </div>
 

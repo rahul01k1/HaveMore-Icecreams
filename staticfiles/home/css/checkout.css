@@ -22,9 +22,10 @@
 .billing-card,
 .summary-card {
     background: #ffffff;
-    border-radius: 18px;
-    padding: 32px 36px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    border-radius: 20px;
+    padding: 35px 40px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.02);
 }
 
 /* ===============================
@@ -34,11 +35,25 @@
 .billing-title,
 .summary-title {
     font-size: 26px;
-    font-weight: 700;
-    color: #e56b92;
+    font-weight: 800;
+    color: #333;
     text-align: center;
     margin-bottom: 25px;
-    letter-spacing: .3px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.billing-title::after,
+.summary-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 4px;
+    background: linear-gradient(135deg, var(--main-color), var(--pink-color));
+    border-radius: 4px;
 }
 
 /* ===============================
@@ -70,19 +85,20 @@
 
 .input {
     width: 100%;
-    padding: 14px 15px;
+    padding: 14px 18px;
     border-radius: 12px;
     border: 1px solid #ddd;
     font-size: 15px;
-    background: #fafafa;
-    transition: border .25s ease, box-shadow .25s ease, background .25s ease;
+    background: #fdfdfd;
+    transition: all 0.3s ease;
+    font-family: inherit;
 }
 
 .input:focus {
     outline: none;
     background: #fff;
-    border-color: #e56b92;
-    box-shadow: 0 0 0 3px rgba(229,107,146,0.18);
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 3px rgba(255, 127, 168, 0.2);
 }
 
 /* ERROR STATE (YOU ALREADY USE THIS) */
@@ -96,27 +112,29 @@
 ================================ */
 
 .btn-place-order {
-    margin-top: 30px;
+    margin-top: 35px;
     width: 100%;
-    padding: 15px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #e56b92, #ff8fb3);
+    padding: 16px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, var(--main-color), var(--pink-color));
     color: #fff;
     font-size: 18px;
     font-weight: 700;
     border: none;
     cursor: pointer;
-    transition: transform .2s ease, box-shadow .25s ease, opacity .2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(218, 98, 133, 0.4);
 }
 
 .btn-place-order:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(229,107,146,0.35);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(218, 98, 133, 0.6);
 }
 
 .btn-place-order:disabled {
     opacity: .7;
     cursor: not-allowed;
+    transform: none;
 }
 
 /* ===============================
@@ -157,14 +175,15 @@
 ================================ */
 
 .total-box {
-    margin-top: 22px;
-    padding: 16px;
-    background: #fff2f7;
-    border-radius: 14px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #222;
-    text-align: right;
+    margin-top: 25px;
+    padding: 20px;
+    background: var(--pink-opacity);
+    border-radius: 16px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--main-color);
+    text-align: center;
+    border: 1px solid rgba(218, 98, 133, 0.1);
 }
 
 /* =========================================================

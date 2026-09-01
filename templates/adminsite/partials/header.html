@@ -1,68 +1,54 @@
 {% load static %}
-
 <header class="admin-header">
 
     <!-- Left -->
     <div class="header-left">
         <a href="{% url 'admin_dashboard' %}" class="brand">
-            <img src="{% static 'adminsite/image/logo.jpg' %}" alt="Logo">
-            <span>HaveMore IceCreams</span>
+            <img src="{% static 'home/image/logo.jpg' %}" alt="Logo" style="border-radius:50%;">
+            <span style="font-family:'Outfit', sans-serif; font-weight:800; font-size:20px; color:var(--pink-main);">HaveMore IceCreams</span>
         </a>
+    </div>
+
+    <!-- Middle Search -->
+    <div class="header-search">
+        <i class="fas fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8;"></i>
+        <input type="text" id="globalSearchInput" placeholder="Search orders, users, products..." style="padding-left:36px; border-radius:20px; border:1px solid #e2e8f0; width:100%; height:40px; background:#f8fafc;" autocomplete="off">
+        <div id="globalSearchDropdown" class="search-dropdown"></div>
     </div>
 
     <!-- Right -->
     <div class="header-right">
-
         <!-- Notifications -->
         <button class="icon-btn" aria-label="Notifications">
             <i class="fas fa-bell"></i>
         </button>
 
+        <!-- Messages -->
+        <a href="{% url 'admin_messages' %}" class="icon-btn hide-mobile" aria-label="Messages">
+            <i class="fas fa-envelope"></i>
+        </a>
+
         <!-- Profile -->
         <div class="profile-wrapper">
             <button class="profile-btn" id="profileToggle">
-                <img
-                    src="{% if request.session.seller_image %}{{ request.session.seller_image }}{% else %}{% static 'adminsite/image/profile.png' %}{% endif %}"
-                    class="profile-avatar"
-                    alt="Profile"
-                >
-                <span class="profile-name">
-                    {{ request.session.seller_name|default:"Admin" }}
-                </span>
-                <i class="fas fa-chevron-down"></i>
+                <img src="{% if request.session.seller_image %}{{ request.session.seller_image }}{% else %}{% static 'adminsite/image/profile.png' %}{% endif %}" class="profile-avatar" alt="Profile">
+                <div class="profile-text">
+                    <span class="profile-name">{{ request.session.seller_name|default:"Admin" }}</span>
+                    <span class="profile-role">{{ request.session.seller_role|capfirst|default:"Super Admin" }}</span>
+                </div>
+                <i class="fas fa-chevron-down drop-icon"></i>
             </button>
 
             <!-- Dropdown -->
             <div class="profile-dropdown">
-                <div class="profile-info">
-                    <img
-                        src="{% if request.session.seller_image %}{{ request.session.seller_image }}{% else %}{% static 'adminsite/image/profile.png' %}{% endif %}"
-                        class="dropdown-avatar"
-                    >
-                    <div>
-                        <strong>{{ request.session.seller_name|default:"Admin" }}</strong>
-                        <small>{{ request.session.seller_role|capfirst }} Account</small>
-                    </div>
+                <div class="dropdown-header">
+                    <h6>Welcome back!</h6>
                 </div>
-
                 <ul class="dropdown-links">
-                    <li>
-                        <a href="#">
-                            <i class="fas fa-user"></i> My Profile
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="fas fa-cog"></i> Settings
-                        </a>
-                    </li>
+                    <li><a href="javascript:void(0)" onclick="openAdminSettings()"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li><a href="javascript:void(0)" onclick="openAdminSettings()"><i class="fas fa-cog"></i> Settings</a></li>
                     <li class="divider"></li>
-                    <li>
-                        <!-- IMPORTANT: API logout via JS -->
-                        <a href="javascript:void(0)" onclick="logoutUser()">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </a>
-                    </li>
+                    <li><a href="javascript:void(0)" onclick="logoutUser()" class="logout-text"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -71,6 +57,201 @@
         <button class="icon-btn mobile-toggle" aria-label="Menu">
             <i class="fas fa-bars"></i>
         </button>
+    </div>
 
+    <!-- ADMIN SETTINGS MODAL -->
+    <div class="modal-overlay" id="adminSettingsModal" onclick="if(event.target === this) closeAdminSettings()">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Admin Settings</h3>
+                <button class="modal-close" onclick="closeAdminSettings()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="adminSettingsForm" enctype="multipart/form-data">
+                    <input type="hidden" name="id" id="admin_id" value="{{ request.session.seller_id }}">
+                    <div class="form-grid">
+                        <input type="text" name="seller_name" id="admin_name" class="search-pill" style="width:100%; border-radius:8px;" placeholder="Name" required>
+                        
+                        <input type="email" name="seller_email" id="admin_email" class="search-pill" style="width:100%; border-radius:8px;" placeholder="Email" required>
+                        
+                        <input type="password" name="seller_password" id="admin_password" class="search-pill" style="width:100%; border-radius:8px;" placeholder="New Password">
+                        
+                        <input type="file" name="seller_image" style="padding:10px;" accept="image/*">
+                    </div>
+
+                    <div class="form-actions" style="margin-top:24px; display:flex; justify-content:space-between;">
+                        <div>
+                            <button type="submit" class="btn-primary">Update Profile</button>
+                            <button type="button" class="btn-secondary" onclick="closeAdminSettings()">Cancel</button>
+                        </div>
+                        <button type="button" class="btn-danger" style="background:#ef4444; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;" onclick="deleteAdminProfile()">Delete Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </header>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById('globalSearchInput');
+    const searchDropdown = document.getElementById('globalSearchDropdown');
+    
+    let searchTimeout = null;
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+        clearTimeout(searchTimeout);
+        
+        if (query.length === 0) {
+            searchDropdown.classList.remove('show');
+            return;
+        }
+
+        searchTimeout = setTimeout(() => {
+            fetchSearchResults(query);
+        }, 300); // 300ms debounce
+    });
+
+    // Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+            searchDropdown.classList.remove('show');
+        }
+    });
+
+    async function fetchSearchResults(query) {
+        try {
+            const [ordersRes, productsRes, usersRes] = await Promise.all([
+                fetch(`/adminsite/api/orders/?search=${encodeURIComponent(query)}`).then(r => r.json()),
+                fetch(`/adminsite/api/products/?search=${encodeURIComponent(query)}`).then(r => r.json()),
+                fetch(`/adminsite/api/users/?search=${encodeURIComponent(query)}`).then(r => r.json())
+            ]);
+
+            renderSearchResults(query, ordersRes.results || [], productsRes.results || [], usersRes.results || []);
+        } catch(e) {
+            console.error("Search failed:", e);
+        }
+    }
+
+    function renderSearchResults(query, orders, products, users) {
+        let html = "";
+        let totalResults = 0;
+
+        // ORDERS
+        if (orders.length > 0) {
+            const matches = orders.slice(0, 3);
+            totalResults += matches.length;
+            html += `<div class="search-group"><div class="search-group-title">Orders</div>`;
+            matches.forEach(o => {
+                html += `
+                    <a href="/adminsite/orders/" class="search-item">
+                        <div class="search-item-icon"><i class="fas fa-shopping-bag"></i></div>
+                        <div class="search-item-content">
+                            <div class="search-item-title">Order #${o.id}</div>
+                            <div class="search-item-subtitle">${o.user_name} • ${o.status.toUpperCase()}</div>
+                        </div>
+                    </a>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        // PRODUCTS
+        if (products.length > 0) {
+            const matches = products.slice(0, 3);
+            totalResults += matches.length;
+            html += `<div class="search-group"><div class="search-group-title">Products</div>`;
+            matches.forEach(p => {
+                html += `
+                    <a href="/adminsite/products/" class="search-item">
+                        <div class="search-item-icon"><i class="fas fa-box"></i></div>
+                        <div class="search-item-content">
+                            <div class="search-item-title">${p.product_name}</div>
+                            <div class="search-item-subtitle">₹${p.product_price} • Stock: ${p.product_stock}</div>
+                        </div>
+                    </a>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        // USERS
+        if (users.length > 0) {
+            const matches = users.slice(0, 3);
+            totalResults += matches.length;
+            html += `<div class="search-group"><div class="search-group-title">Users</div>`;
+            matches.forEach(u => {
+                html += `
+                    <a href="/adminsite/users/" class="search-item">
+                        <div class="search-item-icon"><i class="fas fa-user"></i></div>
+                        <div class="search-item-content">
+                            <div class="search-item-title">${u.first_name} ${u.last_name || ''}</div>
+                            <div class="search-item-subtitle">${u.email}</div>
+                        </div>
+                    </a>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        if (totalResults === 0) {
+            html = `<div style="padding:16px; text-align:center; color:#94a3b8; font-size:13px;">No results found for "${query}"</div>`;
+        }
+
+        searchDropdown.innerHTML = html;
+        searchDropdown.classList.add('show');
+    }
+
+    // ADMIN SETTINGS LOGIC
+    window.openAdminSettings = function() {
+        const adminId = document.getElementById("admin_id").value;
+        if(!adminId) return;
+        
+        fetch(`/adminsite/api/sellers/${adminId}/`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById("admin_name").value = data.seller_name;
+                document.getElementById("admin_email").value = data.seller_email;
+                document.getElementById("admin_password").value = data.seller_password;
+                document.getElementById("adminSettingsModal").classList.add("show");
+            });
+    }
+
+    window.closeAdminSettings = function() {
+        document.getElementById("adminSettingsModal").classList.remove("show");
+    }
+
+    document.getElementById("adminSettingsForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const adminId = document.getElementById("admin_id").value;
+        const formData = new FormData(this);
+
+        fetch(`/adminsite/api/sellers/${adminId}/`, {
+            method: "PATCH",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            body: formData
+        }).then(r => {
+            if (r.ok) {
+                alert("Profile updated successfully!");
+                location.reload();
+            } else {
+                alert("Error updating profile.");
+            }
+        });
+    });
+
+    window.deleteAdminProfile = function() {
+        if (!confirm("Are you SURE you want to delete your admin account? This cannot be undone!")) return;
+        
+        const adminId = document.getElementById("admin_id").value;
+        fetch(`/adminsite/api/sellers/${adminId}/`, {
+            method: "DELETE",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        }).then(() => {
+            alert("Account deleted. Logging out.");
+            window.location.href = "{% url 'admin_logout_api' %}";
+        });
+    }
+});
+</script>

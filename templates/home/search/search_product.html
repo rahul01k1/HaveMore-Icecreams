@@ -1,153 +1,295 @@
 {% extends "home/base.html" %}
 {% load static %}
-{% block title %}Search Product - Blue Sky Summer{% endblock %}
+{% block title %}{% if search_query %}Search: "{{ search_query }}"{% else %}Search Products{% endif %} - HaveMore IceCreams{% endblock %}
 
 {% block content %}
 
-<div class="search-wrapper">
+<link rel="stylesheet" href="{% static 'home/css/search.css' %}">
 
-    <h1 class="search-title">Search Results</h1>
-    <img src="{% static 'home/image/separator-img.png' %}"
-         class="search-separator"
-         width="180">
+<div class="search-page-wrapper">
 
-    <!-- ================= PRODUCT GRID ================= -->
-    <div class="product-grid">
+    <!-- BREADCRUMB -->
+    <nav class="search-breadcrumb">
+        <a href="{% url 'home' %}">Home</a>
+        <i class="bx bx-chevron-right"></i>
+        <a href="{% url 'menu' %}">Menu</a>
+        <i class="bx bx-chevron-right"></i>
+        <span class="active-crumb">Search Products</span>
+    </nav>
 
-        {% if products %}
-            {% for product in products %}
+    <!-- IN-PAGE SEARCH BAR & QUICK FILTERS -->
+    <div class="search-hero-box">
+        <h1 class="search-main-heading">Find Your Favorite Scoop 🍨</h1>
+        <p class="search-main-subtitle">Search by flavor, ingredients, category, or dessert name.</p>
 
-            <form action="{% url 'add_to_cart' product.id %}"
-                  method="post"
-                  class="product-card">
-                {% csrf_token %}
-
-                <!-- STOCK BADGE -->
-                {% if product.product_stock > 9 %}
-                    <span class="stock-badge stock-green">In Stock</span>
-                {% elif product.product_stock == 0 %}
-                    <span class="stock-badge stock-red">Out of Stock</span>
-                {% else %}
-                    <span class="stock-badge stock-red">
-                        Only {{ product.product_stock }} left!
-                    </span>
+        <form action="{% url 'search_product' %}" method="get" class="search-input-form">
+            <div class="search-input-wrap">
+                <i class="bx bx-search search-lens-icon"></i>
+                <input type="text" 
+                       name="q" 
+                       value="{{ search_query }}" 
+                       id="mainSearchInput"
+                       class="main-search-input" 
+                       placeholder="Search chocolate, vanilla, mango, cone..." 
+                       autocomplete="off"
+                       required>
+                {% if search_query %}
+                <a href="{% url 'search_product' %}" class="btn-clear-search" title="Clear Search">
+                    <i class="bx bx-x"></i>
+                </a>
                 {% endif %}
+                <button type="submit" class="btn-search-submit">
+                    <span>Search</span>
+                    <i class="bx bx-right-arrow-alt"></i>
+                </button>
+            </div>
+        </form>
 
-                <!-- PRODUCT IMAGE -->
-                <img src="{{ product.product_image.url }}"
-                     class="main-img"
-                     alt="{{ product.product_name }}"
-                     loading="lazy">
-
-                <!-- CARD BODY -->
-                <div class="card-body">
-
-                    <div class="product-name">
-                        {{ product.product_name }}
-                    </div>
-
-                    <div class="product-price">
-                        ₹{{ product.product_price }}
-                    </div>
-
-                    <!-- ACTION ICONS -->
-                    <div class="wishlist-actions">
-
-                        <!-- ADD TO CART -->
-                        <button type="submit"
-                                class="icon--btn"
-                                title="Add to Cart">
-                            <img src="{% static 'home/image/shopping.png' %}">
-                        </button>
-
-                        <!-- WISHLIST -->
-                        <button type="submit"
-                                class="icon--btn"
-                                formaction="{% url 'add_to_wishlist' product.id %}"
-                                title="Add to Wishlist">
-                            <img src="{% static 'home/image/heart.png' %}">
-                        </button>
-
-                        <!-- VIEW -->
-                        <a href="{% url 'view_product' product.id %}"
-                           class="icon--btn"
-                           title="View Product">
-                            <img src="{% static 'home/image/eye.png' %}">
-                        </a>
-                    </div>
-
-                    <input type="hidden"
-                           name="product_id"
-                           value="{{ product.id }}">
-
-                    <!-- BUY NOW + QTY -->
-                  <div class="buy-section">
-
-                        <a href="{% url 'checkout' %}?buy_now={{ product.id }}"
-                           class="btn">
-                            Buy Now
-                        </a>
-
-                        <input type="number"
-                               name="qty"
-                               min="1"
-                               max="99"
-                               value="1"
-                               class="qty-input">
-                    </div>
-
-                </div>
-            </form>
-
-            {% endfor %}
-        {% endif %}
+        <!-- QUICK SEARCH TAGS -->
+        <div class="quick-tags-wrap">
+            <span class="quick-tags-label">Popular Searches:</span>
+            <div class="tags-list">
+                <a href="{% url 'search_product' %}?q=Chocolate" class="quick-tag {% if search_query|lower == 'chocolate' %}active{% endif %}">🍫 Chocolate</a>
+                <a href="{% url 'search_product' %}?q=Vanilla" class="quick-tag {% if search_query|lower == 'vanilla' %}active{% endif %}">🍦 Vanilla</a>
+                <a href="{% url 'search_product' %}?q=Strawberry" class="quick-tag {% if search_query|lower == 'strawberry' %}active{% endif %}">🍓 Strawberry</a>
+                <a href="{% url 'search_product' %}?q=Mango" class="quick-tag {% if search_query|lower == 'mango' %}active{% endif %}">🥭 Mango</a>
+                <a href="{% url 'search_product' %}?q=Cone" class="quick-tag {% if search_query|lower == 'cone' %}active{% endif %}">🧇 Cone</a>
+                <a href="{% url 'search_product' %}?q=Kesar" class="quick-tag {% if search_query|lower == 'kesar' %}active{% endif %}">✨ Kesar Pista</a>
+            </div>
+        </div>
     </div>
 
-    <!-- ================= EMPTY STATE ================= -->
-    {% if not products %}
-    <div class="empty-wrapper">
-        <div class="empty-center">
-            <img src="{% static 'home/image/icon/empty.png' %}"
-                 alt="No Products"
-                 class="empty-center-img">
-            <h2>No Products Found</h2>
-            <p>Try adjusting your search terms and search again.</p>
+    <!-- SEARCH RESULTS SUMMARY -->
+    {% if search_query %}
+    <div class="search-results-meta">
+        <div class="meta-left">
+            <h2 class="results-count-text">
+                {% if total_results > 0 %}
+                    Showing <strong>{{ total_results }}</strong> result{{ total_results|pluralize }} for <span class="query-highlight">"{{ search_query }}"</span>
+                {% else %}
+                    No results found for <span class="query-highlight">"{{ search_query }}"</span>
+                {% endif %}
+            </h2>
+        </div>
+        <div class="meta-right">
+            <a href="{% url 'menu' %}" class="btn-view-all-menu">
+                <i class="bx bx-food-menu"></i> View Full Menu
+            </a>
         </div>
     </div>
     {% endif %}
 
-    <!-- ================= PAGINATION ================= -->
-    {% if products.has_other_pages %}
-    <div class="pagination-wrapper">
+    <!-- ================= PRODUCT GRID ================= -->
+    {% if products and products|length > 0 %}
+    <div class="search-products-grid">
+        {% for product in products %}
+        <div class="search-product-card {% if product.product_stock == 0 %}out-of-stock-card{% endif %}"
+             onclick="window.location.href='{% url 'view_product' product.id %}'">
 
+            <!-- MEDIA -->
+            <div class="search-card-media">
+                <img src="{{ product.product_image.url }}"
+                     alt="{{ product.product_name }}"
+                     class="search-card-img"
+                     loading="lazy">
+
+                <!-- STOCK BADGE -->
+                {% if product.product_stock > 9 %}
+                    <span class="stock-pill stock-in">
+                        <span class="dot"></span> In Stock
+                    </span>
+                {% elif product.product_stock == 0 %}
+                    <span class="stock-pill stock-out">
+                        <span class="dot"></span> Out of Stock
+                    </span>
+                {% else %}
+                    <span class="stock-pill stock-low">
+                        <span class="dot"></span> Only {{ product.product_stock }} left
+                    </span>
+                {% endif %}
+
+                <!-- QUICK WISHLIST -->
+                <button type="button" 
+                        class="btn-search-wishlist"
+                        onclick="event.stopPropagation(); quickAddWishlist('{{ product.id }}', this);"
+                        title="Save to Wishlist">
+                    <i class="bx bx-heart"></i>
+                </button>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="search-card-content">
+                <h3 class="search-card-title" title="{{ product.product_name }}">
+                    {{ product.product_name }}
+                </h3>
+
+                <div class="search-price-row">
+                    <span class="price-val">₹{{ product.product_price }}</span>
+                    <span class="veg-badge-pill" title="100% Vegetarian">
+                        <span class="veg-dot-inner"></span>
+                    </span>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="search-actions-row">
+                    {% if product.product_stock > 0 %}
+                        <a href="{% url 'checkout' %}?buy_now={{ product.id }}"
+                           class="btn-search-buy"
+                           onclick="event.stopPropagation();">
+                            <i class="bx bxs-zap"></i>
+                            <span>Buy</span>
+                        </a>
+                        <button type="button"
+                                class="btn-search-cart"
+                                onclick="event.stopPropagation(); addToCart('{{ product.id }}');"
+                                title="Add to Cart">
+                            <i class="bx bx-shopping-bag"></i>
+                        </button>
+                    {% else %}
+                        <button class="btn-search-buy disabled" disabled>
+                            <span>Sold Out</span>
+                        </button>
+                    {% endif %}
+
+                    <a href="{% url 'view_product' product.id %}"
+                       class="btn-search-view"
+                       onclick="event.stopPropagation();"
+                       title="View Details">
+                        <i class="bx bx-show"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ================= EMPTY / NO RESULTS STATE ================= -->
+    {% if not products or products|length == 0 %}
+    <div class="search-empty-state">
+        <div class="empty-icon-circle">
+            <i class="bx bx-search-alt"></i>
+        </div>
+        <h3 class="empty-title">
+            {% if search_query %}
+                No ice creams matched "{{ search_query }}"
+            {% else %}
+                Start searching for delicious scoops!
+            {% endif %}
+        </h3>
+        <p class="empty-subtext">
+            Check your spelling, try broader keywords like <em>chocolate</em>, <em>vanilla</em>, or explore our curated flavors below.
+        </p>
+
+        {% if suggested_products %}
+        <!-- SUGGESTED PRODUCTS SHOWCASE -->
+        <div class="empty-suggestions-wrap">
+            <div class="suggestions-tag">
+                <i class="bx bxs-flame"></i> Popular Flavors You Might Love
+            </div>
+
+            <div class="search-products-grid">
+                {% for product in suggested_products %}
+                <div class="search-product-card" onclick="window.location.href='{% url 'view_product' product.id %}'">
+                    <div class="search-card-media">
+                        <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}" class="search-card-img" loading="lazy">
+                        <span class="stock-pill stock-in"><span class="dot"></span> In Stock</span>
+                    </div>
+                    <div class="search-card-content">
+                        <h3 class="search-card-title">{{ product.product_name }}</h3>
+                        <div class="search-price-row">
+                            <span class="price-val">₹{{ product.product_price }}</span>
+                        </div>
+                        <div class="search-actions-row">
+                            <a href="{% url 'checkout' %}?buy_now={{ product.id }}" class="btn-search-buy" onclick="event.stopPropagation();">
+                                <i class="bx bxs-zap"></i> <span>Buy</span>
+                            </a>
+                            <button type="button" class="btn-search-cart" onclick="event.stopPropagation(); addToCart('{{ product.id }}');">
+                                <i class="bx bx-shopping-bag"></i>
+                            </button>
+                            <a href="{% url 'view_product' product.id %}" class="btn-search-view" onclick="event.stopPropagation();">
+                                <i class="bx bx-show"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- ================= PAGINATION ================= -->
+    {% if products.paginator.num_pages > 1 %}
+    <div class="search-pagination-wrap">
         {% if products.has_previous %}
-            <a href="?q={{ search_query }}&page={{ products.previous_page_number }}"
-               class="page-btn prev">
-                ‹ Prev
+            <a href="?q={{ search_query }}&page={{ products.previous_page_number }}" class="page-nav-btn">
+                <i class="bx bx-chevron-left"></i> Prev
             </a>
         {% endif %}
 
-        {% for num in products.paginator.page_range %}
-            {% if products.number == num %}
-                <span class="page-btn active">{{ num }}</span>
-            {% elif num > products.number|add:"-2" and num < products.number|add:"2" %}
-                <a href="?q={{ search_query }}&page={{ num }}"
-                   class="page-btn">
-                    {{ num }}
-                </a>
-            {% endif %}
-        {% endfor %}
+        <div class="page-numbers-list">
+            {% for num in products.paginator.page_range %}
+                {% if products.number == num %}
+                    <span class="page-num-pill active">{{ num }}</span>
+                {% elif num > products.number|add:"-3" and num < products.number|add:"3" %}
+                    <a href="?q={{ search_query }}&page={{ num }}" class="page-num-pill">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
 
         {% if products.has_next %}
-            <a href="?q={{ search_query }}&page={{ products.next_page_number }}"
-               class="page-btn next">
-                Next ›
+            <a href="?q={{ search_query }}&page={{ products.next_page_number }}" class="page-nav-btn">
+                Next <i class="bx bx-chevron-right"></i>
             </a>
         {% endif %}
-
     </div>
     {% endif %}
 
 </div>
+
+<script>
+function quickAddWishlist(productId, btn) {
+    const icon = btn.querySelector('i');
+    fetch(`/add_to_wishlist/${productId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error === "login_required") {
+            window.location.href = "{% url 'login' %}";
+            return;
+        }
+
+        btn.classList.toggle('active');
+        if (btn.classList.contains('active')) {
+            icon.className = 'bx bxs-heart';
+            Swal.fire({
+                toast: true,
+                icon: "success",
+                title: "Saved to wishlist! 💖",
+                position: "top-end",
+                timer: 1200,
+                showConfirmButton: false
+            });
+        } else {
+            icon.className = 'bx bx-heart';
+        }
+
+        if (typeof updateWishlistCount === 'function') {
+            updateWishlistCount();
+        }
+    })
+    .catch(() => {
+        window.location.href = `/add_to_wishlist/${productId}/`;
+    });
+}
+</script>
 
 {% endblock %}

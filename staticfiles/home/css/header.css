@@ -33,13 +33,15 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  background-color: #fff;
-  backdrop-filter: var(--backdrop-filter);
-  border-bottom: 2px solid var(--white-alpha-40);
-  box-shadow: 0 3px 6px #aaa;
-  padding: 0.2rem 1.25%;
-  min-height: 64px;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  padding: 0.5rem 1.25%;
+  min-height: 70px;
   overflow: visible;
+  transition: var(--transition);
 }
 
 .header .flex {
@@ -68,22 +70,30 @@
 }
 
 .header .logo .brand-text {
-  font-family: "Proxemic", "Segoe UI", Arial, sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  color: #f4a3c0;
-  letter-spacing: 0.4px;
+  font-family: "Outfit", "Segoe UI", Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--main-color);
+  letter-spacing: 0.5px;
   white-space: nowrap;
 }
 
 
 .user-avatar {
-  width: 40px; /* reduced */
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
   border: 2px solid var(--pink-color);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  display: block;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-avatar:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(255, 107, 129, 0.3);
 }
 
 
@@ -92,30 +102,52 @@
 }
 
 .header .navbar a {
-  color: var(--main-color);
-  font-size: 0.85rem;
-  margin: 0 1rem;
+  color: #555;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 1.2rem;
   line-height: 1.4;
   padding: 0.6rem 0;
   transition: color 0.3s ease;
+  position: relative;
+}
+
+.header .navbar a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--main-color);
+  transition: width 0.3s ease;
 }
 
 .header .navbar a:hover {
-  color: var(--pink-color);
+  color: var(--main-color);
+}
+
+.header .navbar a:hover::after {
+  width: 100%;
 }
 
 .header .search-form {
   position: relative;
-
-  /* 🔥 increased */
   max-width: 32rem;
-
   width: 100%;
-  border: 1px solid var(--pink-color);
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.5);
   border-radius: 2rem;
   display: flex;
   align-items: center;
   padding: 0.45rem 1rem;
+  transition: var(--transition);
+}
+
+.header .search-form:focus-within {
+  background: #fff;
+  border-color: var(--main-color);
+  box-shadow: 0 0 15px rgba(255, 107, 129, 0.2);
 }
 
 .header .search-form input {
@@ -160,16 +192,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  width: 40px;  /* reduced */
-  height: 40px;
-
+  width: 44px;  
+  height: 44px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid var(--white-alpha-40);
-  box-shadow: var(--box-shadow);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   cursor: pointer;
   pointer-events: auto;
+  transition: var(--transition);
+}
+
+.icon-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 107, 129, 0.2);
 }
 
 .icon-btn i {
@@ -374,23 +410,26 @@
 
 
 .header {
-  padding-right: 1%;    /
+  padding-right: 1.25%;
 }
 
 /* Icons closer & tighter */
 .header .icons {
-  gap: 6px;             /* was ~8px */
+  gap: 8px;
 }
 
-/* Icon buttons slightly smaller */
+/* Icon buttons */
 .icon-btn {
   width: 38px;
   height: 38px;
 }
 
-/* Avatar match icons */
-.user-avatar {
+/* User Icon Container */
+.user-icon {
   width: 38px;
   height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 

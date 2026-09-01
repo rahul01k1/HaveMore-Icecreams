@@ -6,79 +6,89 @@
 
 <link rel="stylesheet" href="{% static 'home/css/menu.css' %}">
 
-<div class="products products-compact">
+<div class="menu-page-wrapper">
 
     <div class="heading">
-        <h1>Our Latest Flavours</h1>
-        <img src="{% static 'home/image/separator-img.png' %}" alt="">
+        <span>Artisanal Treats</span>
+        <h1>Our Handcrafted Flavours</h1>
+        <img src="{% static 'home/image/separator-img.png' %}" alt="separator">
     </div>
 
-    <!-- 🔄 Skeleton Loader -->
-    <div class="box-container skeleton-wrapper" id="skeletonLoader">
-        {% for i in "12345678" %}
-        <div class="box skeleton-card">
-            <div class="skeleton-img shimmer"></div>
-            <div class="skeleton-line shimmer"></div>
-            <div class="skeleton-line short shimmer"></div>
-            <div class="skeleton-btn shimmer"></div>
-        </div>
-        {% endfor %}
-    </div>
-
-    <!-- ✅ Actual Products -->
-    <div class="box-container real-products" id="productGrid" style="display:none;">
+    <!-- Dynamic Product Grid -->
+    <div class="product-grid" id="productGrid">
 
         {% for product in products %}
-        <form class="box {% if product.product_stock == 0 %}disabled{% endif %}"
-              onclick="window.location.href='{% url 'view_product' product.id %}'">
+        <div class="product-card {% if product.product_stock == 0 %}out-of-stock{% endif %}"
+             onclick="window.location.href='{% url 'view_product' product.id %}'">
 
-            <img src="{{ product.product_image.url }}"
-                 class="image"
-                 alt="{{ product.product_name }}"
-                 loading="lazy">
+            <!-- Card Top Media -->
+            <div class="card-media">
+                <img src="{{ product.product_image.url }}"
+                     class="product-thumb"
+                     alt="{{ product.product_name }}"
+                     loading="lazy">
 
-            <!-- Stock -->
-            {% if product.product_stock > 9 %}
-                <span class="stock green">In Stock</span>
-            {% elif product.product_stock == 0 %}
-                <span class="stock red">Out of Stock</span>
-            {% else %}
-                <span class="stock red">Only {{ product.product_stock }} left</span>
-            {% endif %}
-
-            <!-- ❤️ Wishlist -->
-            <button type="button"
-                    class="wishlist-btn"
-                    onclick="event.stopPropagation(); toggleWishlist(this, '{{ product.id }}')">
-                {% if product.is_in_wishlist %}
-                    <i class="bx bxs-heart"></i>
+                <!-- Stock Badge -->
+                {% if product.product_stock > 9 %}
+                    <span class="badge-stock in-stock">
+                        <span class="badge-dot"></span> In Stock
+                    </span>
+                {% elif product.product_stock == 0 %}
+                    <span class="badge-stock sold-out">
+                        <span class="badge-dot"></span> Out of Stock
+                    </span>
                 {% else %}
-                    <i class="bx bx-heart"></i>
+                    <span class="badge-stock low-stock">
+                        <span class="badge-dot"></span> Only {{ product.product_stock }} left
+                    </span>
                 {% endif %}
-            </button>
 
-            <div class="content">
-                <h3 class="name">{{ product.product_name }}</h3>
-                <p class="price">₹{{ product.product_price }}</p>
+                <!-- Wishlist Button -->
+                <button type="button"
+                        class="btn-wishlist {% if product.is_in_wishlist %}active{% endif %}"
+                        title="Add to Wishlist"
+                        aria-label="Wishlist"
+                        onclick="event.stopPropagation(); toggleWishlist(this, '{{ product.id }}')">
+                    {% if product.is_in_wishlist %}
+                        <i class="bx bxs-heart"></i>
+                    {% else %}
+                        <i class="bx bx-heart"></i>
+                    {% endif %}
+                </button>
+            </div>
 
-                <div class="flex-btn">
+            <!-- Card Details -->
+            <div class="card-details">
+                <div class="title-price-row">
+                    <h3 class="product-title" title="{{ product.product_name }}">{{ product.product_name }}</h3>
+                    <div class="product-price">
+                        <span class="currency">₹</span>{{ product.product_price }}
+                    </div>
+                </div>
 
-                    <!-- Buy Now (normal redirect is OK) -->
-                    <button type="button" class="btn"
-                        onclick="event.stopPropagation();
-                                 window.location.href='{% url 'checkout' %}?buy_now={{ product.id }}'">
-                        Buy
+                <!-- Action Button Row -->
+                <div class="card-actions">
+                    <!-- Buy Now -->
+                    <button type="button" 
+                            class="action-btn btn-buy"
+                            title="Buy Now"
+                            onclick="event.stopPropagation(); window.location.href='{% url 'checkout' %}?buy_now={{ product.id }}'">
+                        <i class="bx bx-bolt-circle"></i>
+                        <span>Buy</span>
                     </button>
 
-                    <!-- 🛒 Cart (AJAX) -->
-                    <button type="button" class="btn"
-                        onclick="event.stopPropagation(); addToCart('{{ product.id }}')">
-                        Cart
+                    <!-- Add to Cart -->
+                    <button type="button" 
+                            class="action-btn btn-cart"
+                            title="Add to Cart"
+                            onclick="event.stopPropagation(); addToCart('{{ product.id }}')">
+                        <i class="bx bx-shopping-bag"></i>
+                        <span>Cart</span>
                     </button>
-
                 </div>
             </div>
-        </form>
+
+        </div>
         {% endfor %}
 
     </div>
@@ -86,38 +96,29 @@
     <!-- Pagination -->
     <div class="pagination">
         {% if products.has_previous %}
+            <a href="?page=1" class="btn">First</a>
             <a href="?page={{ products.previous_page_number }}" class="btn">Prev</a>
+        {% else %}
+            <span class="btn disabled">First</span>
+            <span class="btn disabled">Prev</span>
         {% endif %}
-        <span>Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+
+        {% for num in products.paginator.page_range %}
+            {% if products.number == num %}
+                <span class="page-num active">{{ num }}</span>
+            {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                <a href="?page={{ num }}" class="page-num">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
         {% if products.has_next %}
             <a href="?page={{ products.next_page_number }}" class="btn">Next</a>
+            <a href="?page={{ products.paginator.num_pages }}" class="btn">Last</a>
+        {% else %}
+            <span class="btn disabled">Next</span>
+            <span class="btn disabled">Last</span>
         {% endif %}
     </div>
 
 </div>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-    const skeletonEl = document.getElementById("skeletonLoader");
-    const productGridEl = document.getElementById("productGrid");
-
-    if (!skeletonEl || !productGridEl) return;
-
-    setTimeout(() => {
-        skeletonEl.style.display = "none";
-        productGridEl.style.display = "grid";
-    }, 300);
-});
-
-/* Failsafe – never block UI */
-setTimeout(() => {
-    const skeletonEl = document.getElementById("skeletonLoader");
-    const productGridEl = document.getElementById("productGrid");
-
-    if (skeletonEl) skeletonEl.style.display = "none";
-    if (productGridEl) productGridEl.style.display = "grid";
-}, 2000);
-</script>
-
-
 {% endblock %}

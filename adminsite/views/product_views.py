@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.pagination import PageNumberPagination
-
+from rest_framework.filters import SearchFilter
 from home.models import Product
 from adminsite.serializers.product_serializer import ProductSerializer
 
@@ -21,6 +21,8 @@ class ProductListCreateAPI(ListCreateAPIView):
     permission_classes = [AllowAny]
     parser_classes = (MultiPartParser, FormParser)
     pagination_class = ProductPagination
+    filter_backends = [SearchFilter]
+    search_fields = ['product_name', 'product_status']
 
 
 class ProductDetailAPI(RetrieveUpdateDestroyAPIView):

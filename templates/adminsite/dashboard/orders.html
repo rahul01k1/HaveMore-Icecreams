@@ -11,58 +11,70 @@
 
 {% csrf_token %}
 
-<!-- ================= VIEW ORDER ITEMS ================= -->
-<div class="card" id="itemsCard" style="display:none;">
-    <h3>Order Items</h3>
-
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Qty</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody id="itemsBody"></tbody>
-    </table>
-
-    <div class="form-actions">
-        <button class="btn-secondary" onclick="closeItems()">Close</button>
+<!-- ================= VIEW ORDER ITEMS MODAL ================= -->
+<div class="modal-overlay" id="itemsCard" onclick="if(event.target === this) closeItems()">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>Order Items</h3>
+            <button class="modal-close" onclick="closeItems()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsBody"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<!-- ================= EDIT ORDER ================= -->
-<div class="card" id="editOrderCard" style="display:none;">
-    <h3>Update Order</h3>
+<!-- ================= EDIT ORDER MODAL ================= -->
+<div class="modal-overlay" id="editOrderCard" onclick="if(event.target === this) closeEditOrder()">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>Update Order</h3>
+            <button class="modal-close" onclick="closeEditOrder()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit_id">
+            <div class="form-grid">
+                <select id="edit_status" class="search-pill" style="width:100%; margin-bottom:12px;">
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
 
-    <input type="hidden" id="edit_id">
-
-    <div class="form-grid">
-        <select id="edit_status">
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
-        </select>
-
-        <select id="edit_payment_status">
-            <option value="pending">Pending</option>
-            <option value="paid">Paid</option>
-            <option value="failed">Failed</option>
-        </select>
-    </div>
-
-    <div class="form-actions">
-        <button class="btn-primary" onclick="updateOrder()">Update</button>
-        <button class="btn-secondary" onclick="closeEditOrder()">Cancel</button>
+                <select id="edit_payment_status" class="search-pill" style="width:100%;">
+                    <option value="pending">Pending</option>
+                    <option value="paid">Paid</option>
+                    <option value="failed">Failed</option>
+                </select>
+            </div>
+            <div class="form-actions" style="margin-top:24px;">
+                <button class="btn-primary" onclick="updateOrder()">Update Order</button>
+                <button class="btn-secondary" onclick="closeEditOrder()">Cancel</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- ================= ORDERS TABLE ================= -->
+<div class="filter-tabs">
+    <button class="filter-tab active" onclick="setFilter('all')">All Orders</button>
+    <button class="filter-tab" onclick="setFilter('pending')">Pending</button>
+    <button class="filter-tab" onclick="setFilter('delivered')">Delivered</button>
+    <button class="filter-tab" onclick="setFilter('cancelled')">Cancelled</button>
+</div>
+
 <div class="card">
-    <h3>Orders List</h3>
 
     <table class="data-table">
         <thead>
@@ -81,11 +93,7 @@
     </table>
 
     <!-- PAGINATION -->
-    <div class="pagination">
-        <button id="prevBtn" onclick="loadPrev()" disabled>Prev</button>
-        <span id="pageInfo"></span>
-        <button id="nextBtn" onclick="loadNext()" disabled>Next</button>
-    </div>
+    <div class="pagination" id="paginationContainer"></div>
 </div>
 
 </section>
@@ -97,67 +105,111 @@ let nextPageUrl = null;
 let prevPageUrl = null;
 let currentPage = 1;
 
+let currentFetchedOrders = [];
+let currentFilter = 'all';
+
+function setFilter(status) {
+    currentFilter = status;
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.innerText.toLowerCase().includes(status.toLowerCase())) {
+            tab.classList.add('active');
+        }
+    });
+    renderOrders();
+}
+
 /* ================= LOAD ORDERS ================= */
 function loadOrders(url = "/adminsite/api/orders/") {
     fetch(url)
         .then(res => res.json())
         .then(data => {
-            const orders = data.results || [];
-            const body = document.getElementById("ordersBody");
-
+            currentFetchedOrders = data.results || [];
             nextPageUrl = data.next;
             prevPageUrl = data.previous;
-
-            body.innerHTML = "";
-
-            if (!orders.length) {
-                body.innerHTML = `
-                    <tr>
-                        <td colspan="8" class="center">No orders found</td>
-                    </tr>
-                `;
-                return;
-            }
-
-            orders.forEach(o => {
-                body.innerHTML += `
-                    <tr>
-                        <td>#${o.id}</td>
-                        <td>${o.user_name}</td>
-                        <td>
-                            ${o.name}<br>
-                            ${o.email}<br>
-                            ${o.number}
-                        </td>
-                        <td>
-                            ${o.address}<br>
-                            <small>(${o.address_type})</small>
-                        </td>
-                        <td><span class="badge">${o.status}</span></td>
-                        <td>
-                            <span class="badge ${o.payment_status === 'paid' ? 'badge-success' : 'badge-danger'}">
-                                ${o.payment_status}
-                            </span>
-                        </td>
-                        <td>${o.date}</td>
-                        <td class="center">
-                            <button class="btn-secondary"
-                                onclick='viewItems(${o.id}, ${JSON.stringify(o.items)})'>
-                                Items
-                            </button>
-                            <button class="btn-primary"
-                                onclick="openEditOrder(${o.id}, '${o.status}', '${o.payment_status}')">
-                                Update
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById("prevBtn").disabled = !prevPageUrl;
-            document.getElementById("nextBtn").disabled = !nextPageUrl;
-            document.getElementById("pageInfo").innerText = `Page ${currentPage}`;
+            renderOrders();
         });
+}
+
+function renderOrders() {
+    const body = document.getElementById("ordersBody");
+    body.innerHTML = "";
+    
+    let filteredOrders = currentFetchedOrders;
+    if (currentFilter !== 'all') {
+        filteredOrders = currentFetchedOrders.filter(o => o.status === currentFilter);
+    }
+
+    if (!filteredOrders.length) {
+        body.innerHTML = `
+            <tr>
+                <td colspan="8" class="center">No orders found matching filter</td>
+            </tr>
+        `;
+    } else {
+        filteredOrders.forEach(o => {
+            let statusBadge = "badge-warning";
+            if (o.status === "delivered") statusBadge = "badge-success";
+            if (o.status === "cancelled") statusBadge = "badge-danger";
+
+            body.innerHTML += `
+                <tr>
+                    <td><strong>#${o.id}</strong></td>
+                    <td>
+                        <strong style="color:#334155;">${o.user_name}</strong>
+                    </td>
+                    <td>
+                        <div style="font-size:13px; line-height:1.4;">
+                            <strong>${o.name}</strong><br>
+                            <span style="color:#64748b;">${o.email}</span><br>
+                            <span style="color:#64748b;">${o.number}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-size:13px; line-height:1.4; max-width:200px;">
+                            ${o.address}<br>
+                            <small style="color:#94a3b8; font-weight:600;">(${o.address_type.toUpperCase()})</small>
+                        </div>
+                    </td>
+                    <td><span class="badge ${statusBadge}">${o.status.toUpperCase()}</span></td>
+                    <td>
+                        <span class="badge ${o.payment_status === 'paid' ? 'badge-success' : 'badge-danger'}">
+                            ${o.payment_status.toUpperCase()}
+                        </span>
+                    </td>
+                    <td style="font-size:13px; white-space:nowrap;">${o.date}</td>
+                    <td class="center" style="white-space:nowrap;">
+                        <button class="btn-secondary" onclick='viewItems(${o.id}, ${JSON.stringify(o.items).replace(/'/g, "\\'")})' title="View Items"><i class="fas fa-eye"></i></button>
+                        <button class="btn-primary" onclick="openEditOrder(${o.id}, '${o.status}', '${o.payment_status}')" title="Update"><i class="fas fa-edit"></i></button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    renderPagination();
+}
+
+/* ================= PAGINATION RENDER ================= */
+function renderPagination() {
+    const container = document.getElementById("paginationContainer");
+    let html = "";
+    
+    if (prevPageUrl) {
+        html += `<button class="btn" onclick="loadPrev()">Prev</button>`;
+    } else {
+        html += `<button class="btn disabled">Prev</button>`;
+    }
+    
+    html += `<span class="page-num active">${currentPage}</span>`;
+    
+    if (nextPageUrl) {
+        html += `<button class="btn" onclick="loadNext()">Next</button>`;
+    } else {
+        html += `<button class="btn disabled">Next</button>`;
+    }
+    
+    container.innerHTML = html;
 }
 
 /* ================= VIEW ITEMS ================= */
@@ -176,12 +228,11 @@ function viewItems(orderId, items) {
         `;
     });
 
-    document.getElementById("itemsCard").style.display = "block";
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.getElementById("itemsCard").classList.add("show");
 }
 
 function closeItems() {
-    document.getElementById("itemsCard").style.display = "none";
+    document.getElementById("itemsCard").classList.remove("show");
 }
 
 /* ================= EDIT ORDER ================= */
@@ -190,12 +241,11 @@ function openEditOrder(id, status, paymentStatus) {
     document.getElementById("edit_status").value = status;
     document.getElementById("edit_payment_status").value = paymentStatus;
 
-    document.getElementById("editOrderCard").style.display = "block";
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.getElementById("editOrderCard").classList.add("show");
 }
 
 function closeEditOrder() {
-    document.getElementById("editOrderCard").style.display = "none";
+    document.getElementById("editOrderCard").classList.remove("show");
 }
 
 /* ================= UPDATE ORDER ================= */

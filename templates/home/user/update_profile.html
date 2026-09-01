@@ -1,93 +1,266 @@
 {% extends "home/base.html" %}
 {% load static %}
-{% block title %}Update Profile - Blue Sky Summer{% endblock %}
+{% block title %}Update Profile - HaveMore IceCreams{% endblock %}
 
 {% block content %}
 
-<div class="update-wrapper">
+<link rel="stylesheet" href="{% static 'home/css/update_pro.css' %}">
 
-    <h1 class="title">Update Profile</h1>
-    <p class="subtitle">Manage your personal information and keep your account up to date</p>
-    <img src="{% static 'home/image/separator-img.png' %}" class="separator">
+<div class="update-page-wrapper">
 
-    <div class="update-container">
+    <!-- BREADCRUMB -->
+    <nav class="update-breadcrumb">
+        <a href="{% url 'home' %}">Home</a>
+        <i class="bx bx-chevron-right"></i>
+        <a href="{% url 'profile' %}">My Profile</a>
+        <i class="bx bx-chevron-right"></i>
+        <span class="active-crumb">Edit Profile</span>
+    </nav>
 
-        <!-- LEFT SIDE — Profile Preview -->
-        <div class="profile-preview">
+    <!-- HEADER -->
+    <div class="update-header-section">
+        <span class="badge-account"><i class="bx bx-user-pin"></i> Account Settings</span>
+        <h1 class="update-main-title">Update Your Profile</h1>
+        <p class="update-subtitle">Customize your personal details, profile picture, and account security credentials.</p>
+    </div>
 
-            <h2 class="section-title">Profile Overview</h2>
+    <div class="update-main-container">
 
-            <img src="{{ user.user_image.url }}" class="profile-img">
+        <!-- LEFT: PROFILE AVATAR PREVIEW CARD -->
+        <div class="profile-preview-card">
+            <h2 class="preview-card-title">Profile Preview</h2>
 
-            <h3 class="profile-name">{{ user.user_name }}</h3>
-            <p class="profile-email">{{ user.user_email }}</p>
+            <div class="avatar-upload-wrap">
+                <img src="{{ user.user_image.url }}" 
+                     alt="{{ user.user_name }}" 
+                     id="avatarPreviewImg" 
+                     class="preview-avatar-img">
 
-            <p class="note">You can update your photo, email, or password anytime</p>
+                <label for="id_user_image" class="avatar-upload-btn" title="Choose new image">
+                    <i class="bx bx-camera"></i>
+                </label>
+            </div>
+
+            <h3 class="preview-name" id="previewNameDisplay">{{ user.user_name }}</h3>
+            <p class="preview-email" id="previewEmailDisplay">{{ user.user_email }}</p>
+
+            <div class="member-tag">
+                <i class="bx bx-shield-quarter"></i> Verified HaveMore Customer
+            </div>
+
+            <p class="avatar-help-note">
+                Click the camera icon to select a new image. JPG, PNG or WebP supported.
+            </p>
         </div>
 
-        <!-- RIGHT SIDE — Update Form -->
-        <div class="update-form">
+        <!-- RIGHT: EDIT FORM -->
+        <div class="update-form-card">
 
-            <h2 class="section-title">Edit Your Details</h2>
-
-            <form action="" method="post" enctype="multipart/form-data">
+            <form action="" method="post" enctype="multipart/form-data" id="profileUpdateForm">
                 {% csrf_token %}
 
-                <div class="form-grid">
+                <!-- SECTION 1: PERSONAL INFO -->
+                <div class="form-section-block">
+                    <h3 class="form-section-title">
+                        <i class="bx bx-user"></i> Personal Information
+                    </h3>
 
-                    <div class="form-group">
-                        <label>Your Name</label>
-                        <input type="text" name="user_name" value="{{ user.user_name }}" class="input big-input">
+                    <div class="form-inputs-grid">
+
+                        <!-- Full Name -->
+                        <div class="form-field-group">
+                            <label for="id_user_name">Full Name <span class="req">*</span></label>
+                            <div class="input-icon-box">
+                                <i class="bx bx-user field-icon"></i>
+                                <input type="text" 
+                                       id="id_user_name" 
+                                       name="user_name" 
+                                       value="{{ user.user_name }}" 
+                                       class="form-control-input" 
+                                       placeholder="Your Full Name"
+                                       required
+                                       oninput="document.getElementById('previewNameDisplay').innerText = this.value || '{{ user.user_name }}'">
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-field-group">
+                            <label for="id_user_email">Email Address <span class="req">*</span></label>
+                            <div class="input-icon-box">
+                                <i class="bx bx-envelope field-icon"></i>
+                                <input type="email" 
+                                       id="id_user_email" 
+                                       name="user_email" 
+                                       value="{{ user.user_email }}" 
+                                       class="form-control-input" 
+                                       placeholder="you@example.com"
+                                       required
+                                       oninput="document.getElementById('previewEmailDisplay').innerText = this.value || '{{ user.user_email }}'">
+                            </div>
+                        </div>
+
+                        <!-- File Input (Hidden, triggered by camera button & file bar) -->
+                        <div class="form-field-group full-width">
+                            <label for="id_user_image">Change Profile Photo</label>
+                            <div class="file-upload-input-wrap">
+                                <i class="bx bx-image-add field-icon"></i>
+                                <input type="file" 
+                                       id="id_user_image" 
+                                       name="user_image" 
+                                       accept="image/*" 
+                                       class="form-file-input"
+                                       onchange="handleImagePreview(this)">
+                            </div>
+                        </div>
+
                     </div>
-
-                    <div class="form-group">
-                        <label>Your Email</label>
-                        <input type="email" name="user_email" value="{{ user.user_email }}" class="input big-input">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Profile Image</label>
-                        <input type="file" name="user_image" accept="home/image/*" class="input big-input file-input">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Old Password</label>
-                        <input type="password" name="user_old_password" class="input big-input" placeholder="Enter your current password">
-                    </div>
-
-                    <div class="form-group">
-                        <label>New Password</label>
-                        <input type="password" name="user_new_password" class="input big-input" placeholder="Create a strong password">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input type="password" name="user_confirm_password" class="input big-input" placeholder="Re-enter new password">
-                    </div>
-
                 </div>
 
-                <button type="submit" class="save-btn">Save Changes</button>
+                <!-- SECTION 2: PASSWORD CHANGE (OPTIONAL) -->
+                <div class="form-section-block">
+                    <div class="password-section-header">
+                        <h3 class="form-section-title">
+                            <i class="bx bx-lock-alt"></i> Change Password
+                        </h3>
+                        <span class="optional-pill">Optional</span>
+                    </div>
+                    <p class="section-hint-text">Leave password fields blank if you don't want to change your current password.</p>
+
+                    <div class="form-inputs-grid">
+
+                        <!-- Old Password -->
+                        <div class="form-field-group full-width">
+                            <label for="id_old_pass">Current Password</label>
+                            <div class="input-icon-box">
+                                <i class="bx bx-key field-icon"></i>
+                                <input type="password" 
+                                       id="id_old_pass" 
+                                       name="user_old_password" 
+                                       class="form-control-input" 
+                                       placeholder="Enter current password to verify">
+                                <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility('id_old_pass', this)">
+                                    <i class="bx bx-show"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- New Password -->
+                        <div class="form-field-group">
+                            <label for="id_new_pass">New Password</label>
+                            <div class="input-icon-box">
+                                <i class="bx bx-lock-open field-icon"></i>
+                                <input type="password" 
+                                       id="id_new_pass" 
+                                       name="user_new_password" 
+                                       class="form-control-input" 
+                                       placeholder="Create new strong password">
+                                <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility('id_new_pass', this)">
+                                    <i class="bx bx-show"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="form-field-group">
+                            <label for="id_confirm_pass">Confirm New Password</label>
+                            <div class="input-icon-box">
+                                <i class="bx bx-check-double field-icon"></i>
+                                <input type="password" 
+                                       id="id_confirm_pass" 
+                                       name="user_confirm_password" 
+                                       class="form-control-input" 
+                                       placeholder="Re-enter new password">
+                                <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility('id_confirm_pass', this)">
+                                    <i class="bx bx-show"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- SUBMIT ACTIONS -->
+                <div class="form-submit-row">
+                    <button type="submit" class="btn-save-profile">
+                        <i class="bx bx-save"></i> Save Changes
+                    </button>
+                    <a href="{% url 'profile' %}" class="btn-cancel-link">
+                        Cancel
+                    </a>
+                </div>
 
             </form>
+
         </div>
+
     </div>
+
 </div>
 
+<!-- JAVASCRIPT: LIVE AVATAR PREVIEW & PWD TOGGLES -->
 <script>
+function handleImagePreview(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('avatarPreviewImg');
+            preview.style.opacity = '0';
+            setTimeout(() => {
+                preview.src = e.target.result;
+                preview.style.opacity = '1';
+            }, 150);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function togglePasswordVisibility(fieldId, btn) {
+    const field = document.getElementById(fieldId);
+    const icon = btn.querySelector('i');
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.className = 'bx bx-hide';
+    } else {
+        field.type = 'password';
+        icon.className = 'bx bx-show';
+    }
+}
+
+// Client-side validation on form submit
+document.getElementById('profileUpdateForm').addEventListener('submit', function(e) {
+    const oldPass = document.getElementById('id_old_pass').value;
+    const newPass = document.getElementById('id_new_pass').value;
+    const confirmPass = document.getElementById('id_confirm_pass').value;
+
+    if (newPass || confirmPass || oldPass) {
+        if (!oldPass) {
+            e.preventDefault();
+            Swal.fire("Current Password Required", "Please enter your current password to set a new one.", "warning");
+            return;
+        }
+        if (newPass.length < 4) {
+            e.preventDefault();
+            Swal.fire("Weak Password", "New password should be at least 4 characters long.", "warning");
+            return;
+        }
+        if (newPass !== confirmPass) {
+            e.preventDefault();
+            Swal.fire("Password Mismatch", "New password and Confirm Password do not match.", "error");
+            return;
+        }
+    }
+});
+
 {% if messages %}
     {% for msg in messages %}
         Swal.fire({
             title: "{{ msg.tags|title }}",
             text: "{{ msg }}",
             icon: "{{ msg.tags }}",
-            confirmButtonColor: "#ff7fa8",
-        }).then(() => {
-            {% if msg.tags == "success" %}
-                window.location.href = "{% url 'profile' %}";
-            {% endif %}
+            confirmButtonColor: "#ff6b81",
         });
     {% endfor %}
 {% endif %}
 </script>
+
 {% endblock %}

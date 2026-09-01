@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>{% block title %}Admin Panel{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{% static 'home/image/favicon.ico' %}">
+    <link rel="icon" type="image/png" href="{% static 'home/image/favicon.png' %}">
 
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -33,13 +35,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* ================= SIDEBAR TOGGLE ================= */
     const menuBtn = document.querySelector(".mobile-toggle");
+    const sidebarToggleBtn = document.getElementById("sidebarToggleBtn");
     const sidebar = document.querySelector(".sidebar");
+    const mainContent = document.getElementById("mainContent");
+
+    function toggleSidebar(e) {
+        if(e) e.stopPropagation();
+        sidebar.classList.toggle("active");
+        if (mainContent) {
+            mainContent.classList.toggle("expanded");
+        }
+    }
 
     if (menuBtn && sidebar) {
-        menuBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            sidebar.classList.toggle("active");
-        });
+        menuBtn.addEventListener("click", toggleSidebar);
+    }
+    
+    if (sidebarToggleBtn && sidebar) {
+        sidebarToggleBtn.addEventListener("click", toggleSidebar);
     }
 
     /* ================= PROFILE DROPDOWN ================= */

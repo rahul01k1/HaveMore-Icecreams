@@ -1,193 +1,425 @@
 {% extends "home/base.html" %}
 {% load static %}
-{% block title %}Checkout - Blue Sky Summer{% endblock %}
+{% block title %}Secure Checkout - Blue Sky Summer{% endblock %}
 
 {% block content %}
-<style>
-.input.error {
-    border-color: #ef4444 !important;
-    background: #fff5f5;
-}
-.input.error:focus {
-    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
-}
-</style>
 
-<div class="checkout-wrapper">
+<link rel="stylesheet" href="{% static 'home/css/checkout.css' %}">
 
-    <!-- ================= BILLING SECTION ================= -->
-    <div class="billing-card">
-        <h2 class="billing-title">Billing Details</h2>
+<div class="checkout-page-container">
 
-        <p id="checkout-error" style="color:red; display:none;"></p>
-        <p id="checkout-success" style="color:green; display:none;"></p>
-
-        <form id="checkoutForm">
-            {% csrf_token %}
-
-            <div class="form-grid">
-
-                <div class="form-group">
-                    <p>Your Name <span>*</span></p>
-                    <input type="text" name="name" class="input" required value="{{ user.user_name }}">
-                </div>
-
-                <div class="form-group">
-                    <p>Address Type <span>*</span></p>
-                    <select name="address_type" class="input" required>
-                        <option value="Home">Home</option>
-                        <option value="Office">Office</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <p>Your Email <span>*</span></p>
-                    <input type="email" name="email" class="input" required value="{{ user.user_email }}">
-                </div>
-
-                <div class="form-group">
-                    <p>Full Address <span>*</span></p>
-                    <input type="text" name="address" class="input" placeholder="House No., Street, Area" required>
-                </div>
-
-                <div class="form-group">
-                    <p>Your Number <span>*</span></p>
-                    <input type="tel" name="number" class="input" placeholder="Enter your number" required>
-                </div>
-
-                <div class="form-group">
-                    <p>Payment Method <span>*</span></p>
-                    <select name="method" class="input" required>
-                        <option value="cod">Cash On Delivery (COD)</option>
-                        <option value="credit_debit_card">Credit/Debit Card</option>
-                        <option value="upi">UPI / RuPay</option>
-                        <option value="bank_transfer">Net Banking</option>
-                        <option value="gpay">GPay</option>
-                        <option value="phonepe">PhonePe</option>
-                        <option value="paytm">Paytm</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <button type="button" class="btn-place-order" onclick="placeOrder()">
-                Place Order
-            </button>
-
-        </form>
+    <!-- Top Header / Progress Indicator -->
+    <div class="checkout-header">
+        <div class="checkout-breadcrumb">
+            <a href="{% url 'home' %}">Home</a>
+            <i class="bx bx-chevron-right"></i>
+            <a href="{% url 'cart' %}">Cart</a>
+            <i class="bx bx-chevron-right"></i>
+            <span class="active">Checkout</span>
+        </div>
+        <h1 class="checkout-main-title">
+            <i class="bx bxs-lock-alt"></i> Secure Checkout
+        </h1>
+        <div class="security-badge">
+            <i class="bx bxs-shield-check"></i> 256-Bit SSL Encrypted & Verified
+        </div>
     </div>
 
-    <!-- ================= ORDER SUMMARY ================= -->
-    <div class="summary-card">
-        <h2 class="summary-title">Your Bag</h2>
+    <div class="checkout-layout">
 
-        {% for item in cart_items %}
-        <div class="item">
-            <img src="{{ item.product.product_image.url }}" alt="{{ item.product.product_name }}">
-            <div>
-                <h4>{{ item.product.product_name }}</h4>
-                <p class="price">₹ {{ item.price }}</p>
+        <!-- ================= LEFT: BILLING & PAYMENT FORM ================= -->
+        <div class="checkout-main-col">
+
+            <form id="checkoutForm" novalidate>
+                {% csrf_token %}
+
+                <!-- SECTION 1: CONTACT & DELIVERY -->
+                <div class="checkout-card">
+                    <div class="card-header">
+                        <div class="step-num">1</div>
+                        <div>
+                            <h2 class="card-title">Delivery Address</h2>
+                            <p class="card-subtitle">Where should we deliver your delicious treats?</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+
+                        <!-- Name -->
+                        <div class="form-group full-width">
+                            <label for="id_name">Full Name <span class="req">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="bx bx-user input-icon"></i>
+                                <input type="text" 
+                                       id="id_name" 
+                                       name="name" 
+                                       class="form-input" 
+                                       placeholder="e.g. John Doe"
+                                       value="{{ user.user_name }}" 
+                                       required>
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-group">
+                            <label for="id_number">Phone Number <span class="req">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="bx bx-phone input-icon"></i>
+                                <input type="tel" 
+                                       id="id_number" 
+                                       name="number" 
+                                       class="form-input" 
+                                       placeholder="10-digit mobile number" 
+                                       maxlength="10"
+                                       required>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="id_email">Email Address <span class="req">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="bx bx-envelope input-icon"></i>
+                                <input type="email" 
+                                       id="id_email" 
+                                       name="email" 
+                                       class="form-input" 
+                                       placeholder="you@example.com"
+                                       value="{{ user.user_email }}" 
+                                       required>
+                            </div>
+                        </div>
+
+                        <!-- Address Type Pills -->
+                        <div class="form-group full-width">
+                            <label>Address Type <span class="req">*</span></label>
+                            <div class="address-type-selector">
+                                <label class="type-pill">
+                                    <input type="radio" name="address_type" value="Home" checked>
+                                    <span class="pill-content">
+                                        <i class="bx bx-home-alt"></i> Home
+                                    </span>
+                                </label>
+                                <label class="type-pill">
+                                    <input type="radio" name="address_type" value="Office">
+                                    <span class="pill-content">
+                                        <i class="bx bx-building"></i> Office
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Full Address -->
+                        <div class="form-group full-width">
+                            <label for="id_address">Complete Street Address <span class="req">*</span></label>
+                            <div class="input-with-icon textarea-icon">
+                                <i class="bx bx-map-pin input-icon"></i>
+                                <textarea id="id_address" 
+                                          name="address" 
+                                          class="form-input form-textarea" 
+                                          rows="3" 
+                                          placeholder="Flat / House No., Building Name, Street, Landmark, City & Pincode"
+                                          required></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- SECTION 2: PAYMENT METHOD -->
+                <div class="checkout-card">
+                    <div class="card-header">
+                        <div class="step-num">2</div>
+                        <div>
+                            <h2 class="card-title">Payment Method</h2>
+                            <p class="card-subtitle">Choose your preferred safe payment option</p>
+                        </div>
+                    </div>
+
+                    <div class="payment-methods-grid">
+
+                        <!-- COD -->
+                        <label class="payment-option selected">
+                            <input type="radio" name="method" value="cod" checked>
+                            <div class="payment-card-content">
+                                <div class="payment-icon-wrapper cod-icon">
+                                    <i class="bx bx-money"></i>
+                                </div>
+                                <div class="payment-text">
+                                    <h4>Cash on Delivery</h4>
+                                    <p>Pay cash or UPI at your doorstep</p>
+                                </div>
+                                <div class="radio-indicator"></div>
+                            </div>
+                        </label>
+
+                        <!-- UPI -->
+                        <label class="payment-option">
+                            <input type="radio" name="method" value="upi">
+                            <div class="payment-card-content">
+                                <div class="payment-icon-wrapper upi-icon">
+                                    <i class="bx bx-qr-scan"></i>
+                                </div>
+                                <div class="payment-text">
+                                    <h4>UPI / QR Code</h4>
+                                    <p>Google Pay, PhonePe, Paytm, BHIM</p>
+                                </div>
+                                <div class="radio-indicator"></div>
+                            </div>
+                        </label>
+
+                        <!-- Cards -->
+                        <label class="payment-option">
+                            <input type="radio" name="method" value="credit_debit_card">
+                            <div class="payment-card-content">
+                                <div class="payment-icon-wrapper card-icon">
+                                    <i class="bx bx-credit-card"></i>
+                                </div>
+                                <div class="payment-text">
+                                    <h4>Credit / Debit Card</h4>
+                                    <p>Visa, MasterCard, RuPay, Amex</p>
+                                </div>
+                                <div class="radio-indicator"></div>
+                            </div>
+                        </label>
+
+                        <!-- Net Banking -->
+                        <label class="payment-option">
+                            <input type="radio" name="method" value="bank_transfer">
+                            <div class="payment-card-content">
+                                <div class="payment-icon-wrapper bank-icon">
+                                    <i class="bx bxs-bank"></i>
+                                </div>
+                                <div class="payment-text">
+                                    <h4>Net Banking</h4>
+                                    <p>All major Indian banks supported</p>
+                                </div>
+                                <div class="radio-indicator"></div>
+                            </div>
+                        </label>
+
+                    </div>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <button type="button" class="btn-complete-order" onclick="placeOrder()">
+                    <span class="btn-text">
+                        <i class="bx bxs-lock-alt"></i> Complete Order • ₹{{ total_amount }}
+                    </span>
+                    <span class="btn-loader" style="display:none;">
+                        <i class="bx bx-loader-alt bx-spin"></i> Processing Order...
+                    </span>
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- ================= RIGHT: STICKY ORDER SUMMARY ================= -->
+        <div class="checkout-summary-col">
+
+            <div class="summary-sticky-card">
+
+                <div class="summary-header">
+                    <h3 class="summary-title">Order Summary</h3>
+                    <span class="items-count-badge">{{ cart_items|length }} item{% if cart_items|length != 1 %}s{% endif %}</span>
+                </div>
+
+                <!-- Item List -->
+                <div class="summary-items-list">
+                    {% for item in cart_items %}
+                    <div class="summary-item">
+                        <div class="item-img-box">
+                            <img src="{{ item.product.product_image.url }}" alt="{{ item.product.product_name }}">
+                            {% if item.qty and item.qty > 1 %}
+                                <span class="item-qty-badge">{{ item.qty }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="item-info">
+                            <h4 class="item-name">{{ item.product.product_name }}</h4>
+                            <div class="item-meta">
+                                <span class="item-qty-text">Qty: {{ item.qty|default:1 }}</span>
+                                <span class="item-price">₹{{ item.price }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-summary">
+                        <i class="bx bx-shopping-bag"></i>
+                        <p>No items in cart</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Price Breakdown -->
+                <div class="price-breakdown">
+                    <div class="breakdown-row">
+                        <span>Items Subtotal</span>
+                        <span>₹{{ total_amount }}</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span>Delivery Charges</span>
+                        <span class="free-highlight"><i class="bx bx-check"></i> FREE</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span>Insulated Packaging</span>
+                        <span class="free-highlight"><i class="bx bx-check"></i> FREE</span>
+                    </div>
+                    <div class="breakdown-divider"></div>
+                    <div class="breakdown-row total-row">
+                        <span>Total Amount</span>
+                        <span class="total-price-val">₹{{ total_amount }}</span>
+                    </div>
+                </div>
+
+                <!-- Trust Guarantees -->
+                <div class="trust-guarantees">
+                    <div class="trust-item">
+                        <i class="bx bx-snowflake"></i>
+                        <span>Temperature controlled chilled delivery</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="bx bx-check-shield"></i>
+                        <span>100% Genuine handcrafted ice creams</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="bx bx-refresh"></i>
+                        <span>Instant order tracking & live updates</span>
+                    </div>
+                </div>
+
             </div>
-        </div>
-        {% empty %}
-        <p style="opacity:.7;">No items found.</p>
-        {% endfor %}
 
-        <div class="total-box">
-            Total Amount Payable: ₹ {{ total_amount }}
         </div>
+
     </div>
 
 </div>
 
-     
- <script>
+<script>
+// Visual active state for Payment Options
+document.querySelectorAll('.payment-option input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+        if (this.checked) {
+            this.closest('.payment-option').classList.add('selected');
+        }
+    });
+});
 
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== "") {
-                const cookies = document.cookie.split(";");
-                for (let cookie of cookies) {
-                    cookie = cookie.trim();
-                    if (cookie.startsWith(name + "=")) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
-            return cookieValue;
         }
+    }
+    return cookieValue;
+}
 
-        function placeOrder() {
-            const form = document.getElementById("checkoutForm");
-            const btn = document.querySelector(".btn-place-order");
+function placeOrder() {
+    const form = document.getElementById("checkoutForm");
+    const btn = document.querySelector(".btn-complete-order");
+    const btnText = btn.querySelector(".btn-text");
+    const btnLoader = btn.querySelector(".btn-loader");
 
-            document.querySelectorAll(".input").forEach(i => i.classList.remove("error"));
+    document.querySelectorAll(".form-input").forEach(i => i.classList.remove("error"));
 
-            const name = form.name;
-            const email = form.email;
-            const number = form.number;
-            const address = form.address;
-            const method = form.method;
+    const name = form.name;
+    const email = form.email;
+    const number = form.number;
+    const address = form.address;
+    const addressType = form.address_type ? form.address_type.value : "Home";
+    const method = form.method ? form.method.value : "cod";
 
-            if (name.value.trim().length < 2) return fieldError(name, "Enter valid name");
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) return fieldError(email, "Invalid email");
-            if (!/^\d{10}$/.test(number.value)) return fieldError(number, "Invalid number");
-            if (address.value.trim().length < 10) return fieldError(address, "Address too short");
+    if (!name.value || name.value.trim().length < 2) {
+        return fieldError(name, "Please enter your full name");
+    }
+    if (!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+        return fieldError(email, "Please enter a valid email address");
+    }
+    if (!number.value || !/^\d{10}$/.test(number.value.trim())) {
+        return fieldError(number, "Please enter a valid 10-digit mobile number");
+    }
+    if (!address.value || address.value.trim().length < 8) {
+        return fieldError(address, "Please provide your complete delivery address");
+    }
 
-            btn.disabled = true;
-            btn.innerText = "Placing Order...";
+    btn.disabled = true;
+    btnText.style.display = "none";
+    btnLoader.style.display = "inline-flex";
 
-            fetch("", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-                body: JSON.stringify({
-                    name: name.value.trim(),
-                    email: email.value.trim(),
-                    number: number.value.trim(),
-                    address: address.value.trim(),
-                    address_type: form.address_type.value,
-                    method: method.value
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                btn.disabled = false;
-                btn.innerText = "Place Order";
-
-                if (data.error) {
-                    Swal.fire("Order Failed", data.error, "error");
-                    return;
-                }
-
-                Swal.fire({
-                    icon: "success",
-                    title: "Order Placed",
-                    timer: 1200,
-                    showConfirmButton: false
-                });
-
-                setTimeout(() => {
-                    window.location.href = data.redirect_url;
-                }, 1200);
-            })
-            .catch(() => {
-                btn.disabled = false;
-                btn.innerText = "Place Order";
-                Swal.fire("Error", "Server error. Try again.", "error");
+    fetch("", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: JSON.stringify({
+            name: name.value.trim(),
+            email: email.value.trim(),
+            number: number.value.trim(),
+            address: address.value.trim(),
+            address_type: addressType,
+            method: method
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            btn.disabled = false;
+            btnText.style.display = "inline-flex";
+            btnLoader.style.display = "none";
+            Swal.fire({
+                icon: "error",
+                title: "Order Failed",
+                text: data.error,
+                confirmButtonColor: "#ff6b81"
             });
+            return;
         }
 
-        function fieldError(field, msg) {
-            field.classList.add("error");
-            field.focus();
-            Swal.fire("Invalid Input", msg, "warning");
-        }
+        Swal.fire({
+            icon: "success",
+            title: "Order Placed Successfully! 🎉",
+            text: "Your treats are being prepared with love.",
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+        setTimeout(() => {
+            window.location.href = data.redirect_url;
+        }, 1200);
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btnText.style.display = "inline-flex";
+        btnLoader.style.display = "none";
+        Swal.fire({
+            icon: "error",
+            title: "Something Went Wrong",
+            text: "Could not connect to the server. Please try again.",
+            confirmButtonColor: "#ff6b81"
+        });
+    });
+}
+
+function fieldError(field, msg) {
+    field.classList.add("error");
+    field.focus();
+    Swal.fire({
+        icon: "warning",
+        title: "Required Information",
+        text: msg,
+        confirmButtonColor: "#ff6b81"
+    });
+}
 </script>
-
 
 {% endblock %}

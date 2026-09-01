@@ -1,6 +1,6 @@
 /* ============================================================================
-   FOOTER (FULLY RESPONSIVE & PROFESSIONAL)
-   ============================================================================ */
+   FOOTER (FULLY RESPONSIVE & CLEAN – FIXED)
+============================================================================ */
 
 footer {
   background-image: url('../image/footer-bg.jpg');
@@ -10,38 +10,36 @@ footer {
   width: 100%;
   padding: clamp(80px, 15vw, 200px) 0 0;
   position: relative;
-  overflow: hidden;
+   min-height: 300px;
 }
 
-/* Decorative Background */
+/* Decorative overlay */
 footer::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle at 20% 50%, rgba(218, 98, 133, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255, 142, 217, 0.05) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(218, 98, 133, 0.05), transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 142, 217, 0.05), transparent 50%);
   pointer-events: none;
 }
 
 /* ============================================================================
-   FOOTER CONTENT GRID
-   ============================================================================ */
+   FOOTER GRID
+============================================================================ */
 
 footer .content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  align-items: flex-start;
-  justify-content: center;
-  padding: clamp(30px, 5vw, 60px) clamp(15px, 4vw, 40px);
-  gap: clamp(30px, 4vw, 50px);
+  gap: 40px;
+  padding: 50px 24px;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
 }
 
-/* Divider line */
+/* Divider */
 footer .content::before {
   content: '';
   position: absolute;
@@ -52,153 +50,129 @@ footer .content::before {
   background: linear-gradient(
     90deg,
     transparent,
-    var(--main-color) 20%,
-    var(--main-color) 80%,
+    var(--main-color),
     transparent
   );
 }
 
 /* ============================================================================
-   FOOTER BOX BASE
-   ============================================================================ */
+   FOOTER BOX
+============================================================================ */
 
 footer .content .box1 {
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
-/* ============================================================================
-   BRAND / LOGO
-   ============================================================================ */
-
+/* Logo block */
 footer .content .box1:first-child {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-footer .content .box1:first-child img {
-  width: clamp(110px, 18vw, 150px);
-  margin-bottom: 1.5rem;
+footer .content .box1 img {
+  width: 140px;
+  margin-bottom: 1.2rem;
 }
 
-footer .content .box1:first-child p {
-  color: #222;
-  font-size: clamp(0.9rem, 1vw, 0.95rem);
-  opacity: 0.85;
-  margin-bottom: 1.5rem;
-}
-
-footer .content .box1:first-child .btn {
-  background: linear-gradient(135deg, var(--main-color), var(--pink-color));
-  color: #fff;
-  padding: 12px 28px;
-  border-radius: 25px;
-  font-weight: 600;
-  text-decoration: none;
-  box-shadow: 0 4px 15px rgba(218, 98, 133, 0.3);
-}
-
-/* ============================================================================
-   HEADINGS
-   ============================================================================ */
-
+/* Headings */
 footer .content .box1 h3 {
-  font-size: clamp(1.05rem, 1.2vw, 1.2rem);
-  margin-bottom: 1.6rem;
-  color: rgb(32, 29, 29);
+  font-size: 1.1rem;
+  margin-bottom: 1.2rem;
   font-weight: 700;
   position: relative;
-  padding-bottom: 0.8rem;
+  padding-bottom: 0.6rem;
 }
 
 footer .content .box1 h3::after {
   content: '';
   position: absolute;
-  bottom: 0;
   left: 0;
-  width: 40px;
+  bottom: 0;
+  width: 35px;
   height: 3px;
   background: linear-gradient(90deg, var(--main-color), var(--pink-color));
-  border-radius: 2px;
 }
 
-/* ============================================================================
-   LINKS & CONTACT
-   ============================================================================ */
-
+/* Links */
 footer .content .box1 a,
 footer .content .box1 p {
   display: flex;
   align-items: center;
-  font-size: clamp(0.9rem, 1vw, 0.95rem);
-  color: rgb(32, 29, 29);
-  margin-bottom: 0.8rem;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 0.6rem;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-footer .content .box1 a i,
-footer .content .box1 p i {
-  margin-right: 10px;
-  font-size: 18px;
+footer .content .box1 a:hover {
   color: var(--main-color);
+  transform: translateX(5px);
 }
 
-/* ============================================================================
-   SOCIAL ICONS
-   ============================================================================ */
-
+/* Social icons */
 footer .content .box1 .icons {
   display: flex;
-  gap: 12px;
-  margin-top: 1.2rem;
-  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 1rem;
 }
 
 footer .content .box1 .icons i {
-  width: clamp(40px, 6vw, 44px);
-  height: clamp(40px, 6vw, 44px);
-  line-height: clamp(40px, 6vw, 44px);
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
   border-radius: 50%;
   border: 2px solid var(--main-color);
   color: var(--main-color);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+footer .content .box1 .icons i:hover {
+  background-color: var(--main-color);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 107, 129, 0.3);
 }
 
 /* ============================================================================
-   FOOTER BOTTOM BAR
-   ============================================================================ */
+   FOOTER BOTTOM
+============================================================================ */
 
 footer .bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  padding: clamp(16px, 3vw, 30px) clamp(12px, 4vw, 40px);
+  padding: 18px 24px;
   background: rgba(0, 0, 0, 0.2);
-  border-top: 1px solid var(--border-color);
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 footer .bottom p,
 footer .bottom a {
-  font-size: clamp(0.8rem, 1vw, 0.9rem);
+  font-size: 0.9rem;
   color: #000;
 }
 
 /* ============================================================================
-   MOBILE – SINGLE BLOCK, MAX HEIGHT ~400px
-   ============================================================================ */
+   MOBILE – BLOCK LAYOUT (FIXED & WORKING)
+============================================================================ */
 
 @media (max-width: 768px) {
 
   footer {
     padding-top: 40px;
-    max-height: 400px;
-    overflow: hidden;
+    min-height: auto;
+    padding-bottom: 20px;
   }
 
   footer .content {
-    grid-template-columns: 1fr;
-    gap: 1.2rem;
-    padding: 20px 16px;
+    grid-template-columns: 1fr;     /* ✅ block-wise */
+    gap: 24px;
+    padding: 30px 16px;
     text-align: center;
   }
 
@@ -208,37 +182,31 @@ footer .bottom a {
 
   footer .content .box1 {
     align-items: center;
-    line-height: 1.5;
+  }
+
+  footer .content .box1:first-child {
+    align-items: center;
   }
 
   footer .content .box1 h3::after {
     left: 50%;
     transform: translateX(-50%);
-    width: 30px;
   }
 
   footer .content .box1 a,
   footer .content .box1 p {
     justify-content: center;
-    margin-bottom: 0.4rem;
     font-size: 14px;
   }
 
   footer .content .box1 .icons {
     justify-content: center;
-    gap: 8px;
-  }
-
-  footer .content .box1 .icons i {
-    width: 36px;
-    height: 36px;
-    line-height: 36px;
-    font-size: 16px;
   }
 
   footer .bottom {
-    padding: 12px 16px;
+    flex-direction: column;
     text-align: center;
+    padding: 14px 16px;
   }
 
   footer .bottom p,
